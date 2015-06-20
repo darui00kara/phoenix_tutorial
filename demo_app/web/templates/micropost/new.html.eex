@@ -1,0 +1,6 @@
+<h2>New micropost</h2>
+
+<%= render "form.html", changeset: @changeset,
+                        action: micropost_path(@conn, :create) %>
+
+<%= link "Back", to: micropost_path(@conn, :index) %>
