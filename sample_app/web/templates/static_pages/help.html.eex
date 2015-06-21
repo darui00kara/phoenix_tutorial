@@ -1,0 +1,3 @@
+<div class="jumbotron">
+  <h2>Welcome to Static Pages <%= @message %>!</h2>
+</div>
