@@ -1,3 +1,11 @@
 <div class="jumbotron">
-  <h2>Welcome to Static Pages <%= @message %>!</h2>
+  <h1>Welcom to the Sample App</h1>
+
+  <h2>
+    This application is
+    <a href="http://railstutorial.jp/">Ruby on Rails Tutorial</a>
+    for Phoenix sample application.
+  </h2>
+
+  <a href="<%= user_path(@conn, :new) %>" class="btn btn-large btn-primary">Sign up now!</a>
 </div>

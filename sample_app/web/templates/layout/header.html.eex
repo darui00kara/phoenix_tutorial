@@ -1,0 +1,17 @@
+<header class="navbar navbar-inverse">
+  <div class="navbar-inner">
+    <div class="container">
+      <a class="logo" href="<%= page_path(@conn, :index) %>"></a>
+      <ul class="nav nav-pills pull-right">
+        <li><a href="<%= static_pages_path(@conn, :home) %>">Home</a></li>
+        <li><a href="<%= static_pages_path(@conn, :help) %>">Help</a></li>
+        <li><a href="<%= static_pages_path(@conn, :about) %>">About</a></li>
+        <li><a href="<%= static_pages_path(@conn, :contact) %>">Contact</a></li>
+        <li><a href=#>Sign in</a></li>
+        <li><a href="http://www.phoenixframework.org/docs">Phoenix Get Started</a></li>
+      </ul>
+      <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
+      <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>
+    </div> <!-- container -->
+  </div> <!-- navbar-inner -->
+</header>
