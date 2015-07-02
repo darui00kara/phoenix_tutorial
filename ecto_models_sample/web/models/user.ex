@@ -10,6 +10,7 @@ defmodule EctoModelsSample.User do
     field :password_digest, :string
     field :password, :string, virtual: true
 
+    has_many :microposts, EctoModelsSample.Micropost
     timestamps
   end
 
@@ -32,7 +33,8 @@ defmodule EctoModelsSample.User do
     |> validate_length(:name, max: 50)
     |> validate_length(:password, min: 8)
     |> validate_length(:password, max: 100)
-    |> validate_name_presence()
+    |> validate_presence(:name)
+    |> validate_presence(:email)
   end
 
   def set_password_digest(changeset) do
@@ -40,13 +42,13 @@ defmodule EctoModelsSample.User do
     change(changeset, %{password_digest: password})
   end
 
-  def validate_name_presence(changeset) do
-    name = Ecto.Changeset.get_field(changeset, :name)
+  def validate_presence(changeset, field_name) do
+    field_data = Ecto.Changeset.get_field(changeset, field_name)
     cond do
-      name == nil ->
-        add_error changeset, :name, "Name is nil"
-      name == "" ->
-        add_error changeset, :name, "No Name"
+      field_data == nil ->
+        add_error changeset, field_name, "#{field_name} is nil"
+      field_data == "" ->
+        add_error changeset, field_name, "No #{field_name}"
       true ->
         changeset
     end

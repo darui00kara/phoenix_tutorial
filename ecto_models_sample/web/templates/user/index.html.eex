@@ -6,16 +6,19 @@
       <th>Name</th>
       <th>Email</th>
       <th>Password</th>
-
-      <th></th>
     </tr>
   </thead>
+
   <tbody>
 <%= for user <- @users do %>
     <tr>
       <td><%= user.name %></td>
       <td><%= user.email %></td>
       <td><%= user.password %></td>
+      
+    <%= for post <- user.microposts do %>
+      <td><%= post.content %></td>
+    <% end %>
 
       <td class="text-right">
         <%= link "Show", to: user_path(@conn, :show, user), class: "btn btn-default btn-xs" %>

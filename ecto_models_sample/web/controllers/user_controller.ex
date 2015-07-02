@@ -7,7 +7,7 @@ defmodule EctoModelsSample.UserController do
   plug :action
 
   def index(conn, _params) do
-    users = Repo.all(User)
+    users = EctoModelsSample.User |> Repo.all() |> Repo.preload [:microposts]
     render(conn, "index.html", users: users)
   end
 
@@ -31,7 +31,7 @@ defmodule EctoModelsSample.UserController do
   end
 
   def show(conn, %{"id" => id}) do
-    user = Repo.get(User, id)
+    user = EctoModelsSample.User |> Repo.get(id) |> Repo.preload [:microposts]
     render(conn, "show.html", user: user)
   end
 
