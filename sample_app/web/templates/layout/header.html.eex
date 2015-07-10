@@ -10,8 +10,10 @@
         <li><a href=#>Sign in</a></li>
         <li><a href="http://www.phoenixframework.org/docs">Phoenix Get Started</a></li>
       </ul>
-      <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
-      <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>
     </div> <!-- container -->
   </div> <!-- navbar-inner -->
 </header>
+<h2>
+  <p class="alert alert-info" role="alert" style="text-align: center;"><%= get_flash(@conn, :info) %></p>
+  <p class="alert alert-danger" role="alert" style="text-align: center;"><%= get_flash(@conn, :error) %></p>
+</h2>

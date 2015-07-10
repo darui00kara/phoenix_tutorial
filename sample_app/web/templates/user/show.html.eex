@@ -1,0 +1,6 @@
+<h2>
+  <div class="gravatar" style="float: left; margin-right: 10px;">
+    <img src="<%= get_gravatar_url(@user) %>" class="gravatar">
+  </div>
+  <p><%= @user.name %></p>
+</h2>

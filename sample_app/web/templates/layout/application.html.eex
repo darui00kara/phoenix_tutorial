@@ -20,7 +20,7 @@
       <%= @inner %>
     </div>
     
-    <%= render "footer.html" %>
+    <%= render "footer.html", conn: @conn %>
 
     <script src="<%= static_path(@conn, "/js/app.js") %>"></script>
     <script>require("web/static/js/app")</script>
