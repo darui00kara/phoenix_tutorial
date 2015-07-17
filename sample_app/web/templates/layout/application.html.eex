@@ -9,6 +9,7 @@
 
     <title>Sample App!!</title>
     <link rel="stylesheet" href="<%= static_path(@conn, "/css/app.css") %>">
+    <link rel="stylesheet" href="<%= static_path(@conn, "/css/custom.css") %>">
 
     <%= render "shim.html" %>
   </head>

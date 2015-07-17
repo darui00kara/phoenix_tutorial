@@ -12,7 +12,9 @@ config :sample_app, SampleApp.Endpoint,
   secret_key_base: "nazfbgGxsejcTZaEWb8MxJMlxj/iqFkGG/VKKyyVPCku3aRCXJ9whS5pqZPXs2GS",
   debug_errors: false,
   pubsub: [name: SampleApp.PubSub,
-           adapter: Phoenix.PubSub.PG2]
+           adapter: Phoenix.PubSub.PG2],
+  session: [store: :cookie,
+            key: "_your_app_key"]
 
 # Configures Elixir's Logger
 config :logger, :console,

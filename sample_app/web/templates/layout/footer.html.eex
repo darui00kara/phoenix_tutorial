@@ -1,0 +1,5 @@
+<div class="jumbotron">
+  <%= if current_user(@conn) do %>
+    <p>Current UserName: <%= current_user(@conn).name %></p>
+  <% end %>
+</div>

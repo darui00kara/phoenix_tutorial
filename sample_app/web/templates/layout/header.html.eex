@@ -3,11 +3,16 @@
     <div class="container">
       <a class="logo" href="<%= page_path(@conn, :index) %>"></a>
       <ul class="nav nav-pills pull-right">
-        <li><a href="<%= static_pages_path(@conn, :home) %>">Home</a></li>
-        <li><a href="<%= static_pages_path(@conn, :help) %>">Help</a></li>
-        <li><a href="<%= static_pages_path(@conn, :about) %>">About</a></li>
-        <li><a href="<%= static_pages_path(@conn, :contact) %>">Contact</a></li>
-        <li><a href=#>Sign in</a></li>
+        <li><%= link "Home", to: static_pages_path(@conn, :home) %></li>
+        <li><%= link "Help", to: static_pages_path(@conn, :help) %></li>
+        <li><%= link "About", to: static_pages_path(@conn, :about) %></li>
+        <li><%= link "Contact", to: static_pages_path(@conn, :contact) %></li>
+      <%= if current_user(@conn) do %>
+        <li><%= link "Sign-out", to: session_path(@conn, :delete) %></li>
+        <li><%= link "Profile", to: user_path(@conn, :show, current_user(@conn).id) %><li>
+      <% else %>
+        <li><%= link "Sign-in", to: session_path(@conn, :new) %></li>
+      <% end %>
         <li><a href="http://www.phoenixframework.org/docs">Phoenix Get Started</a></li>
       </ul>
     </div> <!-- container -->

@@ -2,6 +2,8 @@ defmodule SampleApp.User do
   use SampleApp.Web, :model
   use Ecto.Model.Callbacks
 
+  import Ecto.Query
+
   before_insert :set_password_digest
 
   schema "users" do
@@ -9,6 +11,7 @@ defmodule SampleApp.User do
     field :email, :string
     field :password_digest, :string
     field :password, :string, virtual: true
+    field :remember_token, :string
 
     timestamps
   end
@@ -59,5 +62,13 @@ defmodule SampleApp.User do
   # password encrypt
   def encrypt(password) do
     Safetybox.encrypt(password)
+  end
+
+  # find user from email 
+  def find_user_from_email(email) do
+    query = from user in SampleApp.User,
+            where: user.email == ^email,
+            select: user
+    SampleApp.Repo.all(query) |> List.first
   end
 end

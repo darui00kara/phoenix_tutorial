@@ -1,6 +1,7 @@
 defmodule SampleApp.UserController do
   use SampleApp.Web, :controller
 
+  plug SampleApp.Plugs.CheckAuthentication
   plug :action
 
   def new(conn, _params) do
@@ -14,8 +15,11 @@ defmodule SampleApp.UserController do
     if changeset.valid? do
       Repo.insert(changeset)
 
+      user = SampleApp.User.find_user_from_email(user_params["email"])
+
       conn
       |> put_flash(:info, "User registration is success!!")
+      |> put_session(:user_id, user.id)
       |> redirect(to: static_pages_path(conn, :home))
     else
       render(conn, "new.html", changeset: changeset)
@@ -25,10 +29,5 @@ defmodule SampleApp.UserController do
   def show(conn, %{"id" => id}) do
     user = Repo.get(SampleApp.User, id)
     render(conn, "show.html", user: user)
-  end
-
-  def authentication(email, password) do
-    user = Repo.get(SampleApp.User, email)
-    Safetybox.is_decrypted(password, user.password_digest)
   end
 end
