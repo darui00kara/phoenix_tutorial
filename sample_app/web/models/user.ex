@@ -5,19 +5,22 @@ defmodule SampleApp.User do
   import Ecto.Query
 
   before_insert :set_password_digest
+  before_update :set_password_digest
 
   schema "users" do
     field :name, :string
     field :email, :string
     field :password_digest, :string
     field :password, :string, virtual: true
-    field :remember_token, :string
 
     timestamps
   end
 
   @required_fields ~w(name email password)
   @optional_fields ~w()
+
+  @page_size 1
+  @start_page 1
 
   @doc """
   Creates a changeset based on the `model` and `params`.
@@ -40,8 +43,40 @@ defmodule SampleApp.User do
     |> validate_length(:password, max: 100)
   end
 
+  def is_nil_page?(params) do
+    params["select_page"] == nil
+  end
+
+  def is_minus_page_number?(params) do
+    String.to_integer(params["select_page"]) < @start_page
+  end
+
+  def paginate(params) do
+    select_page = params["select_page"]
+
+    SampleApp.User
+    |> order_by([u], asc: u.name)
+    |> SampleApp.Repo.paginate(page: select_page, page_size: @page_size)
+  end
+
+  # before_insert - password to password_digest
+  def set_password_digest(changeset) do
+    password = Ecto.Changeset.get_field(changeset, :password)
+    change(changeset, %{password_digest: encrypt(password)})
+  end
+
+  # find user from email
+  def find_user_from_email(email) do
+    SampleApp.Repo.get_by(SampleApp.User, email: email)
+  end
+
+  # password decrypt
+  def decrypt(password) do
+    Safetybox.decrypt(password)
+  end
+
   # my presence check validation
-  def validate_presence(changeset, field_name) do
+  defp validate_presence(changeset, field_name) do
     field_data = Ecto.Changeset.get_field(changeset, field_name)
     cond do
       field_data == nil ->
@@ -53,22 +88,8 @@ defmodule SampleApp.User do
     end
   end
 
-  # before_insert - password to password_digest
-  def set_password_digest(changeset) do
-    password = Ecto.Changeset.get_field(changeset, :password)
-    change(changeset, %{password_digest: encrypt(password)})
-  end
-
   # password encrypt
-  def encrypt(password) do
-    Safetybox.encrypt(password)
-  end
-
-  # find user from email 
-  def find_user_from_email(email) do
-    query = from user in SampleApp.User,
-            where: user.email == ^email,
-            select: user
-    SampleApp.Repo.all(query) |> List.first
+  defp encrypt(password) do
+    Safetybox.encrypt(password, :default)
   end
 end

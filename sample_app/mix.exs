@@ -31,11 +31,12 @@ defmodule SampleApp.Mixfile do
   defp deps do
     [{:phoenix, "~> 0.13.1"},
      {:phoenix_ecto, "~> 0.4"},
-     {:postgrex, "~> 0.8.3", [optional: true, hex: :postgrex]},
+     {:postgrex, "~> 0.9.1", [optional: true, hex: :postgrex]},
      {:phoenix_html, "~> 1.0"},
      {:phoenix_live_reload, "~> 0.4", only: :dev},
      {:cowboy, "~> 1.0"},
      {:safetybox, "~> 0.1"},
-     {:secure_random, "~> 0.1"}]
+     {:secure_random, "~> 0.1"},
+     {:scrivener, "~> 0.11.0"}]
   end
 end

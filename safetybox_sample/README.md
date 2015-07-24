@@ -1,4 +1,0 @@
-SafetyboxSample
-===============
-
-** TODO: Add description **

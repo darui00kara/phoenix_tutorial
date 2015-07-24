@@ -1,6 +1,5 @@
 defmodule SampleApp.Plugs.CheckAuthentication do
   import Plug.Conn
-  import Plug.Session
 
   def init(options) do
     options
@@ -15,7 +14,7 @@ defmodule SampleApp.Plugs.CheckAuthentication do
     end
   end
 
-  def session_present?(user_id) do
+  defp session_present?(user_id) do
     case user_id do
       nil -> false
       _   -> true

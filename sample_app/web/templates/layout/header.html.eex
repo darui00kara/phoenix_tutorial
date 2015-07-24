@@ -8,8 +8,9 @@
         <li><%= link "About", to: static_pages_path(@conn, :about) %></li>
         <li><%= link "Contact", to: static_pages_path(@conn, :contact) %></li>
       <%= if current_user(@conn) do %>
-        <li><%= link "Sign-out", to: session_path(@conn, :delete) %></li>
         <li><%= link "Profile", to: user_path(@conn, :show, current_user(@conn).id) %><li>
+        <li><%= link "All Users", to: user_index_first_page(@conn) %><li>
+        <li><%= link "Sign-out", to: session_path(@conn, :delete) %></li>
       <% else %>
         <li><%= link "Sign-in", to: session_path(@conn, :new) %></li>
       <% end %>

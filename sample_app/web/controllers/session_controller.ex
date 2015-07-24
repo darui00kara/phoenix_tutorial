@@ -29,7 +29,7 @@ defmodule SampleApp.SessionController do
     |> redirect(to: static_pages_path(conn, :home))
   end
 
-  def login(email, password) do
+  defp login(email, password) do
     user = SampleApp.User.find_user_from_email(email)
     case authentication(user, password) do
       true -> {:ok, user}
@@ -37,10 +37,11 @@ defmodule SampleApp.SessionController do
     end
   end
 
-  def authentication(user, password) do
+  defp authentication(user, password) do
     case user do
       nil -> false
-        _ -> Safetybox.is_decrypted(password, user.password_digest)
+        _ ->
+          password == Safetybox.decrypt(user.password_digest)
     end
   end
 end

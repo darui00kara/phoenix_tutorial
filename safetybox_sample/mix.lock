@@ -1,3 +1,0 @@
-%{"cryptex": {:hex, :cryptex, "0.0.1"},
-  "earmark": {:hex, :earmark, "0.1.17"},
-  "safetybox": {:hex, :safetybox, "0.1.2"}}

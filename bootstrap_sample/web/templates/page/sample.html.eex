@@ -1,4 +1,0 @@
-<div class="jumbotron">
-  <h2 style="color: blue; font-size: 64pt;">Welcome to Phoenix!</h2>
-  <p class="lead">Most frameworks make you choose between speed and a productive environment. <a href="http://phoenixframework.org">Phoenix</a> and <a href="http://elixir-lang.org">Elixir</a> give you both.</p>
-</div>

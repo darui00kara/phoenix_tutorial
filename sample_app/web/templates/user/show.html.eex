@@ -3,4 +3,6 @@
     <img src="<%= get_gravatar_url(@user) %>" class="gravatar">
   </div>
   <p><%= @user.name %></p>
+  <%= link "Edit", to: user_path(@conn, :edit, @user), class: "btn btn-default btn-xs" %>
+  <%= link "Delete", to: user_path(@conn, :delete, @user), method: :delete, class: "btn btn-danger btn-xs" %>
 </h2>
