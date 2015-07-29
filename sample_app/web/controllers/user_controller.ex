@@ -78,6 +78,7 @@ defmodule SampleApp.UserController do
 
   def delete(conn, %{"id" => id}) do
     user = Repo.get(SampleApp.User, id)
+    from(m in SampleApp.Micropost, where: m.user_id == ^user.id) |> Repo.delete_all
     Repo.delete(user)
 
     conn
