@@ -1,0 +1,36 @@
+<nav>
+  <ul class="pagination">
+
+  <!-- previous link -->
+  <%= if @current_page > 1 do %>
+    <li>
+      <a href="<%= get_previous_page_url(@action, @current_page) %>" aria-label="Previous">
+        <span aria-hidden="true">&laquo;</span>
+      </a>
+    </li>
+  <% end %>
+
+  <!-- page link -->
+  <%= for page_number <- @page_list do %>
+    <%= if page_number == @current_page do %>
+      <li class="active">
+        <a href="<%= get_page_url(@action, page_number) %>">
+          <%= page_number %><span class="sr-only">(current)</span>
+        </a>
+      </li>
+    <% else %>
+      <li><a href="<%= get_page_url(@action, page_number) %>"><%= page_number %></a></li>
+    <% end %>
+  <% end %>
+
+  <!-- next link -->
+  <%= if @current_page < @total_pages do %>
+    <li>
+      <a href="<%= get_next_page_url(@action, @current_page) %>" aria-label="Next">
+        <span aria-hidden="true">&raquo;</span>
+      </a>
+    </li>
+  <% end %>
+
+  </ul>
+</nav>

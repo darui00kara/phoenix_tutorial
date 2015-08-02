@@ -5,7 +5,7 @@ defmodule SampleApp.LayoutView do
     conn.assigns[:current_user]
   end
 
-  def user_index_first_page(conn) do
-    "#{user_path(conn, :index)}?select_page=1"
+  def add_first_page_param(action) do
+    "#{action}?select_page=1"
   end
 end

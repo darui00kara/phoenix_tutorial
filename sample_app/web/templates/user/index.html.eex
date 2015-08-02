@@ -1,61 +1,37 @@
-<h2>All users</h2>
+<h2 class="text-center">All users</h2>
 
-<div>CurrentPage: <%= @current_page %></div>
+<%= if !is_empty_list?(@users) do %>
+  <%= render "pagination.html",
+             action: user_path(@conn, :index),
+             current_page: @current_page,
+             page_list: @page_list,
+             total_pages: @total_pages %>
 
-<nav>
-  <ul class="pagination">
-
-  <!-- previous link -->
-  <%= if @current_page > 1 do %>
-    <li>
-      <a href="<%= get_previous_page_url(@conn, @current_page) %>" aria-label="Previous">
-        <span aria-hidden="true">&laquo;</span>
-      </a>
-    </li>
-  <% end %>
-
-  <!-- page link -->
-  <%= for page_number <- @page_list do %>
-    <%= if page_number == @current_page do %>
-      <li class="active">
-        <a href="<%= get_page_url(@conn, page_number) %>">
-          <%= page_number %><span class="sr-only">(current)</span>
-        </a>
-      </li>
-    <% else %>
-      <li><a href="<%= get_page_url(@conn, page_number) %>"><%= page_number %></a></li>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Profile Image</th>
+        <th>Name</th>
+      </tr>
+    </thead>
+    <tbody>
+    <%= for user <- @users do %>
+      <tr>
+        <td>
+          <div class="gravatar" style="float: left; margin-right: 10px;">
+            <img src="<%= get_gravatar_url(user) %>" class="gravatar">
+          </div>
+        </td>
+        <td><h4><%= user.name %><h4></td>
+      </tr>
     <% end %>
-  <% end %>
+    </tbody>
+  </table>
 
-  <!-- next link -->
-  <%= if @current_page < @total_pages do %>
-    <li>
-      <a href="<%= get_next_page_url(@conn, @current_page) %>" aria-label="Next">
-        <span aria-hidden="true">&raquo;</span>
-      </a>
-    </li>
-  <% end %>
+  <%= render "pagination.html",
+             action: user_path(@conn, :index),
+             current_page: @current_page,
+             page_list: @page_list,
+             total_pages: @total_pages %>
 
-  </ul>
-</nav>
-
-<table class="table">
-  <thead>
-    <tr>
-      <th>Profile Image</th>
-      <th>Name</th>
-    </tr>
-  </thead>
-  <tbody>
-  <%= for user <- @users do %>
-    <tr>
-      <td>
-        <div class="gravatar" style="float: left; margin-right: 10px;">
-          <img src="<%= get_gravatar_url(user) %>" class="gravatar">
-        </div>
-      </td>
-      <td><h4><%= user.name %><h4></td>
-    </tr>
-  <% end %>
-  </tbody>
-</table>
+<% end %>

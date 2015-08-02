@@ -7,16 +7,20 @@ defmodule SampleApp.UserView do
     "https://secure.gravatar.com/avatar/#{gravatar_id}?s=50"
   end
 
-  def get_previous_page_url(conn, current_page) do
-    get_page_url(conn, current_page - 1)
+  def get_previous_page_url(action, current_page) do
+    get_page_url(action, current_page - 1)
   end
 
-  def get_next_page_url(conn, current_page) do
-    get_page_url(conn, current_page + 1)
+  def get_next_page_url(action, current_page) do
+    get_page_url(action, current_page + 1)
   end
 
-  def get_page_url(conn, page_number) do
-    "#{user_path(conn, :index)}?select_page=#{page_number}"
+  def get_page_url(action, page_number) do
+    "#{action}?select_page=#{page_number}"
+  end
+
+  def is_empty_list?(list) when is_list(list) do
+    list == []
   end
 
   defp email_crypt_md5(email) do

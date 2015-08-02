@@ -3,7 +3,7 @@ defmodule SampleApp.Micropost do
 
   schema "microposts" do
     field :content, :string
-    
+
     belongs_to :user, SampleApp.User, foreign_key: :user_id
 
     timestamps
@@ -23,5 +23,15 @@ defmodule SampleApp.Micropost do
     |> cast(params, @required_fields, @optional_fields)
     |> validate_length(:content, min: 1)
     |> validate_length(:content, max: 140)
+  end
+
+  def new_changeset(model, params \\ :empty) do
+    model |> cast(params, @required_fields, @optional_fields)
+  end
+
+  def paginate(user_id, select_page) do
+    SampleApp.Helpers.PaginationHelper.paginate(
+      from(m in SampleApp.Micropost, where: m.user_id == ^user_id, order_by: [desc: m.inserted_at]),
+      select_page)
   end
 end

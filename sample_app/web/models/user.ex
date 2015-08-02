@@ -21,9 +21,6 @@ defmodule SampleApp.User do
   @required_fields ~w(name email password)
   @optional_fields ~w()
 
-  @page_size 1
-  @start_page 1
-
   @doc """
   Creates a changeset based on the `model` and `params`.
 
@@ -45,20 +42,13 @@ defmodule SampleApp.User do
     |> validate_length(:password, max: 100)
   end
 
-  def is_nil_page?(params) do
-    params["select_page"] == nil
+  def paginate(select_page) do
+    SampleApp.Helpers.PaginationHelper.paginate(
+      from(u in SampleApp.User, order_by: [asc: :name]),
+      select_page)
   end
 
-  def is_minus_page_number?(params) do
-    String.to_integer(params["select_page"]) < @start_page
-  end
-
-  def paginate(params) do
-    select_page = params["select_page"]
-
-    SampleApp.User
-    |> order_by([u], asc: u.name)
-    |> SampleApp.Repo.paginate(page: select_page, page_size: @page_size)
+  def feed(user_id) do
   end
 
   # before_insert - password to password_digest

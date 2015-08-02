@@ -2,14 +2,13 @@ defmodule SampleApp.UserController do
   use SampleApp.Web, :controller
 
   plug SampleApp.Plugs.CheckAuthentication
-  plug :signed_in_user? when action in [:index, :show, :edit, :update, :delete]
+  plug SampleApp.Plugs.SignedInUser when action in [:index, :show, :edit, :update, :delete]
   plug :correct_user? when action in [:show, :edit, :update, :delete]
+  plug :scrub_params, "select_page" when action in [:index, :show]
   plug :action
 
-  def index(conn, params) do
-    if !SampleApp.User.is_nil_page?(params) && !SampleApp.User.is_minus_page_number?(params) do
-      page = SampleApp.User.paginate(params)
-    end
+  def index(conn, %{"select_page" => select_page}) do
+    page = SampleApp.User.paginate(select_page)
 
     if page do
       render(conn, "index.html",
@@ -20,7 +19,7 @@ defmodule SampleApp.UserController do
     else
       conn
       |> put_flash(:error, "Invalid page number!!")
-      |> redirect(to: static_pages_path(conn, :home))
+      |> render("index.html", users: [])
     end
   end
 
@@ -46,9 +45,25 @@ defmodule SampleApp.UserController do
     end
   end
 
-  def show(conn, %{"id" => id}) do
+  def show(conn, %{"id" => id, "select_page" => select_page}) do
     user = Repo.get(SampleApp.User, id)
-    render(conn, "show.html", user: user)
+    page = SampleApp.Micropost.paginate(user.id, select_page)
+    changeset = SampleApp.Micropost.new_changeset(
+      %SampleApp.Micropost{}, %{content: "", user_id: user.id})
+
+    if page do
+      render(conn, "show.html",
+             user: user,
+             posts: page.entries,
+             current_page: page.page_number,
+             total_pages: page.total_pages,
+             page_list: Range.new(1, page.total_pages),
+             changeset: changeset)
+    else
+      conn
+      |> put_flash(:error, "Invalid page number!!")
+      |> render("show.html", user: user, posts: [])
+    end
   end
 
   def edit(conn, %{"id" => id}) do
@@ -84,17 +99,6 @@ defmodule SampleApp.UserController do
     conn
     |> put_flash(:info, "User deleted successfully.")
     |> redirect(to: static_pages_path(conn, :home))
-  end
-
-  defp signed_in_user?(conn, _) do
-    if conn.assigns[:current_user] do
-      conn
-    else
-      conn
-      |> put_flash(:info, "Please sign-in.")
-      |> redirect(to: session_path(conn, :new))
-      |> halt
-    end
   end
 
   defp correct_user?(conn, _) do
