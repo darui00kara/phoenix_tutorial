@@ -29,9 +29,11 @@ defmodule SampleApp.Micropost do
     model |> cast(params, @required_fields, @optional_fields)
   end
 
-  def paginate(user_id, select_page) do
+  def paginate(user_id, select_page, following_ids) do
     SampleApp.Helpers.PaginationHelper.paginate(
-      from(m in SampleApp.Micropost, where: m.user_id == ^user_id, order_by: [desc: m.inserted_at]),
+      from(m in SampleApp.Micropost,
+        where: m.user_id in ^following_ids or m.user_id == ^user_id,
+          order_by: [desc: m.inserted_at]),
       select_page)
   end
 end

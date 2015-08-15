@@ -22,7 +22,11 @@
             <img src="<%= get_gravatar_url(user) %>" class="gravatar">
           </div>
         </td>
-        <td><h4><%= user.name %><h4></td>
+        <td>
+          <a href="<%= add_first_page_param(user_path(@conn, :show, user)) %>">
+            <h4><%= user.name %></h4>
+          </a>
+        </td>
       </tr>
     <% end %>
     </tbody>

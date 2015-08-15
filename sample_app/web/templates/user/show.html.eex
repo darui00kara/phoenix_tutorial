@@ -1,12 +1,33 @@
-<%= alias SampleApp.LayoutView %>
 <h2>User profile</h2>
 
 <div style="float: left; margin-top: 20px; margin-right: 20px;">
   <img src="<%= get_gravatar_url(@user) %>" class="gravatar">
   <h2><%= @user.name %></h2>
+  <strong style="float: left; margin-right: 5px">
+    <a href="<%= user_path(@conn, :following, @user) %>">Following (<%= Enum.count(@user.followed_users) %>)</a>
+  </strong>
+  <strong style="float: right;">
+    <a href="<%= user_path(@conn, :followers, @user) %>">Followers (<%= Enum.count(@user.followers) %>)</a>
+  </strong>
 </div>
 
-<div style="clear: right; margin-left: 150px;">
+<%= if !current_user?(@conn, @user) do %>
+  <%= if !following?(@conn, @user.id) do %>
+    <%= form_tag(relationship_path(@conn, :create), method: :post) %>
+      <input type="hidden" name="id" value="<%= @conn.assigns[:current_user].id %>">
+      <input type="hidden" name="follow_id" value="<%= @user.id %>">
+      <%= submit "Follow", class: "btn btn-primary" %>
+    </form>
+  <% else %>
+    <%= form_tag(relationship_path(@conn, :delete, @conn.assigns[:current_user]), method: :delete) %>
+      <input type="hidden" name="unfollow_id" value="<%= @user.id %>">
+      <%= submit "Unfollow", class: "btn btn-primary" %>
+    </form>
+  <% end %>
+<% end %>
+
+<%= if current_user?(@conn, @user) do %>
+<div style="clear: right; margin-left: 250px;">
   <%= form_for @changeset, micropost_path(@conn, :create), fn f -> %>
     <%= if f.errors != [] do %>
       <div class="alert alert-danger">
@@ -31,13 +52,16 @@
     </div>
   <% end %>
 </div>
+<% end %>
 
+<%= if current_user?(@conn, @user) do %>
 <div style="clear: left;">
   <%= link "Edit", to: user_path(@conn, :edit, @user), class: "btn btn-default btn-xs" %>
   <%= link "Delete", to: user_path(@conn, :delete, @user), method: :delete, class: "btn btn-danger btn-xs" %>
 </div>
+<% end %>
 
-<div style="float: right; margin-right: 50px;">
+<div style="clear: right; margin-left: 250px;">
   <h2>Microposts</h2>
   
   <%= if !is_empty_list?(@posts) do %>
@@ -52,7 +76,7 @@
     </h2>
 
     <%= render "pagination.html",
-               action: user_path(@conn, :show, LayoutView.current_user(@conn).id),
+               action: user_path(@conn, :show, @user),
                current_page: @current_page,
                page_list: @page_list,
                total_pages: @total_pages %>

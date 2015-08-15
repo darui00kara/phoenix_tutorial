@@ -15,6 +15,14 @@ defmodule SampleApp.User do
 
     has_many :microposts, SampleApp.Micropost
 
+    # User who follow
+    has_many :followed_users, SampleApp.Relationship, foreign_key: :follower_id
+    has_many :relationships, through: [:followed_users, :followed_user]
+
+    # Followers the user
+    has_many :followers, SampleApp.Relationship, foreign_key: :followed_id
+    has_many :reverse_relationships, through: [:followers, :follower]
+
     timestamps
   end
 
@@ -48,9 +56,6 @@ defmodule SampleApp.User do
       select_page)
   end
 
-  def feed(user_id) do
-  end
-
   # before_insert - password to password_digest
   def set_password_digest(changeset) do
     password = Ecto.Changeset.get_field(changeset, :password)
@@ -65,19 +70,6 @@ defmodule SampleApp.User do
   # password decrypt
   def decrypt(password) do
     Safetybox.decrypt(password)
-  end
-
-  # my presence check validation
-  defp validate_presence(changeset, field_name) do
-    field_data = Ecto.Changeset.get_field(changeset, field_name)
-    cond do
-      field_data == nil ->
-        add_error changeset, field_name, "#{field_name} is nil"
-      field_data == "" ->
-        add_error changeset, field_name, "No #{field_name}"
-      true ->
-        changeset
-    end
   end
 
   # password encrypt

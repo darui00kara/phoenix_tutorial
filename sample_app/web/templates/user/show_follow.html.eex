@@ -1,0 +1,44 @@
+<div style="float: left; margin-top: 20px; margin-right: 20px;">
+      <img src="<%= get_gravatar_url(@user) %>" class="gravatar">
+      <h1><%= @user.name %></h1>
+      <div><%= link "view my profile", to: add_first_page_param(user_path(@conn, :show, @user)), class: "btn btn-default btn-xs" %></div>
+      <strong style="float: left; margin-right: 5px">
+        Following (<%= Enum.count(@user.followed_users) %>)
+      </strong>
+      <strong style="float: right;">
+        Followers (<%= Enum.count(@user.followers) %>)
+      </strong>
+</div>
+
+<div style="clear: left; margin-top: 30px;">
+  <%= if @users do %>
+    <div class="user_avatars">
+      <%= for follow_user <- @users do %>
+        <a href="<%= add_first_page_param(user_path(@conn, :show, follow_user)) %>">
+          <img src="<%= get_gravatar_url(follow_user) %>" class="gravatar">
+        </a>
+      <% end %>
+    </div>
+  <% end %>
+</div>
+
+<div style="clear: right; margin-left: 250px;">
+  <%= if @users do %>
+    <ul>
+      <%= for follow_user <- @users do %>
+        <li>
+          <a href="<%= add_first_page_param(user_path(@conn, :show, follow_user)) %>">
+            <img src="<%= get_gravatar_url(follow_user) %>" class="gravatar">
+            <h4><%= follow_user.name %></h4>
+          </a>
+        </li>
+      <% end %>
+    </ul>
+
+    <%= render "pagination.html",
+             action: @action,
+             current_page: @current_page,
+             page_list: @page_list,
+             total_pages: @total_pages %>
+  <% end %>
+</div>

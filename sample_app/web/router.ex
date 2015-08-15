@@ -22,10 +22,13 @@ defmodule SampleApp.Router do
     get "/about", StaticPagesController, :about
     get "/contact", StaticPagesController, :contact
     resources "/user", UserController, except: [:new]
+    get "user/:id/following", UserController, :following
+    get "user/:id/followers", UserController, :followers
     get "/signin", SessionController, :new
     post "/session", SessionController, :create
     get "/signout", SessionController, :delete
     resources "/post", MicropostController, only: [:create, :delete]
+    resources "/relationship", RelationshipController, only: [:create, :delete]
   end
 
   # Other scopes may use custom stacks.

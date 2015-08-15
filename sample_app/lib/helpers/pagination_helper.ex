@@ -1,6 +1,6 @@
 defmodule SampleApp.Helpers.PaginationHelper do
-
-  @page_size "5"
+  
+  @page_size "1"
 
   defp is_nil_or_empty?(select_page) do
     is_nil(select_page) || select_page == ""
