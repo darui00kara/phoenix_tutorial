@@ -23,7 +23,7 @@
           </div>
         </td>
         <td>
-          <a href="<%= add_first_page_param(user_path(@conn, :show, user)) %>">
+          <a href="<%= user_path(@conn, :show, user) %>">
             <h4><%= user.name %></h4>
           </a>
         </td>

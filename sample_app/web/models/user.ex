@@ -56,6 +56,12 @@ defmodule SampleApp.User do
       select_page)
   end
 
+  def show_follow_paginate(select_page, ids_list) do
+    SampleApp.Helpers.PaginationHelper.paginate(
+      from(u in SampleApp.User, where: u.id in ^ids_list, order_by: [asc: :name]),
+      select_page)
+  end
+
   # before_insert - password to password_digest
   def set_password_digest(changeset) do
     password = Ecto.Changeset.get_field(changeset, :password)

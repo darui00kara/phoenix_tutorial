@@ -31,10 +31,6 @@ defmodule SampleApp.UserView do
     conn.assigns[:current_user].id == user.id
   end
 
-  def add_first_page_param(action) do
-    "#{action}?select_page=1"
-  end
-
   defp email_crypt_md5(email) do
     :erlang.md5(email)
     |> :erlang.bitstring_to_list

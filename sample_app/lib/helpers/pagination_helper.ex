@@ -1,5 +1,6 @@
 defmodule SampleApp.Helpers.PaginationHelper do
   
+  @first_page "1"
   @page_size "1"
 
   defp is_nil_or_empty?(select_page) do
@@ -18,7 +19,7 @@ defmodule SampleApp.Helpers.PaginationHelper do
     if is_able_to_paginate?(select_page) do
       query |> SampleApp.Repo.paginate(page: select_page, page_size: @page_size)
     else
-      nil
+      query |> SampleApp.Repo.paginate(page: @first_page, page_size: @page_size)
     end
   end
 end

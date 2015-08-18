@@ -4,10 +4,10 @@ defmodule SampleApp.UserController do
   plug SampleApp.Plugs.CheckAuthentication
   plug SampleApp.Plugs.SignedInUser when action in [:index, :show, :edit, :update, :delete, :following, :followers]
   plug :correct_user? when action in [:edit, :update, :delete]
-  plug :scrub_params, "select_page" when action in [:index, :show]
   plug :action
 
-  def index(conn, %{"select_page" => select_page}) do
+  def index(conn, params) do
+    select_page = params["select_page"]
     page = SampleApp.User.paginate(select_page)
 
     if page do
@@ -45,11 +45,13 @@ defmodule SampleApp.UserController do
     end
   end
 
-  def show(conn, %{"id" => id, "select_page" => select_page}) do
-    user = Repo.get(SampleApp.User, id) |> Repo.preload(:relationships) |> Repo.preload(:reverse_relationships)
-    ids_list = list_map_to_value_list(user.followed_users, :followed_id)
+  def show(conn, params) do
+    select_page = params["select_page"]
+    id = params["id"]
 
-    page = SampleApp.Micropost.paginate(user.id, select_page, ids_list)
+    user = Repo.get(SampleApp.User, id) |> Repo.preload(:relationships) |> Repo.preload(:reverse_relationships)
+    page = SampleApp.Micropost.paginate(
+      user.id, select_page, list_map_to_value_list(user.followed_users, :followed_id))
     changeset = SampleApp.Micropost.new_changeset(
       %SampleApp.Micropost{}, %{content: "", user_id: user.id})
 
@@ -107,18 +109,9 @@ defmodule SampleApp.UserController do
     select_page = params["select_page"]
     id = params["id"]
 
-    IO.puts params["unfollow_user_id"] == nil
-
-    if is_nil(select_page) do
-      select_page = "1"
-    end
-
     user = Repo.get(SampleApp.User, id) |> Repo.preload(:relationships) |> Repo.preload(:reverse_relationships)
-    ids_list = list_map_to_value_list(user.followed_users, :followed_id)
-
-    page = SampleApp.Helpers.PaginationHelper.paginate(
-      from(u in SampleApp.User, where: u.id in ^ids_list, order_by: [asc: :name]),
-      select_page)
+    page = SampleApp.User.show_follow_paginate(
+      select_page, list_map_to_value_list(user.followed_users, :followed_id))
 
     if page do
       render(conn, "following.html",
@@ -130,7 +123,7 @@ defmodule SampleApp.UserController do
     else
       conn
       |> put_flash(:error, "Invalid page number!!")
-      |> render("following.html", user: user, followed_users: [])
+      |> render("following.html", user: user, users: [])
     end
   end
 
@@ -138,16 +131,9 @@ defmodule SampleApp.UserController do
     select_page = params["select_page"]
     id = params["id"]
 
-    if is_nil(select_page) do
-      select_page = "1"
-    end
-
     user = Repo.get(SampleApp.User, id) |> Repo.preload(:relationships) |> Repo.preload(:reverse_relationships)
-    ids_list = list_map_to_value_list(user.followers, :follower_id)
-
-    page = SampleApp.Helpers.PaginationHelper.paginate(
-      from(u in SampleApp.User, where: u.id in ^ids_list, order_by: [asc: :name]),
-      select_page)
+    page = SampleApp.User.show_follow_paginate(
+      select_page, list_map_to_value_list(user.followers, :follower_id))
 
     if page do
       render(conn, "followers.html",
@@ -159,7 +145,7 @@ defmodule SampleApp.UserController do
     else
       conn
       |> put_flash(:error, "Invalid page number!!")
-      |> render("followers.html", user: user, followed_users: [])
+      |> render("followers.html", user: user, users: [])
     end
   end
 
@@ -181,6 +167,6 @@ defmodule SampleApp.UserController do
   end
 
   defp current_user?(conn, user) do
-    user == conn.assigns[:current_user]
+    conn.assigns[:current_user] == user
   end
 end
