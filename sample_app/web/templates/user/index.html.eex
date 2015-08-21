@@ -1,7 +1,7 @@
 <h2 class="text-center">All users</h2>
 
 <%= if !is_empty_list?(@users) do %>
-  <%= render "pagination.html",
+  <%= render SampleApp.PaginationView, "pagination.html",
              action: user_path(@conn, :index),
              current_page: @current_page,
              page_list: @page_list,
@@ -32,7 +32,7 @@
     </tbody>
   </table>
 
-  <%= render "pagination.html",
+  <%= render SampleApp.PaginationView, "pagination.html",
              action: user_path(@conn, :index),
              current_page: @current_page,
              page_list: @page_list,

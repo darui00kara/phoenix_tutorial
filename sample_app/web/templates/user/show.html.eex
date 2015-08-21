@@ -14,12 +14,12 @@
 <%= if !current_user?(@conn, @user) do %>
   <%= if !following?(@conn, @user.id) do %>
     <%= form_tag(relationship_path(@conn, :create), method: :post) %>
-      <input type="hidden" name="id" value="<%= @conn.assigns[:current_user].id %>">
+      <input type="hidden" name="id" value="<%= current_user(@conn).id %>">
       <input type="hidden" name="follow_id" value="<%= @user.id %>">
       <%= submit "Follow", class: "btn btn-primary" %>
     </form>
   <% else %>
-    <%= form_tag(relationship_path(@conn, :delete, @conn.assigns[:current_user]), method: :delete) %>
+    <%= form_tag(relationship_path(@conn, :delete, current_user(@conn)), method: :delete) %>
       <input type="hidden" name="unfollow_id" value="<%= @user.id %>">
       <%= submit "Unfollow", class: "btn btn-primary" %>
     </form>
@@ -55,10 +55,10 @@
 <% end %>
 
 <%= if current_user?(@conn, @user) do %>
-<div style="clear: left;">
-  <%= link "Edit", to: user_path(@conn, :edit, @user), class: "btn btn-default btn-xs" %>
-  <%= link "Delete", to: user_path(@conn, :delete, @user), method: :delete, class: "btn btn-danger btn-xs" %>
-</div>
+  <div style="clear: left;">
+    <%= link "Edit", to: user_path(@conn, :edit, @user), class: "btn btn-default btn-xs" %>
+    <%= link "Delete", to: user_path(@conn, :delete, @user), method: :delete, class: "btn btn-danger btn-xs" %>
+  </div>
 <% end %>
 
 <div style="clear: right; margin-left: 250px;">
@@ -75,11 +75,10 @@
       <% end %>
     </h2>
 
-    <%= render "pagination.html",
+    <%= render SampleApp.PaginationView, "pagination.html",
                action: user_path(@conn, :show, @user),
                current_page: @current_page,
                page_list: @page_list,
                total_pages: @total_pages %>
   <% end %>
-
 </div>

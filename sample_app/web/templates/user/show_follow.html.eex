@@ -35,7 +35,7 @@
       <% end %>
     </ul>
 
-    <%= render "pagination.html",
+    <%= render SampleApp.PaginationView, "pagination.html",
              action: @action,
              current_page: @current_page,
              page_list: @page_list,

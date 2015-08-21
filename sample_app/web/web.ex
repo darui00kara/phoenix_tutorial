@@ -51,6 +51,9 @@ defmodule SampleApp.Web do
 
       # Use all HTML functionality (forms, tags, etc)
       use Phoenix.HTML
+
+      # My view helper
+      import SampleApp.Helpers.ViewHelper
     end
   end
 
