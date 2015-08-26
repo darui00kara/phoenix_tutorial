@@ -1,4 +1,4 @@
 <h2>Edit UserProfile</h2>
 
-<%= render "input_form.html", changeset: @changeset,
+<%= render "user_form.html", changeset: @changeset,
                         action: user_path(@conn, :update, @user) %>

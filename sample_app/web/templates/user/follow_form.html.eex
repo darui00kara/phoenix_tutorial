@@ -1,0 +1,16 @@
+<%= unless current_user?(@conn, @user) do %>
+  <div id="follow_form">
+  <%= if following?(@conn, @user.id) do %>
+    <%= form_tag(relationship_path(@conn, :delete, current_user(@conn)), method: :delete) %>
+      <input type="hidden" name="unfollow_id" value="<%= @user.id %>">
+      <%= submit "Unfollow", class: "btn btn-large" %>
+    </form>
+  <% else %>
+    <%= form_tag(relationship_path(@conn, :create), method: :post) %>
+      <input type="hidden" name="id" value="<%= current_user(@conn).id %>">
+      <input type="hidden" name="follow_id" value="<%= @user.id %>">
+      <%= submit "Follow", class: "btn btn-large btn-primary" %>
+    </form>
+  <% end %>
+  </div>
+<% end %>

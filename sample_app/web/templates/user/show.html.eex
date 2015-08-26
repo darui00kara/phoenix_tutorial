@@ -1,84 +1,36 @@
 <h2>User profile</h2>
 
-<div style="float: left; margin-top: 20px; margin-right: 20px;">
-  <img src="<%= get_gravatar_url(@user) %>" class="gravatar">
-  <h2><%= @user.name %></h2>
-  <strong style="float: left; margin-right: 5px">
-    <a href="<%= user_path(@conn, :following, @user) %>">Following (<%= Enum.count(@user.followed_users) %>)</a>
-  </strong>
-  <strong style="float: right;">
-    <a href="<%= user_path(@conn, :followers, @user) %>">Followers (<%= Enum.count(@user.followers) %>)</a>
-  </strong>
-</div>
-
-<%= if !current_user?(@conn, @user) do %>
-  <%= if !following?(@conn, @user.id) do %>
-    <%= form_tag(relationship_path(@conn, :create), method: :post) %>
-      <input type="hidden" name="id" value="<%= current_user(@conn).id %>">
-      <input type="hidden" name="follow_id" value="<%= @user.id %>">
-      <%= submit "Follow", class: "btn btn-primary" %>
-    </form>
-  <% else %>
-    <%= form_tag(relationship_path(@conn, :delete, current_user(@conn)), method: :delete) %>
-      <input type="hidden" name="unfollow_id" value="<%= @user.id %>">
-      <%= submit "Unfollow", class: "btn btn-primary" %>
-    </form>
-  <% end %>
-<% end %>
-
-<%= if current_user?(@conn, @user) do %>
-<div style="clear: right; margin-left: 250px;">
-  <%= form_for @changeset, micropost_path(@conn, :create), fn f -> %>
-    <%= if f.errors != [] do %>
-      <div class="alert alert-danger">
-        <p>Oops, something went wrong! Please check the errors below:</p>
-        <ul>
-          <%= for {attr, message} <- f.errors do %>
-            <li><%= humanize(attr) %> <%= message %></li>
-          <% end %>
-        </ul>
-      </div>
+<div class="row">
+  <aside class="span4">
+    <section>
+      <%= render SampleApp.SharedView, "user_info.html", conn: @conn, user: @user %>
+    </section>
+    <section>
+      <%= render SampleApp.SharedView, "stats.html", conn: @conn, user: @user %>
+    </section>
+    <%= if current_user?(@conn, @user) do %>
+      <section>
+        <%= link "Edit", to: user_path(@conn, :edit, @user), class: "btn btn-default btn-xs" %>
+        <%= link "Delete", to: user_path(@conn, :delete, @user), method: :delete, class: "btn btn-danger btn-xs" %>
+      </section>
     <% end %>
-
-    <%= hidden_input f, :user_id %>
-
-    <div class="form-group">
-      <label>Content</label>
-      <%= textarea f, :content, class: "form-control" %>
-    </div>
-
-    <div class="form-group">
-      <%= submit "Post", class: "btn btn-primary" %>
-    </div>
-  <% end %>
-</div>
-<% end %>
-
-<%= if current_user?(@conn, @user) do %>
-  <div style="clear: left;">
-    <%= link "Edit", to: user_path(@conn, :edit, @user), class: "btn btn-default btn-xs" %>
-    <%= link "Delete", to: user_path(@conn, :delete, @user), method: :delete, class: "btn btn-danger btn-xs" %>
-  </div>
-<% end %>
-
-<div style="clear: right; margin-left: 250px;">
-  <h2>Microposts</h2>
+    <section>
+      <%= render "micropost_form.html", conn: @conn, changeset: @changeset, user: @user %>
+    </section>
+  </aside>
   
-  <%= if !is_empty_list?(@posts) do %>
-    <h2>
-      <%= for post <- @posts do %>
-        <li style="padding: 10px 0; border-top: 1px solid #e8e8e8;">
-          <%= post.content %>
-          <%= post.inserted_at %>
-          <%= link "Delete", to: micropost_path(@conn, :delete, post), method: :delete, class: "btn btn-danger btn-xs" %>
-        </li>
-      <% end %>
-    </h2>
+  <div class="span8">
+    <%= render "follow_form.html", conn: @conn, user: @user %>
 
-    <%= render SampleApp.PaginationView, "pagination.html",
+    <h3>Microposts</h3>
+    <%= unless is_empty_list?(@posts) do %>
+      <%= render SampleApp.SharedView, "microposts.html", conn: @conn, posts: @posts, user: @user %>
+
+      <%= render SampleApp.PaginationView, "pagination.html",
                action: user_path(@conn, :show, @user),
                current_page: @current_page,
                page_list: @page_list,
                total_pages: @total_pages %>
-  <% end %>
+    <% end %>
+  </div>
 </div>

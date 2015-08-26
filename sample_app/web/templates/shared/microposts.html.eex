@@ -1,0 +1,11 @@
+<ol class="microposts">
+  <li>
+  <%= for post <- @posts do %>
+    <span class="content"><%= post.content %></span>
+    <span class="timestamp">
+      Posted <%= post.inserted_at %> ago.
+    </span>
+    <%= link "Delete", to: micropost_path(@conn, :delete, post), method: :delete, class: "btn btn-danger btn-xs" %>
+  <% end %>
+  </li>
+</ol>

@@ -1,4 +1,4 @@
 <h1>Sign up</h1>
 
-<%= render "input_form.html", changeset: @changeset,
+<%= render "user_form.html", changeset: @changeset,
                         action: user_path(@conn, :create) %>

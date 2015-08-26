@@ -1,0 +1,14 @@
+<div class="stats">
+  <a href="<%= user_path(@conn, :following, @user) %>">
+    <strong id="following" class="stat">
+      (<%= Enum.count(@user.followed_users) %>)
+    </strong>
+    following
+  </a>
+  <a href="<%= user_path(@conn, :followers, @user) %>">
+    <strong id="followers" class="stat">
+      (<%= Enum.count(@user.followers) %>)
+    </strong>
+    followers
+  </a>
+</div>

@@ -1,0 +1,21 @@
+<%= if current_user?(@conn, @user) do %>
+  <%= form_for @changeset, micropost_path(@conn, :create), fn f -> %>
+    <%= hidden_input f, :user_id %>
+    <%= if f.errors != [] do %>
+      <div class="alert alert-danger">
+        <p>Oops, something went wrong! Please check the errors below:</p>
+        <ul>
+          <%= for {attr, message} <- f.errors do %>
+            <li><%= humanize(attr) %> <%= message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <div class="form-group">
+      <label>Content</label>
+      <%= textarea f, :content, class: "form-control" %>
+      <%= submit "Post", class: "btn btn-primary" %>
+    </div>
+  <% end %>
+<% end %>

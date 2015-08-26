@@ -1,4 +1,4 @@
-<h2 class="text-center">All users</h2>
+<h1>All users</h1>
 
 <%= if !is_empty_list?(@users) do %>
   <%= render SampleApp.PaginationView, "pagination.html",
@@ -7,30 +7,11 @@
              page_list: @page_list,
              total_pages: @total_pages %>
 
-  <table class="table">
-    <thead>
-      <tr>
-        <th>Profile Image</th>
-        <th>Name</th>
-      </tr>
-    </thead>
-    <tbody>
+  <ul class="users">
     <%= for user <- @users do %>
-      <tr>
-        <td>
-          <div class="gravatar" style="float: left; margin-right: 10px;">
-            <img src="<%= get_gravatar_url(user) %>" class="gravatar">
-          </div>
-        </td>
-        <td>
-          <a href="<%= user_path(@conn, :show, user) %>">
-            <h4><%= user.name %></h4>
-          </a>
-        </td>
-      </tr>
+      <%= render "user.html", conn: @conn, user: user %>
     <% end %>
-    </tbody>
-  </table>
+  </ul>
 
   <%= render SampleApp.PaginationView, "pagination.html",
              action: user_path(@conn, :index),

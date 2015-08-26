@@ -1,0 +1,4 @@
+<li>
+  <img src="<%= get_gravatar_url(@user) %>" class="gravatar">
+  <%= link @user.name, to: user_path(@conn, :show, @user) %>
+</li>
