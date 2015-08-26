@@ -3,11 +3,17 @@
 
 #Dev-Environment
 OS: Windows8.1
+
 Erlang: Eshell V6.4, OTP-Version 17.5
+
 Elixir: v1.0.4
+
 Phoenix Framework: v0.13.1
+
 PostgreSQL: postgres (PostgreSQL) 9.4.4
+
 Safetybox: v0.1.2
+
 Scrivener: v0.11.0
 
 #Wait a minute
