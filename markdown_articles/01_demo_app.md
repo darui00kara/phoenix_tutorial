@@ -2,19 +2,16 @@
 デモアプリを作成する。
 
 #Dev-Environment
+
+```
 OS: Windows8.1
-
 Erlang: Eshell V6.4, OTP-Version 17.5
-
 Elixir: v1.0.4
-
 Phoenix Framework: v0.13.1
-
 PostgreSQL: postgres (PostgreSQL) 9.4.4
-
 Safetybox: v0.1.2
-
 Scrivener: v0.11.0
+```
 
 #Wait a minute
 最初の事始めとして、デモアプリの作成を行います。
@@ -223,6 +220,7 @@ RESTfulなルーティングを作成してくれます。
 
 次は、マイグレーションを実行します。
 マイグレーションに使うコマンドは、また別のものになります。
+
 Phoenix-FrameworkではEctoと呼ばれるライブラリを使っています。
 
 DBとの接続を楽にしてくれる素晴らしいライブラリです。
@@ -313,20 +311,28 @@ The database for DemoApp.Repo has been created.
 各画面における、URLの例は以下のようになります。
 
 - index
+
 例) http://localhost:4000/users
+
 ユーザ一覧を表示するページ。
 
 - new
+
 例) http://localhost:4000/users/new
+
 新規のユーザ登録を行うページ。
 
 - show
+
 例) http://localhost:4000/users/1 
+
 ユーザ個別のプロファイルを表示するページ。
 (URL中の数値1はid属性)
 
 - edit
+
 例) http://localhost:4000/users/1/edit
+
 ユーザ情報の更新を行うページ。
 
 Description:
@@ -491,5 +497,7 @@ Railsを使ったことがある方々は、
 
 #Bibliography
 [Ruby on Rails Tutorial](http://railstutorial.jp/chapters/a-demo-app?version=4.0#top)
+
 [Phoenix Framework - Guides - Mix Tasks](http://www.phoenixframework.org/v0.13.1/docs/mix-tasks)
+
 [Phoenix Framework - Guides - Ecto Models](http://www.phoenixframework.org/v0.13.1/docs/ecto-models)
