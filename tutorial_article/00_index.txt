@@ -13,22 +13,15 @@ Ruby on Rails TutorialをPhoenix-Frameworkで実施する。
 
 #Dev-Environment
 OS: Windows8.1
-
 Erlang: Eshell V6.4, OTP-Version 17.5
-
 Elixir: v1.0.4
-
 Phoenix Framework: v0.13.1
-
 PostgreSQL: postgres (PostgreSQL) 9.4.4
-
 Safetybox: v0.1.2
-
 Scrivener: v0.11.0
 
 ####Caution:
 リリースバージョンが変わればアップグレードする予定です。
-
 予めご了承下さい。m(\_ \_)m
 
 #Wait a minute
@@ -37,9 +30,7 @@ Ruby on Rails Tutorial作者様、日本語訳を実施して下さった訳者様方に感謝を捧げます
 Ruby on Rails TutorialをPhoenix-Frameworkでやっていく連載ものです。
 
 内容は、Phoenix-Frameworkの初心者、入門者レベルです。
-
 基本、アプリケーション作成部分を主眼に置き実施していきます。
-
 なので、Elixirの記法であったり、TDD / BDD部分は端折ります。
 
 いきなりですが、Rails Tutorialの1章の部分は飛ばします。
@@ -47,11 +38,9 @@ Gitは使いますが、herokuは使いません。
 
 ソースコード一式はGithubへアップしています。
 また、各章毎にプロジェクト名でブランチが存在しています。
-
 Github: [darui00kara/phoenix_tutorial (master)](https://github.com/darui00kara/phoenix_tutorial)
 
 ロードマップは以下のリンク先です。
-
 参考: [Roadmap](http://daruiapprentice.blogspot.jp/2015/08/rails-tutorial-for-phoenix-roadmap.html)
 
 #Index
@@ -71,7 +60,6 @@ Rails Tutorial for Phoenix
 
 ##環境構築(一章相当部分)
 Phoenix-Frameworkの簡単な説明。
-
 参考: [Phoenix-Frameworkの簡単なまとめ](http://daruiapprentice.blogspot.jp/2015/06/elixirphoenixphoenix.html)
 
 環境構築について。
@@ -99,7 +87,6 @@ Elixir
 ##Elixirの記法や機能(四章相当部分)
 Elixirの記法や機能について知りたい方へ。
 先駆者の方がいらっしゃいます。なので、そちらを参照すべし！
-
 参考： [Qiita - Elixir 基礎文法最速マスター](http://qiita.com/niku/items/729ece76d78057b58271)
 
 [@niku](https://twitter.com/niku_name)氏、参考にさせて頂きました。
