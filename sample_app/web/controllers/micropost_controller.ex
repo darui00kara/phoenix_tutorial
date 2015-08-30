@@ -16,18 +16,15 @@ defmodule SampleApp.MicropostController do
       conn = put_flash(conn, :error, "Post failed!!")
     end
 
-    action = "#{user_path(conn, :show, conn.assigns[:current_user].id)}?select_page=1"
-    redirect(conn, to: action)
+    redirect(conn, to: user_path(conn, :show, conn.assigns[:current_user]))
   end
 
   def delete(conn, %{"id" => id}) do
     micropost = Repo.get(SampleApp.Micropost, id)
     Repo.delete(micropost)
 
-    action = "#{user_path(conn, :show, conn.assigns[:current_user].id)}?select_page=1"
-
     conn
     |> put_flash(:info, "Micropost deleted successfully.")
-    |> redirect(to: action)
+    |> redirect(to: user_path(conn, :show, conn.assigns[:current_user]))
   end
 end

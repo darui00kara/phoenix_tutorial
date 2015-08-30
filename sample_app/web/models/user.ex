@@ -50,6 +50,10 @@ defmodule SampleApp.User do
     |> validate_length(:password, max: 100)
   end
 
+  def new do
+    %SampleApp.User{} |> cast(:empty, @required_fields, @optional_fields)
+  end
+
   def paginate(select_page) do
     SampleApp.Helpers.PaginationHelper.paginate(
       from(u in SampleApp.User, order_by: [asc: :name]),
@@ -65,21 +69,11 @@ defmodule SampleApp.User do
   # before_insert - password to password_digest
   def set_password_digest(changeset) do
     password = Ecto.Changeset.get_field(changeset, :password)
-    change(changeset, %{password_digest: encrypt(password)})
+    change(changeset, %{password_digest: SampleApp.Encryption.encrypt(password)})
   end
 
   # find user from email
   def find_user_from_email(email) do
     SampleApp.Repo.get_by(SampleApp.User, email: email)
-  end
-
-  # password decrypt
-  def decrypt(password) do
-    Safetybox.decrypt(password)
-  end
-
-  # password encrypt
-  defp encrypt(password) do
-    Safetybox.encrypt(password, :default)
   end
 end

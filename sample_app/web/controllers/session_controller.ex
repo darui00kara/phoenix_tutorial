@@ -1,47 +1,33 @@
 defmodule SampleApp.SessionController do
   use SampleApp.Web, :controller
 
+  import SampleApp.Signin
+
   plug SampleApp.Plugs.CheckAuthentication
   plug :action
 
   def new(conn, _params) do
-    render conn, "login_form.html"
+    render conn, "signin_form.html"
   end
 
-  def create(conn, %{"login_params" => %{"email" => email, "password" => password}}) do
-    case login(email, password) do
+  def create(conn, %{"signin_params" => %{"email" => email, "password" => password}}) do
+    case sign_in(email, password) do
       {:ok, user} ->
         conn
-        |> put_flash(:info, "User login is success!!")
+        |> put_flash(:info, "User sign-in is success!!")
         |> put_session(:user_id, user.id)
         |> redirect(to: static_pages_path(conn, :home))
       :error ->
         conn
-        |> put_flash(:error, "User login is failed!! email or password is incorrect.")
+        |> put_flash(:error, "User sign-in is failed!! email or password is incorrect.")
         |> redirect(to: session_path(conn, :new))
     end
   end
 
   def delete(conn, _params) do
     conn
-    |> put_flash(:info, "Logout now! See you again!!")
+    |> put_flash(:info, "Sign-out now! See you again!!")
     |> delete_session(:user_id)
     |> redirect(to: static_pages_path(conn, :home))
-  end
-
-  defp login(email, password) do
-    user = SampleApp.User.find_user_from_email(email)
-    case authentication(user, password) do
-      true -> {:ok, user}
-         _ -> :error
-    end
-  end
-
-  defp authentication(user, password) do
-    case user do
-      nil -> false
-        _ ->
-          password == Safetybox.decrypt(user.password_digest)
-    end
   end
 end

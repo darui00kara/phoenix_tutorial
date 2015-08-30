@@ -24,8 +24,7 @@ defmodule SampleApp.UserController do
   end
 
   def new(conn, _params) do
-    changeset = SampleApp.User.changeset(%SampleApp.User{})
-    render(conn, "new.html", changeset: changeset)
+    render(conn, "new.html", changeset: SampleApp.User.new)
   end
 
   def create(conn, %{"user" => user_params}) do
@@ -72,7 +71,7 @@ defmodule SampleApp.UserController do
 
   def edit(conn, %{"id" => id}) do
     user = Repo.get(SampleApp.User, id)
-    user = Map.put(user, :password, SampleApp.User.decrypt(user.password_digest))
+    user = Map.put(user, :password, SampleApp.Encryption.decrypt(user.password_digest))
     changeset = SampleApp.User.changeset(user)
 
     render(conn, "edit.html", user: user, changeset: changeset)
