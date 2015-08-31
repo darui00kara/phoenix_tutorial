@@ -29,14 +29,13 @@ defmodule SampleApp.Mixfile do
   #
   # Type `mix help deps` for examples and options
   defp deps do
-    [{:phoenix, "~> 0.13.1"},
-     {:phoenix_ecto, "~> 0.4"},
-     {:postgrex, "~> 0.9.1", [optional: true, hex: :postgrex]},
-     {:phoenix_html, "~> 1.0"},
-     {:phoenix_live_reload, "~> 0.4", only: :dev},
+    [{:phoenix, "~> 1.0.0"},
+     {:phoenix_ecto, "~> 1.1"},
+     {:postgrex, ">= 0.0.0"},
+     {:phoenix_html, "~> 2.1"},
+     {:phoenix_live_reload, "~> 1.0", only: :dev},
      {:cowboy, "~> 1.0"},
      {:safetybox, "~> 0.1"},
-     {:secure_random, "~> 0.1"},
-     {:scrivener, "~> 0.11.0"}]
+     {:scrivener, "~> 1.0.0"}]
   end
 end

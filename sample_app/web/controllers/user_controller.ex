@@ -4,7 +4,6 @@ defmodule SampleApp.UserController do
   plug SampleApp.Plugs.CheckAuthentication
   plug SampleApp.Plugs.SignedInUser when action in [:index, :show, :edit, :update, :delete, :following, :followers]
   plug :correct_user? when action in [:edit, :update, :delete]
-  plug :action
 
   def index(conn, params) do
     select_page = params["select_page"]

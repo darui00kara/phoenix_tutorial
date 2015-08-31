@@ -4,7 +4,6 @@ defmodule SampleApp.MicropostController do
   plug SampleApp.Plugs.CheckAuthentication
   plug SampleApp.Plugs.SignedInUser
   plug :scrub_params, "micropost" when action in [:create]
-  plug :action
 
   def create(conn, %{"micropost" => micropost_params}) do
     changeset = SampleApp.Micropost.changeset(%SampleApp.Micropost{}, micropost_params)

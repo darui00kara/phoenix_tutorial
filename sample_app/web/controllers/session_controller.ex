@@ -4,7 +4,6 @@ defmodule SampleApp.SessionController do
   import SampleApp.Signin
 
   plug SampleApp.Plugs.CheckAuthentication
-  plug :action
 
   def new(conn, _params) do
     render conn, "signin_form.html"

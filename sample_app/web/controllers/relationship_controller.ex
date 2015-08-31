@@ -3,7 +3,6 @@ defmodule SampleApp.RelationshipController do
 
   plug SampleApp.Plugs.CheckAuthentication
   plug SampleApp.Plugs.SignedInUser
-  plug :action
 
   def create(conn, params) do
     if SampleApp.Relationship.follow!(params["id"], params["follow_id"]) do
@@ -12,7 +11,7 @@ defmodule SampleApp.RelationshipController do
       conn = put_flash(conn, :error, "Follow failed!!")
     end
 
-    redirect(conn, to: static_pages_path(conn, :home))
+    redirect(conn, to: user_path(conn, :show, params["follow_id"]))
   end
 
   def delete(conn, params) do
@@ -20,6 +19,6 @@ defmodule SampleApp.RelationshipController do
 
     conn
     |> put_flash(:info, "Unfollow successfully!!")
-    |> redirect(to: static_pages_path(conn, :home))
+    |> redirect(to: user_path(conn, :show, params["unfollow_id"]))
   end
 end

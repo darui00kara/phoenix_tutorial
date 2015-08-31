@@ -9,12 +9,10 @@ use Mix.Config
 config :sample_app, SampleApp.Endpoint,
   url: [host: "localhost"],
   root: Path.dirname(__DIR__),
-  secret_key_base: "nazfbgGxsejcTZaEWb8MxJMlxj/iqFkGG/VKKyyVPCku3aRCXJ9whS5pqZPXs2GS",
-  debug_errors: false,
+  secret_key_base: "EP4lyUvKrgGDXxDXEYw6bWmr/lgp4/wxjO9Lkp2ZO3+uQlBPtZku2QAByv0zNUTS",
+  render_errors: [accepts: ~w(html json)],
   pubsub: [name: SampleApp.PubSub,
-           adapter: Phoenix.PubSub.PG2],
-  session: [store: :cookie,
-            key: "_your_app_key"]
+           adapter: Phoenix.PubSub.PG2]
 
 # Configures Elixir's Logger
 config :logger, :console,
