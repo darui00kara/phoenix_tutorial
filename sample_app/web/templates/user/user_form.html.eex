@@ -17,15 +17,15 @@
 
   <div class="form-group">
     <label>Email</label>
-    <%= text_input f, :email, class: "form-control" %>
+    <%= email_input f, :email, class: "form-control" %>
   </div>
 
   <div class="form-group">
     <label>Password</label>
-    <%= text_input f, :password, class: "form-control" %>
+    <%= password_input f, :password, class: "form-control" %>
   </div>
 
   <div class="form-group">
-    <%= submit "Submit", class: "btn btn-primary" %>
+    <%= submit "Sign-up!", class: "btn btn-primary" %>
   </div>
 <% end %>

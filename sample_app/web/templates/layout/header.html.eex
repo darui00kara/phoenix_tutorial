@@ -2,20 +2,30 @@
   <div class="navbar-inner">
     <div class="container">
       <a class="logo" href="<%= page_path(@conn, :index) %>"></a>
-      <ul class="nav nav-pills pull-right">
-        <li><%= link "Home", to: static_pages_path(@conn, :home) %></li>
-        <li><%= link "Help", to: static_pages_path(@conn, :help) %></li>
-        <li><%= link "About", to: static_pages_path(@conn, :about) %></li>
-        <li><%= link "Contact", to: static_pages_path(@conn, :contact) %></li>
-      <%= if current_user(@conn) do %>
-        <li><%= link "Profile", to: user_path(@conn, :show, current_user(@conn)) %><li>
-        <li><%= link "All Users", to: user_path(@conn, :index) %><li>
-        <li><%= link "Sign-out", to: session_path(@conn, :delete) %></li>
-      <% else %>
-        <li><%= link "Sign-in", to: session_path(@conn, :new) %></li>
-      <% end %>
-        <li><a href="http://www.phoenixframework.org/docs">Phoenix Get Started</a></li>
+      <nav>
+        <ul class="nav nav-pills pull-right">
+          <li><%= link "Home", to: static_pages_path(@conn, :home) %></li>
+        <%= if current_user(@conn) do %>
+          <li class="dropdown">
+            <!-- Dropdown Menu -->
+            <a href="#" class="dropdown-toggle" id="account" data-toggle="dropdown">
+              User Menu
+              <span class="caret"></span>
+            </a>
+            <!-- Dropdown List -->
+            <ul class="dropdown-menu" aria-labelledby="account">
+              <li><%= link "All Users", to: user_path(@conn, :index) %><li>
+              <li><%= link "Profile", to: user_path(@conn, :show, current_user(@conn)) %><li>
+              <li><%= link "Help", to: static_pages_path(@conn, :help) %></li>
+              <li class="divider"></li>
+              <li><%= link "Sign-out", to: session_path(@conn, :delete) %></li>
+            </ul>
+          </li>
+        <% else %>
+          <li><%= link "Sign-in", to: session_path(@conn, :new) %></li>
+        <% end %>
       </ul>
+      </nav>
     </div> <!-- container -->
   </div> <!-- navbar-inner -->
 </header>

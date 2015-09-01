@@ -1,7 +1,7 @@
 <h2>User profile</h2>
 
 <div class="row">
-  <aside class="span4">
+  <aside class="col-md-4">
     <section>
       <%= render SampleApp.SharedView, "user_info.html", conn: @conn, user: @user %>
     </section>
@@ -19,11 +19,11 @@
     </section>
   </aside>
   
-  <div class="span8">
+  <div class="col-md-8">
     <%= render "follow_form.html", conn: @conn, user: @user %>
 
-    <h3>Microposts</h3>
     <%= unless is_empty_list?(@posts) do %>
+      <h3>Microposts</h3>
       <%= render SampleApp.SharedView, "microposts.html", conn: @conn, posts: @posts, user: @user %>
 
       <%= render SampleApp.PaginationView, "pagination.html",

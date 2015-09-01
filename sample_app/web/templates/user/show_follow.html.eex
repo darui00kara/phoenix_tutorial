@@ -1,5 +1,5 @@
 <div class="row">
-  <aside class="span4">
+  <aside class="col-md-4">
     <section>
       <%= render SampleApp.SharedView, "user_info.html", conn: @conn, user: @user %>
     </section>
@@ -17,7 +17,7 @@
     </section>
   </aside>
   
-  <div class="span8">
+  <div class="col-md-8">
     <h3>Users</h3>
     <%= if @users do %>
       <ul class="users">
