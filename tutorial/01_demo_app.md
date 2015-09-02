@@ -16,7 +16,7 @@ Phoenix-Frameworkを体験してみる程度の心構えで結構です。
 Phoenix-Frameworkを使ってみることに集中しましょう！！  
 
 #Index
-Let's play a phoenix!  
+Demo Application  
 |> Preparation  
 |> Data model  
 |> Create users resource  
@@ -52,20 +52,12 @@ demo_appが作成されていますね。
 
 ```cmd
 >cd demo_app
+>mix ecto.create
 >mix phoenix.server
 ```
 
 ####Description:
 Ctrl+Cでサーバを終了できます。  
-
-####Caution:
-バージョンv0.15.0以降では、以下のような形になります。  
-
-```cmd
->cd demo_app
->mix ecto.create
->mix phoenix.server
-```
 
 以下のアドレスへアクセスして下さい。  
 

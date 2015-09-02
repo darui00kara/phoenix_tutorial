@@ -11,17 +11,18 @@
 ####以上、ご迷惑をお掛けします。m(\_ \_)m
 
 #Goal
-Ruby on Rails TutorialをPhoenix-Frameworkで実施する。  
+Ruby on Rails TutorialのサンプルアプリケーションをPhoenix-Frameworkで作成する。  
 
 #Dev-Environment
 OS: Windows8.1  
 Erlang: Eshell V6.4, OTP-Version 17.5  
 Elixir: v1.0.5  
+Node.js： v0.12.4  
 Phoenix Framework: v1.0.0  
-PostgreSQL: postgres (PostgreSQL) 9.4.4  
 Safetybox: v0.1.2  
 Scrivener: v1.0.0  
 Bootstrap: v3.3.5  
+PostgreSQL: postgres (PostgreSQL) 9.4.4  
 
 ####Caution:
 リリースバージョンが変わればアップグレードする予定です。  
@@ -55,7 +56,7 @@ Github: [darui00kara/phoenix_tutorial (master)](https://github.com/darui00kara/p
 #Index
 Rails Tutorial for Phoenix  
 |> 環境構築(一章相当部分)  
-|> [Let’s play a phoenix!(二章相当部分)](http://daruiapprentice.blogspot.jp/2015/06/rails-tutorial-for-phoenix_20.html)  
+|> [Demo Application(二章相当部分)](http://daruiapprentice.blogspot.jp/2015/06/rails-tutorial-for-phoenix_20.html)  
 |> [基本的なところ(三章相当部分)](http://daruiapprentice.blogspot.jp/2015/06/rails-tutorial-for-phoenix_21.html)  
 |> Elixirの記法や機能(四章相当部分)  
 |> [レイアウトを作ろう～(五章相当部分)](http://daruiapprentice.blogspot.jp/2015/06/rails-tutorial-for-phoenix_26.html)  
