@@ -56,8 +56,8 @@ Github: [darui00kara/phoenix_tutorial (master)](https://github.com/darui00kara/p
 #Index
 Rails Tutorial for Phoenix  
 |> 環境構築(一章相当部分)  
-|> [Demo Application(二章相当部分)](http://daruiapprentice.blogspot.jp/2015/06/rails-tutorial-for-phoenix_20.html)  
-|> [基本的なところ(三章相当部分)](http://daruiapprentice.blogspot.jp/2015/06/rails-tutorial-for-phoenix_21.html)  
+|> [Demo application(二章相当部分)](http://daruiapprentice.blogspot.jp/2015/06/rails-tutorial-for-phoenix_20.html)  
+|> [Static pages(三章相当部分)](http://daruiapprentice.blogspot.jp/2015/06/rails-tutorial-for-phoenix_21.html)  
 |> Elixirの記法や機能(四章相当部分)  
 |> [レイアウトを作ろう～(五章相当部分)](http://daruiapprentice.blogspot.jp/2015/06/rails-tutorial-for-phoenix_26.html)  
 |> [ユーザモデルの作成(六章相当部分)](http://daruiapprentice.blogspot.jp/2015/07/elixirphoenix.html)  

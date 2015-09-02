@@ -288,7 +288,7 @@ end
 
 ####ファイル: web/templates/static_pages/home.html.eex
 
-```elixir
+```html
 <div class="jumbotron">
   <h2>Welcome to Static Pages <%= @message %>!</h2>
 </div>
@@ -296,7 +296,7 @@ end
 
 ####ファイル: web/templates/static_pages/help.html.eex
 
-```elixir
+```html
 <div class="jumbotron">
   <h2>Welcome to Static Pages <%= @message %>!</h2>
 </div>
@@ -304,7 +304,7 @@ end
 
 ####ファイル: web/templates/static_pages/about.html.eex
 
-```elixir
+```html
 <div class="jumbotron">
   <h2>Welcome to Static Pages <%= @message %>!</h2>
 </div>
@@ -312,7 +312,7 @@ end
 
 以下のように記述すると、コントローラ側から送った値を参照できます。  
 
-```
+```html
 <%= @~ %>
 ```
 
