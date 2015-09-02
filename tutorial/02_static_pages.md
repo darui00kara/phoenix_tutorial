@@ -206,7 +206,7 @@ Ruby on Railsにおけるerbのようなものと思っておけば大丈夫です。
 ##Add about page
 Aboutページを追加します。  
 
-ファイル: web/router.ex
+####ファイル: web/router.ex
 ルーティングを追加します。  
 
 ```elixir
@@ -218,7 +218,7 @@ scope "/", SampleApp do
 end
 ```
 
-ファイル: web/controllers/static_pages_controller.ex
+####ファイル: web/controllers/static_pages_controller.ex
 アクション用の関数を追加します。  
 
 ```elixir
@@ -227,7 +227,7 @@ def about(conn, _params) do
 end
 ```
 
-ファイル: web/templates/static_pages/about.html.eex
+####ファイル: web/templates/static_pages/about.html.eex
 
 ```html
 <div class="jumbotron">
