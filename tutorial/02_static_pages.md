@@ -8,7 +8,7 @@
 さて、それではサンプルアプリケーションの第一歩を踏み出しましょう！  
 
 #Index
-Rails Tutorial for Phoenix  
+Static pages  
 |> Preparation  
 |> Add route  
 |> Create controller  

@@ -1,5 +1,5 @@
 #Goal
-デモアプリを作成する。  
+デモアプリを作成します。  
 
 #Wait a minute
 最初の事始めとして、デモアプリの作成を行います。  
@@ -24,7 +24,7 @@ Demo Application
 |> Associate with has_many  
 
 ##Preparation
-早速、不死鳥と遊ぼうと思いますが・・・少し水を差します。  
+早く不死鳥と遊びたいとは思いますが・・・少し水を差します。  
 
 Phoenixを動かす前にプロジェクトが必要ですね。  
 プロジェクトの作成を行います。  
@@ -117,9 +117,6 @@ mix phoenix.new         # Create a new Phoenix v0.17.0 application
 mix phoenix.routes      # Prints all routes
 mix phoenix.server      # Starts applications and their servers
 ```
-
-####Caution:
-phoenix.newのバージョンに差異がありますが見逃して下さい！！  
 
 詳しい説明は、Phoenix-Frameworkを使っていく過程で説明するとして、  
 何はともあれ使ってみましょう。  
@@ -220,54 +217,13 @@ mix ecto.rollback       # Rollback migrations from a repo
 以下のコマンドを使ってマイグレーションを実行します。  
 
 ```cmd
-mix ecto.migrate        # Run migrations up on a repo
-```
-
-実際にやっていきましょう。  
-
-```cmd
->mix ecto.migrate
-** (exit) exited in: GenServer.call(#PID<0.168.0>, {:query, "SELECT count(1) FROM pg_class c\n  JOIN pg_namespace n ON n.oid = c.relnamespace\n WHERE c.relkind IN ('r','v','m')\n
-     AND c.relname = 'schema_migrations'\n       AND n.nspname = ANY (current_schemas(false))\n", []}, :infinity)
-    ** (EXIT) %Postgrex.Error{message: nil, postgres: %{code: :invalid_catalog_name, file: "src\\backend\\utils\\init\\postinit.c", line: "794", message: <<131, 102, 129, 91, 131,
-94, 131, 120, 129, 91, 131, 88, 34, 100, 101, 109, 111, 95, 97, 112, 112, 95, 100, 101, 118, 34, 130, 205, 145, 182, 141, 221, 130, 181, 130, 220, 130, 185, 130, 241>>, pg_code: "3
-D000", routine: "InitPostgres", severity: "FATAL"}}
-    (elixir) lib/gen_server.ex:356: GenServer.call/3
-    (postgrex) lib/postgrex/connection.ex:87: Postgrex.Connection.query/4
-    (ecto) lib/ecto/adapters/postgres/connection.ex:37: Ecto.Adapters.Postgres.Connection.query/4
-    (stdlib) timer.erl:194: :timer.tc/3
-    (ecto) lib/ecto/adapters/sql.ex:191: anonymous fn/6 in Ecto.Adapters.SQL.pool_query!/5
-    (ecto) lib/ecto/adapters/sql.ex:615: Ecto.Adapters.SQL.pool_transaction/4
-    (ecto) lib/ecto/adapters/sql.ex:189: Ecto.Adapters.SQL.pool_query!/5
-    (ecto) lib/ecto/adapters/postgres.ex:59: Ecto.Adapters.Postgres.ddl_exists?/3
-```
-
-わぁお！何かエラーが出てしまいましたね。  
-
-マイグレーションするには、そのマイグレーション先がないといけませんね。  
-まだ、作っていませんでした。(失敬、失敬///)  
-
-作成するには以下のコマンドを使います。  
-
-```cmd
->mix ecto.create
-The database for DemoApp.Repo has been created.
-```
-
-####Caution:
-最新バージョン(v0.17.0)を使っている方は、  
-最初に作成しているので上記の操作は不要です。  
-
-再度、マイグレーションを実行します。  
-
-```cmd
 >mix ecto.migrate
 [info] == Running DemoApp.Repo.Migrations.CreateUser.change/0 forward
 [info] create table users
 [info] == Migrated in 0.2s
 ```
 
-今度は無事マイグレーションできました。  
+無事マイグレーションできました。  
 
 ここまで、実施できたら一度サーバを起動して確認してみましょう。  
 
@@ -306,7 +262,7 @@ The database for DemoApp.Repo has been created.
 例) http://localhost:4000/users/1/edit  
 ユーザ情報の更新を行うページ。  
 
-Description:
+####Description:
 create、update、deleteはメソッドが異なるので割愛します。  
 
 ##Create microposts resource
