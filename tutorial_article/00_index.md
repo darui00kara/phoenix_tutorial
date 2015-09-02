@@ -1,3 +1,5 @@
+#バージョン: v0.4
+
 #Caution!!
 ####～ 記事を改修中 ～
 
@@ -9,16 +11,17 @@
 ####以上、ご迷惑をお掛けします。m(\_ \_)m
 
 #Goal
-Ruby on Rails TutorialをPhoenix-Frameworkで実施する。
+Ruby on Rails TutorialをPhoenix-Frameworkで実施する。  
 
 #Dev-Environment
 OS: Windows8.1  
 Erlang: Eshell V6.4, OTP-Version 17.5  
-Elixir: v1.0.4  
-Phoenix Framework: v0.13.1  
+Elixir: v1.0.5  
+Phoenix Framework: v1.0.0  
 PostgreSQL: postgres (PostgreSQL) 9.4.4  
 Safetybox: v0.1.2  
-Scrivener: v0.11.0  
+Scrivener: v1.0.0  
+Bootstrap: v3.3.5  
 
 ####Caution:
 リリースバージョンが変わればアップグレードする予定です。  
@@ -42,6 +45,12 @@ Github: [darui00kara/phoenix_tutorial (master)](https://github.com/darui00kara/p
 
 ロードマップは以下のリンク先です。  
 参考: [Roadmap](http://daruiapprentice.blogspot.jp/2015/08/rails-tutorial-for-phoenix-roadmap.html)  
+
+フレームワークのバージョンをv1.0.0へアップグレードしました。
+参考: [Upgrade version of Phoenix-Framework](http://daruiapprentice.blogspot.jp/2015/08/rails-tutorial-for-phoenix-upgrade-version.html)  
+
+デザインを修正しました。
+参考: [Modification of the design](http://daruiapprentice.blogspot.jp/2015/09/rails-tutorial-for-phoenix-modification-of-the-design.html)  
 
 #Index
 Rails Tutorial for Phoenix  
@@ -79,10 +88,10 @@ Elixir
 |> [Upgrade phoenix.new of mix archive](http://daruiapprentice.blogspot.jp/2015/07/upgrade-phoenix-new-of-mix-archive.html)  
 
 ##[デモアプリを作ろう！！(二章相当部分)](http://daruiapprentice.blogspot.jp/2015/06/rails-tutorial-for-phoenix_20.html)
-特になし
+特になし  
 
 ##[基本的なところ(三章相当部分)](http://daruiapprentice.blogspot.jp/2015/06/rails-tutorial-for-phoenix_21.html)
-特になし
+特になし  
 
 ##Elixirの記法や機能(四章相当部分)
 Elixirの記法や機能について知りたい方へ。  
@@ -112,7 +121,7 @@ Elixirの記法や機能について知りたい方へ。
 |> [Ectoで1対多の関係性を検証する](http://daruiapprentice.blogspot.jp/2015/07/phoenixecto1.html)  
 
 ##[ユーザ登録(七章相当部分)](http://daruiapprentice.blogspot.jp/2015/07/rails-tutorial-for-phoenix.html)
-この章ではユーザを登録し表示できるようにする。
+この章ではユーザを登録し表示できるようにする。  
 
 詳細・・・(モデル以外の自動生成は利用しないで実施する)  
 ユーザを表示、gravatar画像、ユーザを登録、  
@@ -124,7 +133,7 @@ Elixirの記法や機能について知りたい方へ。
 |> [User registration](http://daruiapprentice.blogspot.jp/2015/07/elixirphoenixuser-registration.html)  
 
 ##[サインイン/サインアウト(八章相当部分)](http://daruiapprentice.blogspot.jp/2015/07/sign-in-sign-out.html)
-この章ではサインインとサインアウトの機能を実装する。
+この章ではサインインとサインアウトの機能を実装する。  
 
 詳細・・・  
 サインイン、サインアウト、セッション、認証、ページ制限。  
@@ -160,7 +169,7 @@ Micropostモデルの作成から始まり、マイクロポストの表示、作成、削除を実装する。
 |> [Operation of Micropost](http://daruiapprentice.blogspot.jp/2015/08/operation-of-micropost.html)  
 
 ##[ユーザーをフォローする(第十一章相当部分)](http://daruiapprentice.blogspot.jp/2015/08/following-users.html)
-この章では、ユーザのフォロー機能を実装する。
+この章では、ユーザのフォロー機能を実装する。  
 
 各機能  
 |> [many to many (Part 1)](http://daruiapprentice.blogspot.jp/2015/08/many-to-many.html)  
@@ -177,17 +186,18 @@ Refactoring
 |> [Pagination refactoring](http://daruiapprentice.blogspot.jp/2015/08/pagination-refactoring.html)  
 |> [View refactoring](http://daruiapprentice.blogspot.jp/2015/08/phoenix-tutorial-view-refactoring.html)  
 |> [Templates refactoring](http://daruiapprentice.blogspot.jp/2015/08/rails-tutorial-for-phoenix-templates-refactoring.html)  
+|> [Last refactoring](http://daruiapprentice.blogspot.jp/2015/08/rails-tutorial-for-phoenix-last-refactoring.html)  
 
 #Speaking to oneself 
-何故、Ruby on Rails Tutorialをやるのか？
+何故、Ruby on Rails Tutorialをやるのか？  
 
-理由は三つ・・・
+理由は三つ・・・  
 
 - Web開発における知識が習得できる
 - Phoenix-Frameworkのチュートリアルがない (公式のGuideくらい？)
 - ElixirはRubyライク、Phoenix-FrameworkはRailsライクなので変換が比較的容易
 
-上記の三点に合致し、Rails Tutorialはちょうど良い教材になるため。
+上記の三点に合致し、Rails Tutorialはちょうど良い教材になるため。  
 
 #Bibliography
-[Ruby on Rails Tutorial](http://railstutorial.jp/)
+[Ruby on Rails Tutorial](http://railstutorial.jp/)  
