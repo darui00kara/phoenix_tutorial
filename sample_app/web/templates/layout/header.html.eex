@@ -29,7 +29,3 @@
     </div> <!-- container -->
   </div> <!-- navbar-inner -->
 </header>
-<h2>
-  <p class="alert alert-info" role="alert" style="text-align: center;"><%= get_flash(@conn, :info) %></p>
-  <p class="alert alert-danger" role="alert" style="text-align: center;"><%= get_flash(@conn, :error) %></p>
-</h2>

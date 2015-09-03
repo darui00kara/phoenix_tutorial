@@ -19,6 +19,11 @@
     <%= render "header.html", conn: @conn %>
     
     <div class="container">
+      <h2>
+        <p class="alert alert-info" role="alert" style="text-align: center;"><%= get_flash(@conn, :info) %></p>
+        <p class="alert alert-danger" role="alert" style="text-align: center;"><%= get_flash(@conn, :error) %></p>
+      </h2>
+      
       <%= @inner %>
 
       <%= render "footer.html", conn: @conn %>
