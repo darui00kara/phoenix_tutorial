@@ -1,0 +1,4 @@
+<div class="debug_dump">
+  <p>Controller: <%= get_controller_name @conn %></p>
+  <p>Action: <%= get_action_name @conn %></p>
+</div>

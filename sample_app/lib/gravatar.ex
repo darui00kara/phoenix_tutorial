@@ -1,4 +1,4 @@
-defmodule SampleApp.Gravator do
+defmodule SampleApp.Gravatar do
 
   def get_gravatar_url(email, size) do
     gravatar_id = email_to_gravator_id(email)

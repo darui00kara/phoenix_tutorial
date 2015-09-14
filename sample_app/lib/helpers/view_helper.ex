@@ -9,6 +9,6 @@ defmodule SampleApp.Helpers.ViewHelper do
   end
 
   def get_gravatar_url(%SampleApp.User{email: email}) do
-    SampleApp.Gravator.get_gravatar_url(email, 50)
+    SampleApp.Gravatar.get_gravatar_url(email, 50)
   end
 end

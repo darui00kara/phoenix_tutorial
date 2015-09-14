@@ -60,7 +60,7 @@ Rails Tutorial for Phoenix
 |> [Static pages(三章相当部分)](http://daruiapprentice.blogspot.jp/2015/06/rails-tutorial-for-phoenix_21.html)  
 |> Elixirの記法や機能(四章相当部分)  
 |> [Filling in layout(五章相当部分)](http://daruiapprentice.blogspot.jp/2015/06/rails-tutorial-for-phoenix_26.html)  
-|> [ユーザモデルの作成(六章相当部分)](http://daruiapprentice.blogspot.jp/2015/07/elixirphoenix.html)  
+|> [Modeling users(六章相当部分)](http://daruiapprentice.blogspot.jp/2015/07/elixirphoenix.html)  
 |> [ユーザ登録(七章相当部分)](http://daruiapprentice.blogspot.jp/2015/07/rails-tutorial-for-phoenix.html)  
 |> [サインイン/サインアウト(八章相当部分)](http://daruiapprentice.blogspot.jp/2015/07/sign-in-sign-out.html)  
 |> [ユーザーの更新・表示・削除(九章相当部分)](http://daruiapprentice.blogspot.jp/2015/07/updating-showing-and-deleting-users.html)  
