@@ -13,6 +13,7 @@ Sign up
 |> Sidebar  
 |> User sign-up  
 |> Extra  
+|> Before the end  
 
 ##Preparation
 作業前にブランチを切ります。  
@@ -565,6 +566,16 @@ end
   font-size: 15px;
   font-weight: 200;
 }
+```
+
+##Before the end
+ソースコードをマージします。  
+
+```cmd
+>git add .
+>git commit -am "Finish sign_up."
+>git checkout master
+>git merge sign_up
 ```
 
 #Speaking to oneself

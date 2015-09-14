@@ -15,7 +15,8 @@ Filling in layout
 |> Layout template  
 |> Link and PathHelper  
 |> Rendering chain  
-|> You want to add a contact page
+|> You want to add a contact page  
+|> Before the end  
 
 ##Preparation
 毎度の準備です。  
@@ -587,6 +588,16 @@ home.html.eexテンプレートを少しだけ変更します。
 def home(conn, _params) do
   render conn, "home.html"
 end
+```
+
+##Before the end
+ソースコードをマージします。  
+
+```cmd
+>git add .
+>git commit -am "Finish filling_in_layout."
+>git checkout master
+>git merge filling_in_layout
 ```
 
 #Speaking to oneself

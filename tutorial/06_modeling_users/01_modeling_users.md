@@ -13,6 +13,7 @@ Modeling users
 |> Encrypted password
 |> Additional verification  
 |> User authentication  
+|> Before the end  
 
 ##Preparation  
 ブランチを切ります。  
@@ -407,6 +408,16 @@ def changeset(model, params \\ :empty) do
   |> validate_length(:password, min: 8)
   |> validate_length(:password, max: 100)
 end
+```
+
+##Before the end
+ソースコードをマージします。  
+
+```cmd
+>git add .
+>git commit -am "Finish modeling_users."
+>git checkout master
+>git merge modeling_users
 ```
 
 #Speaking to oneself
