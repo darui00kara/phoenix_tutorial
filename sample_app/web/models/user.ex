@@ -42,8 +42,6 @@ defmodule SampleApp.User do
     |> validate_presence(:email)
     |> validate_presence(:password)
     |> validate_format(:email, ~r/\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i)
-    #|> validate_unique(:name, on: SampleApp.Repo)
-    #|> validate_unique(:email, on: SampleApp.Repo)
     |> unique_constraint(:name)
     |> unique_constraint(:email)
     |> validate_length(:name, min: 1)

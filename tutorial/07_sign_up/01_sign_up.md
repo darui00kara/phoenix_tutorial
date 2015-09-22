@@ -27,7 +27,6 @@ Sign up
 最初にユーザを表示する部分を作成します。  
 ユーザが表示できないと、サインアップしたユーザの確認ができませんね。  
 
-###Add routing
 ルーティングを追加します。  
 
 ####ファイル: web/router.ex
@@ -79,7 +78,6 @@ new、index、edit、show、crate、update、deleteになります。
 
 この中のアクションであれば、オプションで指定できます。  
 
-###Add show action
 Userコントローラへshowアクションの関数を追加します。  
 
 ####ファイル: web/controllers/user_controller.ex
@@ -94,7 +92,6 @@ end
 
 ユーザidからユーザを取得してテンプレートへ渡しているだけですね。  
 
-###Create show template
 showテンプレート作成します。  
 
 ####ファイル: web/templates/user/show.html.eex
@@ -107,7 +104,6 @@ showテンプレート作成します。
 </div>
 ```
 
-###Add user from iex
 ページができているのか確認したいですが、  
 今のままだと、ユーザが一人もいません。  
 
@@ -160,7 +156,6 @@ Gravatarを扱うためのモジュールを作成します。
 
 Gravatar: [http://gravatar.com/](http://gravatar.com/)
 
-###Create gravatar module
 Gravatarは、md5で暗号化されたemailをidとして取得します。  
 また、md5では大文字小文字が区別されるので、暗号化される前にemailの小文字化(downcase)が必要です。  
 
@@ -314,7 +309,6 @@ DBへ作成しているusersテーブルには現在、以下のカラムがあ�
 この内、password_digestはpasswordが暗号化された内容が入るだけですから、  
 入力項目は上記の上3つ(name、email、password)となります。  
 
-###User registration form
 サインアップするためのフォームを作成します。  
 
 ####ファイル: web/templates/user/new.html.eex
@@ -373,7 +367,6 @@ defmodule SampleApp.User do
 end
 ```
 
-###Registration action
 入力画面は作成できました。  
 入力した値を処理するためのアクションはまだ実装していません。  
 
@@ -398,7 +391,6 @@ end
 そう、検証の結果に問題がないか確認をしていませんね。  
 実際このままでは、不正な値があっても止まることなくDBへデータが挿入されてしまいます。  
 
-###Error handling
 検証に問題がある時の処理を追加しましょう。  
 
 ####ファイル: web/controllers/user_controller.ex

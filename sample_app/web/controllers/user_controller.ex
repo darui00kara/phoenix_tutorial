@@ -30,14 +30,15 @@ defmodule SampleApp.UserController do
     changeset = SampleApp.User.changeset(%SampleApp.User{}, user_params)
 
     if changeset.valid? do
-      Repo.insert(changeset)
-
-      user = SampleApp.User.find_user_from_email(user_params["email"])
-
-      conn
-      |> put_flash(:info, "User registration successfully!!")
-      |> put_session(:user_id, user.id)
-      |> redirect(to: static_pages_path(conn, :home))
+      case Repo.insert(changeset) do
+        {:ok, user} ->
+          conn
+          |> put_flash(:info, "User registration successfully!!")
+          |> put_session(:user_id, user.id)
+          |> redirect(to: static_pages_path(conn, :home))
+        {:error, changeset} ->
+          render(conn, "new.html", changeset: changeset)
+      end
     else
       render(conn, "new.html", changeset: changeset)
     end
