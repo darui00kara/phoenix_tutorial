@@ -2,14 +2,14 @@
 ユーザの投稿機能を実装する。  
 
 #Wait a minute
-ようやっと、Userモデル以外のモデルが出てきます。
+ようやっと、Userモデル以外のモデルが出てきます。  
 ユーザが投稿できるマイクロポストを実装します。  
 Userモデルとの関連付け(1対多)もこの章で実施します。  
 
-ここまでお付き合い頂いた皆さんなら、本章は特に難しいところはありません。
+ここまでお付き合い頂いた皆さんなら、本章は特に難しいところはありません。  
 
-寧ろ拍子抜けしてしまうかもしれません。
-皆さんが成長した証拠です！！
+寧ろ拍子抜けしてしまうかもしれません。  
+皆さんが成長した証拠です！！  
 
 #Index
 User microposts  
@@ -44,9 +44,9 @@ User microposts
   * 自動生成カラム(カラム名:型): id:integer, inserted_at:timestamp, updated_at:timestamp
   * インデックス(対象カラム名): user_id, 、inserted_at
 
-データモデルを把握したところで、早速実装に取り掛かりましょう。
+データモデルを把握したところで、早速実装に取り掛かりましょう。  
 
-Userモデルを生成した時のようにモデルファイルとマイグレーションファイルを生成します。
+Userモデルを生成した時のようにモデルファイルとマイグレーションファイルを生成します。  
 
 #### Example:
 
@@ -57,7 +57,7 @@ Userモデルを生成した時のようにモデルファイルとマイグレ�
 * creating test/models/micropost_test.exs
 ```
 
-マイグレーションファイルを編集します。
+マイグレーションファイルを編集します。  
 
 #### ファイル: priv/repo/migrations/[timestamp]_create_micropost.exs
 
@@ -79,7 +79,7 @@ defmodule SampleApp.Repo.Migrations.CreateMicropost do
 end
 ```
 
-マイグレーションを実行します。
+マイグレーションを実行します。  
 
 #### Example:
 
@@ -95,18 +95,18 @@ end
 14:20:27.523 [info]  == Migrated in 0.3s
 ```
 
-これで、Micropostモデルの作成ができました。
+これで、Micropostモデルの作成ができました。  
 
 ## User has many Micropost, Also Micropost belongs to User
-ユーザは複数のマイクロポストを持ち、マイクロポストはユーザに属する関連付けを行いましょう。
-作成したMicropostモデルと、既に作成しているUserモデルを紐づけます。
+ユーザは複数のマイクロポストを持ち、マイクロポストはユーザに属する関連付けを行いましょう。  
+作成したMicropostモデルと、既に作成しているUserモデルを紐づけます。  
 
 Ectoにある以下の機能を利用します。
 
 - Ecto.Schema.has_many/3
 - Ecto.Schema.belongs_to/3
 
-1対多の関連をUserモデルに定義します。
+1対多の関連をUserモデルに定義します。  
 
 #### ファイル: web/models/user.ex
 
@@ -129,9 +129,9 @@ defmodule SampleApp.User do
 end
 ```
 
-ユーザのスキーマでhas_manyを使い、マイクロポストを指定しています。
+ユーザのスキーマでhas_manyを使い、マイクロポストを指定しています。  
 
-1対1の関連をMicropostモデルに定義します。
+1対1の関連をMicropostモデルに定義します。  
 
 #### ファイル: web/models/micropost.ex
 
@@ -151,10 +151,10 @@ defmodule SampleApp.Micropost do
 end
 ```
 
-マイクロポストのスキーマでbelongs_toを使い、ユーザを指定しています。
-ちょっと注意です。user_idは、belongs_toの外部キーに指定しています。
+マイクロポストのスキーマでbelongs_toを使い、ユーザを指定しています。  
+ちょっと注意です。user_idは、belongs_toの外部キーに指定しています。  
 
-せっかくなので、関連の機能をiexから試してみましょう。
+せっかくなので、関連の機能をiexから試してみましょう。  
 
 #### Example:
 
@@ -168,12 +168,12 @@ iex> SampleApp.User |> SampleApp.Repo.get(1) |> SampleApp.Repo.preload [:micropo
 ```
 
 ## Interlocking Delete
-連動した削除を行いましょう！
+連動した削除を行いましょう！  
 
-ユーザが削除されたら、そのユーザのマイクロポストも削除します。
-そうでなくては、ユーザの登録が消えているのに、マイクロポストだけが残ってしまいますね。
+ユーザが削除されたら、そのユーザのマイクロポストも削除します。  
+そうでなくては、ユーザの登録が消えているのに、マイクロポストだけが残ってしまいますね。  
 
-Userコントローラのdeleteアクションに処理を追加します。
+Userコントローラのdeleteアクションに処理を追加します。  
 
 #### ファイル: web/controllers/user_controller.ex
 
@@ -189,10 +189,10 @@ def delete(conn, %{"id" => id}) do
 end
 ```
 
-ユーザを削除する前に、マイクロポストを全て削除しています。
+ユーザを削除する前に、マイクロポストを全て削除しています。  
 
 ## Validation
-マイクロポストに対して、Validationを追加します。
+マイクロポストに対して、Validationを追加します。  
 
 #### ファイル: web/models/micropost.ex
 
@@ -205,12 +205,12 @@ def changeset(model, params \\ :empty) do
 end
 ```
 
-某SNSのように、投稿文字数を140文字以内に制限をしています。
+某SNSのように、投稿文字数を140文字以内に制限をしています。  
 
 ## Microposts List
-ユーザのプロファイルページに手を入れて、マイクロポストの一覧を表示できるようにしましょう。
+ユーザのプロファイルページに手を入れて、マイクロポストの一覧を表示できるようにしましょう。  
 
-Userコントローラのshowアクションで、マイクロポストを取得します。
+Userコントローラのshowアクションで、マイクロポストを取得します。  
 
 #### ファイル: web/controllers/user_controller.ex
 
@@ -222,7 +222,7 @@ def show(conn, %{"id" => id}) do
 end
 ```
 
-ユーザのプロファイルページにマイクロポストの表示を追加します。
+ユーザのプロファイルページにマイクロポストの表示を追加します。  
 
 #### ファイル: web/templates/user/show.html.eex
 
@@ -248,7 +248,7 @@ end
 </div>
 ```
 
-マイクロポストのCSSを追加します。
+マイクロポストのCSSを追加します。  
 
 #### ファイル: priv/static/css/custom.css
 
@@ -284,9 +284,9 @@ aside textarea {
 ```
 
 ## Microposts pagination
-マイクロポストの表示でページネーションを行うようにします。
+マイクロポストの表示でページネーションを行うようにします。  
 
-Micropostモデルにページネーション関数を追加します。
+Micropostモデルにページネーション関数を追加します。  
 
 #### ファイル: web/models/micropost.ex
 
@@ -298,7 +298,7 @@ def paginate(user_id, select_page) do
 end
 ```
 
-Userコントローラのshowアクションを修正します。
+Userコントローラのshowアクションを修正します。  
 
 #### ファイル: web/controllers/user_controller.ex
 
@@ -324,6 +324,8 @@ def show(conn, params) do
   end
 end
 ```
+
+showテンプレートに「ページネーションの表示を追加します。  
 
 #### ファイル: web/templates/user/show.html.eex
 
@@ -356,8 +358,8 @@ end
 ```
 
 ## Micropost controller
-マイクロポストを投稿 / 削除を実装するため、create、deleteアクションが必要です。
-マイクロポストの動作を実装するため、コントローラを作成します。
+マイクロポストを投稿 / 削除を実装するため、create、deleteアクションが必要です。  
+マイクロポストの動作を実装するため、コントローラを作成します。  
 
 ルーティングを追加します。
 
@@ -372,8 +374,8 @@ scope "/", SampleApp do
 end
 ```
 
-onlyオプションを付けて、resourcesを記述すると
-指定したアクションのみルーティングに追加されます。
+onlyオプションを付けて、resourcesを記述すると  
+指定したアクションのみルーティングに追加されます。  
 
 #### ファイル: web/controllers/micropost_controller.ex
 
@@ -394,8 +396,8 @@ end
 ```
 
 ## Sign-in required
-アクションの内容を実装する前に...プロファイルページを見れるのはサインインしたユーザのみです。
-なので、サインイン状態を判定するプラグを追加します。
+アクションの内容を実装する前に...プロファイルページを見れるのはサインインしたユーザのみです。  
+なので、サインイン状態を判定するプラグを追加します。  
 
 #### ファイル: web/controllers/micropost_controller.ex
 
@@ -417,10 +419,10 @@ end
 ```
 
 ## Micropost Posts
-マイクロポストの投稿を実装します。
-Micropostコントローラのcreateアクションを実装します。
+マイクロポストの投稿を実装します。  
+Micropostコントローラのcreateアクションを実装します。  
 
-Micropostモデルへ新しいChangeset返す関数を追加します。
+Micropostモデルへ新しいChangeset返す関数を追加します。  
 
 #### ファイル: web/models/micropost.ex
 
@@ -431,8 +433,8 @@ def new(user_id) do
 end
 ```
 
-Userコントローラのshowアクションで、
-ユーザに入力させるためのchangesetを送ります。
+Userコントローラのshowアクションで、  
+ユーザに入力させるためのchangesetを送ります。  
 
 #### ファイル: web/controllers/user_controller.ex
 
@@ -461,8 +463,8 @@ def show(conn, params) do
 end
 ```
 
-マイクロポストの入力フォームを作成します。
-showテンプレートにそのまま記述すると読み辛くなるので、別テンプレートに分けています。
+マイクロポストの入力フォームを作成します。  
+showテンプレートにそのまま記述すると読み辛くなるので、別テンプレートに分けています。  
 
 #### ファイル: web/templates/user/micropost_form.html.eex
 
@@ -490,10 +492,10 @@ showテンプレートにそのまま記述すると読み辛くなるので、�
 <% end %>
 ```
 
-user_idは入力する項目ではないため、hiddenで送っています。
-hiddenがない場合、値が失われてしまうので注意して下さい。
+user_idは入力する項目ではないため、hiddenで送っています。  
+hiddenがない場合、値が失われてしまうので注意して下さい。  
 
-showテンプレートから上記のテンプレートを呼び出します。
+showテンプレートから上記のテンプレートを呼び出します。  
 
 #### ファイル: web/templates/user/show.html.eex
 
@@ -517,7 +519,7 @@ showテンプレートから上記のテンプレートを呼び出します。
 </div>
 ```
 
-Micropostコントローラのcreateアクションを実装します。
+Micropostコントローラのcreateアクションを実装します。  
 
 #### ファイル: web/controllers/micropost_controller.ex
 
@@ -546,12 +548,12 @@ defmodule SampleApp.MicropostController do
 end
 ```
 
-画面から投稿ができるようになりました。
+画面から投稿ができるようになりました。  
 
 ## Delete Micropost
-マイクロポストの削除機能を実装します。
+マイクロポストの削除機能を実装します。  
 
-Micropostコントローラのdeleteアクションを実装します。
+Micropostコントローラのdeleteアクションを実装します。  
 
 #### ファイル: web/controllers/micropost_controller.ex
 
@@ -566,7 +568,7 @@ def delete(conn, %{"id" => id}) do
 end
 ```
 
-テンプレートに投稿の削除リンクを追加します。
+テンプレートに投稿の削除リンクを追加します。  
 
 #### ファイル: web/templates/user/show.html.eex
 
@@ -612,10 +614,16 @@ end
 ```
 
 #Speaking to oneself
-これで第10章は終わりです。
+これで第10章は終わりです。  
 
-次は最後になる第11章です。
-最後の山場になるので、頑張りましょう。
+次は最後になる第11章です。  
+最後の山場になるので、頑張りましょう。  
 
 #Bibliography
-[Ruby on Rails Tutorial](http://railstutorial.jp/)  
+[Ruby on Rails Tutorial](http://railstutorial.jp/chapters/user-microposts?version=4.0#top)  
+[hexdocs - v0.14.3 Ecto.Migration](http://hexdocs.pm/ecto/0.14.3/Ecto.Migration.html)  
+[hexdocs - v0.14.3 Ecto.Migration.index/3](http://hexdocs.pm/ecto/0.14.3/Ecto.Migration.html#index/3)  
+[hexdocs - v0.14.3 Ecto.Repo](http://hexdocs.pm/ecto/0.14.3/Ecto.Repo.html)  
+[hexdocs - v0.14.3 Ecto.Query](http://hexdocs.pm/ecto/Ecto.Query.html)  
+[CREATE INDEX - インデックスの同時作成](https://www.postgresql.jp/document/9.3/html/sql-createindex.html#SQL-CREATEINDEX-CONCURRENTLY)  
+[Phoenix - Guide Ecto Models](http://www.phoenixframework.org/v0.13.1/docs/ecto-models)  
