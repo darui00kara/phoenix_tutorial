@@ -82,15 +82,16 @@ defmodule SampleApp.UserController do
     changeset = SampleApp.User.changeset(user, user_params)
 
     if changeset.valid? do
-      Repo.update(changeset)
-
-      conn
-      |> put_flash(:info, "User updated successfully!!")
-      |> redirect(to: user_path(conn, :show, id))
+      case Repo.update(changeset) do
+        {:ok, user} ->
+          conn
+          |> put_flash(:info, "User updated successfully!!")
+          |> redirect(to: user_path(conn, :show, id))
+        {:error, changeset} ->
+          render(conn, "edit.html", user: id, changeset: changeset)
+      end
     else
-      conn
-      |> put_flash(:error, "UserProfile updated is failed!! name or email or password is incorrect.")
-      |> redirect(to: user_path(conn, :edit, id))
+      render(conn, "edit.html", user: id, changeset: changeset)
     end
   end
 

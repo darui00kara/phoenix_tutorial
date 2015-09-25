@@ -26,6 +26,6 @@
   </div>
 
   <div class="form-group">
-    <%= submit "Sign-up!", class: "btn btn-primary" %>
+    <%= submit "Submit!", class: "btn btn-primary" %>
   </div>
 <% end %>

@@ -323,16 +323,16 @@ DBへ作成しているusersテーブルには現在、以下のカラムがあ�
 
   <div class="form-group">
     <label>Email</label>
-    <%= text_input f, :email, class: "form-control" %>
+    <%= email_input f, :email, class: "form-control" %>
   </div>
 
   <div class="form-group">
     <label>Password</label>
-    <%= text_input f, :password, class: "form-control" %>
+    <%= password_input f, :password, class: "form-control" %>
   </div>
 
   <div class="form-group">
-    <%= submit "Submit", class: "btn btn-primary" %>
+    <%= submit "Sign-up!", class: "btn btn-primary" %>
   </div>
 <% end %>
 ```
@@ -386,7 +386,7 @@ def create(conn, %{"user" => user_params}) do
 end
 ```
 
-さて、上記のプログラム問題があります。何が足りないのでしょうか？  
+さて、上記のプログラムには問題があります。何が足りないのでしょうか？  
 
 そう、検証の結果に問題がないか確認をしていませんね。  
 実際このままでは、不正な値があっても止まることなくDBへデータが挿入されてしまいます。  
@@ -440,16 +440,16 @@ end
 
   <div class="form-group">
     <label>Email</label>
-    <%= text_input f, :email, class: "form-control" %>
+    <%= email_input f, :email, class: "form-control" %>
   </div>
 
   <div class="form-group">
     <label>Password</label>
-    <%= text_input f, :password, class: "form-control" %>
+    <%= password_input f, :password, class: "form-control" %>
   </div>
 
   <div class="form-group">
-    <%= submit "Submit", class: "btn btn-primary" %>
+    <%= submit "Sign-up!", class: "btn btn-primary" %>
   </div>
 <% end %>
 ```

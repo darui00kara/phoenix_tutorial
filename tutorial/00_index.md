@@ -63,7 +63,7 @@ Rails Tutorial for Phoenix
 |> [Modeling users(六章相当部分)](http://daruiapprentice.blogspot.jp/2015/07/elixirphoenix.html)  
 |> [Sign up(七章相当部分)](http://daruiapprentice.blogspot.jp/2015/07/rails-tutorial-for-phoenix.html)  
 |> [Sign-in and Sign-out(八章相当部分)](http://daruiapprentice.blogspot.jp/2015/07/sign-in-sign-out.html)  
-|> [ユーザーの更新・表示・削除(九章相当部分)](http://daruiapprentice.blogspot.jp/2015/07/updating-showing-and-deleting-users.html)  
+|> [Updating users(九章相当部分)](http://daruiapprentice.blogspot.jp/2015/07/updating-showing-and-deleting-users.html)  
 |> [ユーザーのマイクロポスト(第十章相当部分)](http://daruiapprentice.blogspot.jp/2015/08/user-of-micropost.html)  
 |> [ユーザーをフォローする(第十一章相当部分)](http://daruiapprentice.blogspot.jp/2015/08/following-users.html)  
 |> Refactoring  

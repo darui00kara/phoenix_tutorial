@@ -454,7 +454,7 @@ end
 <% end %>
 ```
 
-また、少し動的な表示を行えるように、bootstrapのドロップダウンを使っていきます。  
+また、少し動的な表示を行えるように、bootstrapのドロップダウンを使います。  
 それでは実装しましょう！  
 
 #### ファイル: web/templates/layout/header.html.eex

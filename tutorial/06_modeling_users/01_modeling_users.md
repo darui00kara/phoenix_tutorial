@@ -12,7 +12,6 @@ Modeling users
 |> Add password colum  
 |> Encrypted password
 |> Additional verification  
-|> User authentication  
 |> Before the end  
 
 ##Preparation  

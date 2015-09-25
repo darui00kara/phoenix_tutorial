@@ -15,7 +15,7 @@ Static pages
 |> Create view & template  
 |> Let's run!  
 |> Add page  
-|> Little dynamic
+|> Little dynamic  
 |> Before the end  
 
 ##Preparation
