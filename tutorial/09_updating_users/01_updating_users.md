@@ -23,7 +23,7 @@ Updating users
 |> All users link  
 |> Pagination  
 |> Pagination view and template  
-|> Is able to paginate?
+|> Is able to paginate?  
 |> Delete user  
 |> Delete link  
 |> Before the end  

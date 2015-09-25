@@ -25,8 +25,9 @@ defmodule SampleApp.Micropost do
     |> validate_length(:content, max: 140)
   end
 
-  def new_changeset(model, params \\ :empty) do
-    model |> cast(params, @required_fields, @optional_fields)
+  def new(user_id) do
+    %SampleApp.Micropost{}
+    |> cast(%{content: "", user_id: user_id}, @required_fields, @optional_fields)
   end
 
   def paginate(user_id, select_page, following_ids) do

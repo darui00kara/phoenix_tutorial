@@ -55,6 +55,7 @@ end
   * テーブル名: users
   * 生成カラム(カラム名:型): name:string, email:string
   * 自動生成カラム(カラム名:型): id:integer, inserted_at:timestamp, updated_at:timestamp
+  * インデックス(対象カラム名): name, email
 
 データモデルを把握したところで、モデルの作成に移りたいと思います。  
 今回、利用しているコマンドは、"mix phoenix.gen.html"ではありません。  
@@ -102,6 +103,28 @@ defmodule SampleApp.Repo.Migrations.CreateUser do
     create index(:users, [:email], unique: true, concurrently: true)
   end
 end
+```
+
+インデックスの引数は、上から順番に...テーブル名、カラム名(複数可)、オプションと言った順番になっています。
+カラムの複数指定はマイクロポストの実装時に行います。
+
+uniqueオプションは、
+値に対して一意性を強制するものです。
+
+concurrentlyオプションは、
+対象テーブルに対する同時挿入、更新、削除を防止するようなロックを獲得せずにインデックスを作成するオプションです。
+
+@disable_ddl_transaction属性は、
+トランザクションの外部で実行するように強制できる属性です。
+
+この属性がないと以下のようなエラーが発生します。
+PostgreSQLのログより抜粋しています。
+
+#### Example:
+
+```log
+2015-07-29 14:06:19 JST ERROR:  CREATE INDEX CONCURRENTLYはトランザクションブロックの内側では実行できません
+2015-07-29 14:06:19 JST ステートメント:  CREATE INDEX CONCURRENTLY "microposts_user_id_inserted_at_index" ON "microposts" ("user_id", "inserted_at")
 ```
 
 それでは、マイグレーションを実行します。  

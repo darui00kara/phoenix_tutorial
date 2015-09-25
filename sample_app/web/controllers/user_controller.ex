@@ -51,8 +51,7 @@ defmodule SampleApp.UserController do
     user = Repo.get(SampleApp.User, id) |> Repo.preload(:relationships) |> Repo.preload(:reverse_relationships)
     page = SampleApp.Micropost.paginate(
       user.id, select_page, list_map_to_value_list(user.followed_users, :followed_id))
-    changeset = SampleApp.Micropost.new_changeset(
-      %SampleApp.Micropost{}, %{content: "", user_id: user.id})
+    changeset = SampleApp.Micropost.new(user.id)
 
     if page do
       render(conn, "show.html",
@@ -97,7 +96,7 @@ defmodule SampleApp.UserController do
 
   def delete(conn, %{"id" => id}) do
     user = Repo.get(SampleApp.User, id)
-    from(m in SampleApp.Micropost, where: m.user_id == ^user.id) |> Repo.delete_all
+    Repo.delete_all(from(m in SampleApp.Micropost, where: m.user_id == ^user.id))
     Repo.delete(user)
 
     conn
