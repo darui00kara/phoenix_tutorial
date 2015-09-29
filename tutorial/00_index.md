@@ -41,43 +41,18 @@ Github: [darui00kara/phoenix_tutorial (master)](https://github.com/darui00kara/p
 
 #Index
 Rails Tutorial for Phoenix  
-|> [What is Phoenix-Framework?](https://github.com/darui00kara/phoenix_tutorial/blob/master/tutorial/02_demo_app/01_demo_app.md)  
+|> What is Phoenix-Framework?  
 |> 環境構築(一章相当部分)  
-|> [Demo application(二章相当部分)](https://github.com/darui00kara/phoenix_tutorial/blob/master/tutorial/03_static_pages/01_static_pages.md)  
-|> [Static pages(三章相当部分)](https://github.com/darui00kara/phoenix_tutorial/blob/master/tutorial/05_filling_in_layout/01_filling_in_layout.md)  
+|> [Demo application(二章相当部分)](https://github.com/darui00kara/phoenix_tutorial/blob/master/tutorial/02_demo_app.md)  
+|> [Static pages(三章相当部分)](https://github.com/darui00kara/phoenix_tutorial/blob/master/tutorial/03_static_pages.md)  
 |> Elixirの記法や機能(四章相当部分)  
-|> [Filling in layout(五章相当部分)](http://daruiapprentice.blogspot.jp/2015/06/rails-tutorial-for-phoenix_26.html)  
-|> [Modeling users(六章相当部分)](http://daruiapprentice.blogspot.jp/2015/07/elixirphoenix.html)  
-|> [Sign up(七章相当部分)](http://daruiapprentice.blogspot.jp/2015/07/rails-tutorial-for-phoenix.html)  
-|> [Sign-in and Sign-out(八章相当部分)](http://daruiapprentice.blogspot.jp/2015/07/sign-in-sign-out.html)  
-|> [Updating users(九章相当部分)](http://daruiapprentice.blogspot.jp/2015/07/updating-showing-and-deleting-users.html)  
-|> [User microposts(第十章相当部分)](http://daruiapprentice.blogspot.jp/2015/08/user-of-micropost.html)  
-|> [Following users(第十一章相当部分)](http://daruiapprentice.blogspot.jp/2015/08/following-users.html)  
-
-
-## [What is Phoenix-Framework?](http://daruiapprentice.blogspot.jp/2015/06/elixirphoenixphoenix.html)
-
-## 環境構築(一章相当部分)  
-
-## [Demo application(二章相当部分)](http://daruiapprentice.blogspot.jp/2015/06/rails-tutorial-for-phoenix_20.html)  
-
-## [Static pages(三章相当部分)](http://daruiapprentice.blogspot.jp/2015/06/rails-tutorial-for-phoenix_21.html)  
-
-## Elixirの記法や機能(四章相当部分)  
-
-## [Filling in layout(五章相当部分)](http://daruiapprentice.blogspot.jp/2015/06/rails-tutorial-for-phoenix_26.html)  
-
-## [Modeling users(六章相当部分)](http://daruiapprentice.blogspot.jp/2015/07/elixirphoenix.html)  
-
-## [Sign up(七章相当部分)](http://daruiapprentice.blogspot.jp/2015/07/rails-tutorial-for-phoenix.html)  
-
-## [Sign-in and Sign-out(八章相当部分)](http://daruiapprentice.blogspot.jp/2015/07/sign-in-sign-out.html)  
-
-## [Updating users(九章相当部分)](http://daruiapprentice.blogspot.jp/2015/07/updating-showing-and-deleting-users.html)  
-
-## [User microposts(第十章相当部分)](http://daruiapprentice.blogspot.jp/2015/08/user-of-micropost.html)  
-
-## [Following users(第十一章相当部分)](http://daruiapprentice.blogspot.jp/2015/08/following-users.html)  
+|> [Filling in layout(五章相当部分)](https://github.com/darui00kara/phoenix_tutorial/blob/master/tutorial/04_filling_in_layout.md)  
+|> [Modeling users(六章相当部分)](https://github.com/darui00kara/phoenix_tutorial/blob/master/tutorial/05_modeling_users.md)  
+|> [Sign up(七章相当部分)](https://github.com/darui00kara/phoenix_tutorial/blob/master/tutorial/06_sign_up.md)  
+|> [Sign-in and Sign-out(八章相当部分)](https://github.com/darui00kara/phoenix_tutorial/blob/master/tutorial/07_sign_in_out.md)  
+|> [Updating users(九章相当部分)](https://github.com/darui00kara/phoenix_tutorial/blob/master/tutorial/08_updating_users.md)  
+|> [User microposts(第十章相当部分)](https://github.com/darui00kara/phoenix_tutorial/blob/master/tutorial/09_user_microposts.md)  
+|> [Following users(第十一章相当部分)](https://github.com/darui00kara/phoenix_tutorial/blob/master/tutorial/10_following_users.md)  
 
 #Bibliography
 [Ruby on Rails Tutorial](http://railstutorial.jp/)  
