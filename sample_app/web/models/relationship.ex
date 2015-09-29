@@ -33,9 +33,6 @@ defmodule SampleApp.Relationship do
 
     if changeset.valid? do
       SampleApp.Repo.insert!(changeset)
-      true
-    else
-      false
     end
   end
 

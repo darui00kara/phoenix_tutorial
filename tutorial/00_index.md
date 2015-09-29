@@ -1,14 +1,4 @@
-#バージョン: v0.4
-
-#Caution!!
-####～ 記事を改修中 ～
-
-####変更内容
-####・記事の分割(理由：情報が多い、記事長い)
-####・Markdownでの表示へ修正(理由：見辛い)
-####・説明の追加/修正(理由：分かり辛い)
-
-####以上、ご迷惑をお掛けします。m(\_ \_)m
+#バージョン: v0.5
 
 #Goal
 Ruby on Rails TutorialのサンプルアプリケーションをPhoenix-Frameworkで作成する。  
@@ -65,7 +55,7 @@ Rails Tutorial for Phoenix
 |> [Sign-in and Sign-out(八章相当部分)](http://daruiapprentice.blogspot.jp/2015/07/sign-in-sign-out.html)  
 |> [Updating users(九章相当部分)](http://daruiapprentice.blogspot.jp/2015/07/updating-showing-and-deleting-users.html)  
 |> [User microposts(第十章相当部分)](http://daruiapprentice.blogspot.jp/2015/08/user-of-micropost.html)  
-|> [ユーザーをフォローする(第十一章相当部分)](http://daruiapprentice.blogspot.jp/2015/08/following-users.html)  
+|> [Following users(第十一章相当部分)](http://daruiapprentice.blogspot.jp/2015/08/following-users.html)  
 |> Refactoring  
 
 ##環境構築(一章相当部分)

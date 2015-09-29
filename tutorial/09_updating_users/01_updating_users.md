@@ -1,14 +1,14 @@
-#Goal
+# Goal
 ユーザーの更新、一覧表示、削除を実装する。  
 
-#Wait a minute
+# Wait a minute
 本章では、ユーザデータの更新、一覧の表示とページネーション、削除を実装していきます。  
 
 この中で難易度が高いのはページネーションです。  
 理解するのに苦労をするかもしれません。  
 ですが、Webページで使われる一般的な機能なので今後の役に立つと思います。  
 
-#Index
+# Index
 Updating users  
 |> Preparation  
 |> Edit action  
@@ -874,11 +874,11 @@ end
 >git merge updating_users
 ```
 
-#Speaking to oneself
+# Speaking to oneself
 少々、量が多かったと思いますが、  
 更新、一覧、削除はWebページにおける一般的な処理ですね。  
 
-#Bibliography
+# Bibliography
 [Ruby on Rails Tutorial](http://railstutorial.jp/chapters/updating-showing-and-deleting-users?version=4.0#top)  
 [Ruby on Rails Tutorial - 第九章](http://railstutorial.jp/chapters/updating-showing-and-deleting-users?version=4.0#sec-authorization)  
 [ITmedia - 認証と認可の違い](http://www.itmedia.co.jp/enterprise/articles/0804/22/news044.html)  

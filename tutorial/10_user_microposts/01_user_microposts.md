@@ -1,7 +1,7 @@
-#Goal
+# Goal
 ユーザの投稿機能を実装する。  
 
-#Wait a minute
+# Wait a minute
 ようやっと、Userモデル以外のモデルが出てきます。  
 ユーザが投稿できるマイクロポストを実装します。  
 Userモデルとの関連付け(1対多)もこの章で実施します。  
@@ -11,7 +11,7 @@ Userモデルとの関連付け(1対多)もこの章で実施します。
 寧ろ拍子抜けしてしまうかもしれません。  
 皆さんが成長した証拠です！！  
 
-#Index
+# Index
 User microposts  
 |> Preparation  
 |> Micropost data model  
@@ -24,6 +24,7 @@ User microposts
 |> Sign-in required  
 |> Micropost Posts  
 |> Delete Micropost  
+|> Shared view  
 |> Before the end  
 
 ## Preparation
@@ -40,7 +41,7 @@ User microposts
 - マイクロポストのデータモデル
   * モデル名: Micropost
   * テーブル名: microposts
-  * 生成カラム(カラム名:型): content:string), user_id:integer)
+  * 生成カラム(カラム名:型): content:string, user_id:integer
   * 自動生成カラム(カラム名:型): id:integer, inserted_at:timestamp, updated_at:timestamp
   * インデックス(対象カラム名): user_id, 、inserted_at
 
@@ -52,9 +53,6 @@ Userモデルを生成した時のようにモデルファイルとマイグレ�
 
 ```cmd
 >mix phoenix.gen.model Micropost microposts content:string user_id:integer
-* creating priv/repo/migrations/[timestamp]_create_micropost.exs
-* creating web/models/micropost.ex
-* creating test/models/micropost_test.exs
 ```
 
 マイグレーションファイルを編集します。  
@@ -85,14 +83,6 @@ end
 
 ```cmd
 >mix ecto.migrate
-
-14:20:27.485 [info]  == Running SampleApp.Repo.Migrations.CreateMicropost.change/0 forward
-
-14:20:27.485 [info]  create table microposts
-
-14:20:27.504 [info]  create index microposts_user_id_inserted_at_index
-
-14:20:27.523 [info]  == Migrated in 0.3s
 ```
 
 これで、Micropostモデルの作成ができました。  
@@ -603,6 +593,78 @@ end
 </div>
 ```
 
+## Shared view
+共通で使いたいテンプレートを扱うためのSharedビューを作成します。  
+
+#### ファイル: web/views/shared_view.ex
+
+```elixir
+defmodule SampleApp.SharedView do
+  use SampleApp.Web, :view
+end
+```
+
+まずは、ユーザを表示する部分を別テンプレートにします。  
+
+#### ファイル: web/templates/shared/user_info.html.eex
+
+```html
+<a href="<%= user_path(@conn, :show, @user) %>">
+  <img src="<%= get_gravatar_url(@user) %>" class="gravatar">
+</a>
+<h1><%= @user.name %></h1>
+```
+
+続いて、マイクロポストの表示を別テンプレートに分けます。  
+
+#### ファイル: web/templates/shared/microposts.html.eex
+
+```html
+<ol class="microposts">
+  <li>
+  <%= for post <- @posts do %>
+    <span class="content"><%= post.content %></span>
+    <span class="timestamp">
+      Posted <%= post.inserted_at %> ago.
+    </span>
+    <%= if @user.id == post.user_id do %>
+      <%= link "Delete", to: micropost_path(@conn, :delete, post), method: :delete, class: "btn btn-danger btn-xs" %>
+    <% end %>
+  <% end %>
+  </li>
+</ol>
+```
+
+showテンプレートを修正します。  
+
+#### ファイル: web/templates/user/show.html.eex
+
+```html
+<h2>User profile</h2>
+
+<div class="row">
+  <aside class="col-md-4">
+    <section>
+      <%= render SampleApp.SharedView, "user_info.html", conn: @conn, user: @user %>
+    </section>
+    ...
+  </aside>
+  
+  <div class="col-md-8">
+    <%= unless is_empty_list?(@posts) do %>
+      <h3>Microposts</h3>
+      <%= render SampleApp.SharedView, "microposts.html", conn: @conn, posts: @posts, user: @user %>
+
+      <%= render SampleApp.PaginationView, "pagination.html",
+               action: user_path(@conn, :show, @user),
+               current_page: @current_page,
+               page_list: @page_list,
+               total_pages: @total_pages %>
+    <% end %>
+  </div>
+</div>
+```
+
 ## Before the end
 ソースコードをマージします。  
 
@@ -613,13 +675,13 @@ end
 >git merge user_microposts
 ```
 
-#Speaking to oneself
+# Speaking to oneself
 これで第10章は終わりです。  
 
 次は最後になる第11章です。  
 最後の山場になるので、頑張りましょう。  
 
-#Bibliography
+# Bibliography
 [Ruby on Rails Tutorial](http://railstutorial.jp/chapters/user-microposts?version=4.0#top)  
 [hexdocs - v0.14.3 Ecto.Migration](http://hexdocs.pm/ecto/0.14.3/Ecto.Migration.html)  
 [hexdocs - v0.14.3 Ecto.Migration.index/3](http://hexdocs.pm/ecto/0.14.3/Ecto.Migration.html#index/3)  
