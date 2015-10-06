@@ -1,14 +1,14 @@
-#Goal
+# Goal
 レイアウトを作成する。  
 
-#Wait a minute
+# Wait a minute
 今回はレイアウトを作成します。  
 また、カスタムCSSとBootstrapの導入も行います。  
 
 このチュートリアルでは、CSSやBootstrapの機能は利用しますが、  
 必要がある場合を除き、説明をする予定はありません。  
 
-#Index
+# Index
 Filling in layout  
 |> Preparation  
 |> Custom CSS and Bootstrap  
@@ -18,10 +18,12 @@ Filling in layout
 |> You want to add a contact page  
 |> Before the end  
 
-##Preparation
+## Preparation
 毎度の準備です。  
 
 ブランチを切ります。  
+
+#### Example:
 
 ```cmd
 >cd path/to/sample_app
@@ -31,12 +33,14 @@ Filling in layout
 Bootstrapをダウンロードし、解凍しておいて下さい。  
 ダウンロード: [Bootstrap - Download](http://getbootstrap.com/getting-started/#download)  
 
-##Custom CSS and Bootstrap
+## Custom CSS and Bootstrap
 カスタムCSSとBootstrapの導入を行います。  
 
 Bootstrapの配置から行います。  
 
 解凍すると以下のようなディレクトリ構成になっていると思います。  
+
+#### Example:
 
 ```txt
 Bootstrap  
@@ -61,6 +65,7 @@ Bootstrap
    |-npm.js  
 ```
 
+全ては使いません。  
 配置するファイルと配置先ディレクトリは以下のとおりです。  
 
 - css/bootstrap.css --> priv/static/css/bootstrap.css
@@ -77,7 +82,7 @@ Bootstrap
 続いて、カスタムCSSを作成します。  
 (少し長いです)  
 
-####ファイル: priv/static/css/custom.css
+#### File: priv/static/css/custom.css
 
 ```css
 @import "boostrap.css";
@@ -136,7 +141,7 @@ p {
 
 読み込むのはこの次に行います。  
 
-##Layout template
+## Layout template
 デフォルトのレイアウトをカスタマイズします。  
 
 しかし、その前に少しだけ説明を入れさせて下さい。  
@@ -152,10 +157,14 @@ Phoenix-Frameworkのレイアウトについてです。
 - web/templates/layout/app.html.eex
 - web/views/layout_view.ex
 
-それでは、レイアウトテンプレート変更しましょう。  
+それでは、レイアウトテンプレートを変更しましょう。  
 
-####ファイル: web/templates/layout/app.html.eex
+BootstrapやカスタムCSSの読み込みもここで行います。  
+また、動的なデザインを利用するためにjqueryの読み込みも行っています。  
+
 以下のように変更して下さい。  
+
+#### File: web/templates/layout/app.html.eex
 
 ```html
 <!DOCTYPE html>
@@ -213,9 +222,23 @@ Phoenix-Frameworkのレイアウトについてです。
 </html>
 ```
 
-一つ一つ説明していきますね。  
+レイアウトが変わったのか確認してみましょう。  
+
+#### Example:
+
+```cmd
+>mix phoenix.server
+```
+
+以下のアドレスへアクセスしてみましょう。  
+
+#### URL: http://localhost:4000/home
+
+レイアウトに記述した各要素を、一つ一つ説明していきます。  
 
 CSSの読み込みを追加しています。  
+
+#### Example:
 
 ```html
 <link rel="stylesheet" href="<%= static_path(@conn, "/css/bootstrap.css") %>">
@@ -228,6 +251,8 @@ static_path/2はPathHelperと呼ばれる機能を使ってパスを取得して
 IE9未満に対応するために記述しています。  
 魔法の言葉のようなものなので、深くは考えなくてよいです。  
 
+#### Example:
+
 ```html
 <!--[if lt IE 9]>
 <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
@@ -235,7 +260,9 @@ IE9未満に対応するために記述しています。
 ```
 
 ヘッダー部分になります。  
-classに記述している部分は、Bootstrapの機能です。  
+classに記述している部分は、Bootstrapの機能を利用しています。  
+
+#### Example:
 
 ```html
 <header class="navbar navbar-inverse">
@@ -260,6 +287,8 @@ static_pages_path/2については次に説明します。
 
 テンプレートの埋め込みを行っている部分です。  
 
+#### Example:
+
 ```html
 <%= @inner %>
 ```
@@ -272,6 +301,8 @@ static_pages_path/2については次に説明します。
 
 javascriptの読み込みを追加しています。  
 
+#### Example:
+
 ```html
 <script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
 <script src="<%= static_path(@conn, "/js/bootstrap.js") %>"></script>
@@ -279,10 +310,12 @@ javascriptの読み込みを追加しています。
 
 次は、リンクとPathHelperの説明をします。  
 
-##Link and PathHelper
+## Link and PathHelper
 リンクとPathHelperについて説明します。  
 
 先ほどのこの記述についてです。  
+
+#### Example:
 
 ```html
 <%= static_pages_path(@conn, :home) %>
@@ -292,11 +325,11 @@ javascriptの読み込みを追加しています。
 <%= ~ %>とstatic_pages_path/2です。  
 
 まず、<%= ~ %>について。  
-これは、eexテンプレートに対してElixirコードを記述できるようにするものです。  
+この記述は、eexテンプレートに対してElixirコードを埋め込むことできます。  
 
-例えば、eexテンプレートでif文を使いたい時...  
+例えば、eexテンプレートでif記述を使いたい時...  
 
-####Example:
+#### Example:
 
 ```html
 <%= if true do %>
@@ -312,9 +345,12 @@ static_pagesで使った<%= @message %>も同じことです。
 static_pages_path/2の説明をします。  
 これはPathHelperの機能です。  
 
-ルーティングを設定すると、そのルーティングのパスを取得できる関数を生成しています。(マクロです。)  
+ルーティングを設定すると、そのルーティングのパスを取得できる関数を生成しています。  
+内部はマクロで作られています。  
 
-以下のように出力するコマンドがありましたね。  
+以下のように、ルーティングの内容を出力するコマンドがありましたね。  
+
+#### Example:
 
 ```cmd
 >mix phoenix.routes
@@ -323,43 +359,50 @@ static_pages_path  GET     /home                SampleApp.StaticPagesController 
 static_pages_path  GET     /help                SampleApp.StaticPagesController :help
 ```
 
-この左側にstatic_pages_pathとありますね。  
+この左側にstatic_pages_pathとあります。  
 これが関数名となっています。  
 
 また引数の要素ですが...  
 
 第一引数の@connは、Plug.Connのことです。毎回指定するので魔法の言葉と思って下さい。  
-(Plugの説明をすると、それだけで終わってしまいます。)  
+Plugの説明をすると、それだけで終わってしまいます。  
 
 第二引数の:homeは、アクション名です。  
 
 これにより、static_pages_pathの:homeアクションのパスを寄越せ！と書いているわけですね。  
 
-さてさて、以下の記述ですが、  
-Phoenix_HTMLライブラリの機能を使って記述することができます。  
-(Phoenix-Frameworkは幾つかのライブラリで構成されています。その内の一つです。)  
+以下の記述ですが、Phoenix_HTMLライブラリの機能を使って記述することができます。  
+Phoenix-Frameworkは幾つかのライブラリで構成されています。  
+Phoenix_HTMLは、その内の一つです。  
+
+aタグを使ったリンクの作成。  
+
+#### Example:
 
 ```html
 <li><a href="<%= static_pages_path(@conn, :home) %>">Home</a></li>
 ```
 
-link/2を使って記述。  
+link/2を使ったリンクの作成。  
+
+#### Example:
 
 ```html
 <li><%= link "Home", to: static_pages_path(@conn, :home) %></li>
 ```
 
-こちらの方が分かりやすいですね。  
+こちらの方が記述的に分かりやすいですね。  
 
-##Rendering chain
+## Rendering chain
 レイアウトのヘッダー、フッダー、IE9未満の部分を別テンプレートに記述し、  
-それを呼び出す形で描画させたいと思います。  
+そのテンプレートを呼び出してレンダリングする方法を説明します。  
 
-これは、レンダリングチェーンと呼ばれる機能で、テンプレートからテンプレートを呼び出すことができます。  
-(Ruby on Railsのパーシャルみたいなもんだと思って下さい。)  
+これは、レンダリングチェーンと呼ばれる機能で、テンプレートからテンプレートを呼び出すことができる機能です。  
+Ruby on Railsのパーシャルみたいなものです。  
 
-####ファイル: web/templates/layout/app.html.eex
 レイアウトテンプレートを以下のように変更して下さい。  
+
+#### File: web/templates/layout/app.html.eex
 
 ```html
 <!DOCTYPE html>
@@ -400,15 +443,19 @@ link/2を使って記述。
 </html>
 ```
 
-すっきりしましたね。  
+大分すっきりして見やすくなりましたね。  
 
 別テンプレートを呼び出す方法ですが、以下のようにして呼び出すことができます。  
+
+#### Example:
 
 ```html
 <%= render "テンプレート名", 引数 %>
 ```
 
 今回であれば、以下の部分ですね。  
+
+#### Example:
 
 ```html
 <%= render "shim.html" %>
@@ -418,7 +465,9 @@ link/2を使って記述。
 
 それでは、各テンプレートを作成していきましょう！  
 
-####ファイル: web/templates/layout/shim.html.eex
+まずは、IE9未満に対応するためのテンプレートを作成します。  
+
+#### File: web/templates/layout/shim.html.eex
 
 ```html
 <!--[if lt IE 9]>
@@ -426,7 +475,10 @@ link/2を使って記述。
 <![endif]-->
 ```
 
-####ファイル: web/templates/layout/header.html.eex
+次に、ヘッダー部分となるテンプレートを作成します。  
+このテンプレートには、各主要ページへのリンクを追加していく予定です。  
+
+#### File: web/templates/layout/header.html.eex
 
 ```html
 <header class="navbar navbar-inverse">
@@ -445,7 +497,9 @@ link/2を使って記述。
 </header>
 ```
 
-####ファイル: web/templates/layout/footer.html.eex
+最後に、フッダー部分のテンプレートを作成します。  
+
+#### File: web/templates/layout/footer.html.eex
 
 ```html
 <footer class="footer">
@@ -458,8 +512,10 @@ link/2を使って記述。
 </footer>
 ```
 
-####ファイル: priv/static/css/custom.css
-ついでに、カスタムCSSに以下を追加して下さい。  
+ヘッダー、フッターのためのCSSを追加します。  
+カスタムCSSに以下を追加して下さい。  
+
+#### File: priv/static/css/custom.css
 
 ```css
 /* header */
@@ -511,13 +567,12 @@ footer ul li {
 }
 ```
 
-##You want to add a contact page
-コンタクトページの追加を行います。  
+## You want to add a contact page
+ページ追加の復習を兼ねて、contactページの追加を行います。  
 
-大した内容でもないので、さくっと終わらせます。  
+contactページのためのルーティングを追加します。  
 
-####ファイル: web/router.ex
-ルーティングを追加します。  
+#### File: web/router.ex
 
 ```elixir
 scope "/", SampleApp do
@@ -528,8 +583,9 @@ scope "/", SampleApp do
 end
 ```
 
-####ファイル: web/controllers/static_pages_controller.ex
-アクション用の関数を追加します。  
+StaticPagesコントローラへcontactアクション用の関数を追加します。  
+
+#### File: web/controllers/static_pages_controller.ex
 
 ```elixir
 def contact(conn, _params) do
@@ -537,8 +593,12 @@ def contact(conn, _params) do
 end
 ```
 
-####ファイル: web/templates/static_pages/contact.html.eex
+contactページの内容は、お好きなように連絡先を作って下さい。  
+ここで作成するテンプレートでは、内容は特に作りません。  
+
 テンプレートの内容は以下の通り。  
+
+#### File: web/templates/static_pages/contact.html.eex
 
 ```html
 <div class="jumbotron">
@@ -546,8 +606,9 @@ end
 </div>
 ```
 
-####ファイル: web/templates/layout/footer.html.eex
-コンタクトページへのリンクを追加します。  
+フッターへcontactページへのリンクを追加します。  
+
+#### File: web/templates/layout/footer.html.eex
 
 ```html
 <footer class="footer">
@@ -561,11 +622,12 @@ end
 </footer>
 ```
 
-##Modify home template
-home.html.eexテンプレートを少しだけ変更します。  
+## Modify home template
+homeテンプレートへユーザ登録をするための仮リンクの追加を行います。  
 
-####ファイル: web/templates/static_pages/home.html.eex
-ユーザ登録のための、ちょっとした仕込みです。  
+ユーザ登録時のための、ちょっとした仕込みです。  
+
+#### File: web/templates/static_pages/home.html.eex
 
 ```html
 <div class="jumbotron">
@@ -581,8 +643,9 @@ home.html.eexテンプレートを少しだけ変更します。
 </div>
 ```
 
-####ファイル: web/controllers/static_pages_controller.ex
 @messageはhomeアクションで不要となったので、削除します。  
+
+#### File: web/controllers/static_pages_controller.ex
 
 ```elixir
 def home(conn, _params) do
@@ -590,7 +653,7 @@ def home(conn, _params) do
 end
 ```
 
-##Before the end
+## Before the end
 ソースコードをマージします。  
 
 ```cmd
@@ -600,18 +663,18 @@ end
 >git merge filling_in_layout
 ```
 
-#Speaking to oneself
+# Speaking to oneself
 レイアウト、カスタムCSS、Bootstrap、リンク、名前付きルート...etc、色々と新しい内容が出てきましたね。  
 頭の中が少し、混乱しますね。  
 
-カスタムCSSは、必要になったら徐々に追記します。  
+カスタムCSSは、必要になったら徐々に追記していきます。  
 リンク、名前付きルートはこの後でも頻繁に出てきます。  
 
-混乱してしまっている方は、気にしないで進みましょう。  
+混乱してしまっている方は、気にせず先に進みましょう。  
 足踏みしたり座り込むより、歩きながら走りながら思考しましょう。  
 
 大丈夫、慣れれば特別なことなんて何もありません。  
 その内、見直してみると理解できていますよ。(多分)  
 
-#Bibliography
+# Bibliography
 [Ruby on Rails Tutorial](http://railstutorial.jp/chapters/filling-in-the-layout?version=4.0#top)  

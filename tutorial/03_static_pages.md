@@ -1,26 +1,28 @@
-#Goal
+# Goal
 ほぼ静的なページを作成する。  
 
-#Wait a minute
+# Wait a minute
 ここで作成していくのは静的ページです。  
 一番最初の基本中の基本ですね。  
 
 さて、それではサンプルアプリケーションの第一歩を踏み出しましょう！  
 
-#Index
+# Index
 Static pages  
 |> Preparation  
 |> Add route  
 |> Create controller  
 |> Create view & template  
 |> Let's run!  
-|> Add page  
+|> Add about page  
 |> Little dynamic  
 |> Before the end  
 
-##Preparation
+## Preparation
 作成するにしても、まだサンプルアプリケーション用のプロジェクトを作成していませんね。  
 プロジェクトの作成を行います。  
+
+#### Example:
 
 ```cmd
 >cd path/to/project
@@ -33,6 +35,8 @@ Static pages
 
 gitを使いブランチを切ります。  
 
+#### Example:
+
 ```cmd
 >git checkout -b static_pages
 >git branch
@@ -40,34 +44,41 @@ gitを使いブランチを切ります。
 * static_pages
 ```
 
-####Description:
 git initをしていない方は、初期化も行って下さい。  
+
+この作業は章の始まりに必ず実施します。
+何か問題が起こっても、ブランチを切り捨てるだけで済みます。
 
 これで準備良し。  
 
-それでは、Phoenix-Frameworkでページを追加してみましょう！  
+それでは、Phoenix-Frameworkへ新しくページを追加していきましょう！  
 しかし今回に関しては、自動生成は使わず手動でファイルを追加していきます。  
 
 自動生成の有難みが分かります。  
 ありがたや、ありがたや...  
 
-##Add route
-まず最初にやることは、ルーティングの追加です。  
+## Add route
+新しくページを追加するために、まず最初にやることはルーティングの追加です。  
 
-####ファイル: web/router.ex
 ルーティングの追加を行います。  
+
+#### File: web/router.ex
 
 ```elixir
 scope "/", SampleApp do
-  pipe_through :browser # Use the default browser stack
+  ...
 
-  get "/", PageController, :index
   get "/home", StaticPagesController, :home
   get "/help", StaticPagesController, :help
 end
 ```
 
+追加したルーティングは以下のように、
+Phoenix-Frameworkのコマンドを使って確認することができます。  
+
 生成されたルーティングを見てみましょう。  
+
+#### Example:
 
 ```cmd
 >mix phoenix.routes
@@ -76,21 +87,23 @@ static_pages_path  GET     /home                SampleApp.StaticPagesController 
 static_pages_path  GET     /help                SampleApp.StaticPagesController :help
 ```
 
+この時、指定したコントローラが存在している必要はありません。  
+
 ルーティングの記述方法について、  
-以下の記述を例に少し説明します。  
+Phoenix-Frameworkのルーティングは次のような構成になっています。  
 
 ```elixir
 get "/home", StaticPagesController, :home
 ```
 
-以下のようになっています。  
+上記を分解すると、以下のようになっています。  
 
-- get ・・・ HTTPメソッド
-- "/home" ・・・ パス
-- StaticPagesController ・・・ コントローラ
-- :home ・・・ Action
+- get: HTTPメソッド (HTTP Method)
+- "/home": パス (Path)
+- StaticPagesController: コントローラ名 (Controller name)
+- :home: アクション名 (Action name)
 
-では、デモアプリケーションで追加していた以下のようなルーティングは？  
+では、デモアプリケーションで追加していたルーティングはどうなっているのでしょうか？  
 
 ```elixir
 resources "/users", UserController
@@ -103,6 +116,8 @@ HTTPメソッド名ではなく、resources。
 
 上記の記述で生成されたルーティングを覚えていますか？  
 あの一行が以下のようなルーティングになります。  
+
+#### Example:
 
 ```cmd
 >mix phoenix.routes
@@ -117,22 +132,33 @@ user_path  PATCH   /users/:id       DemoApp.UserController.update/2
 user_path  DELETE  /users/:id       DemoApp.UserController.delete/2
 ```
 
-つまり、無理やり強引に表すと・・・  
+少し強引ですが、上記に沿って表現すると...  
 
-- resources ・・・ HTTPメソッド
-- "users" ・・・ パス
-- UserController ・・・ コントローラ
-- アクション部分 ・・・ RESTfulのアクション全部
+- resources: HTTPメソッド
+- "users": パス
+- UserController: コントローラ
+- アクション部分: RESTfulのアクション全部
 
 と言ったようになります。  
 
 現状の段階では、resourcesを使えば一気にルーティングを作ってくれると言う認識で結構です。  
 大丈夫です。チュートリアルを終える頃には、好きなルーティングを作れるようになっていることでしょう。  
 
-##Create Controller
-コントローラの作成を行っていきます。  
+#### Note:
+Phoenix-Frameworkの大部分は、Elixirの機能であるマクロで作られています。  
+ルーティングの機能もマクロで実装されています。  
+チュートリアルでは触れませんが、興味があればマクロもといメタプログラミングに触ってみると面白いと思います。  
 
-####ファイル: web/controllers/static_pages_controller.ex
+## Create Controller
+次は、コントローラの作成を行っていきます。  
+
+コントローラでは、ルーティングで定義したアクション(関数)を定義して、  
+そのアクションで何をしたいのかを実装していきます。  
+
+追加したルーティングは、homeアクションとhelpアクションですね。  
+そのアクションを関数名として実装します。  
+
+#### File: web/controllers/static_pages_controller.ex
 
 ```elixir
 defmodule SampleApp.StaticPagesController do
@@ -148,10 +174,16 @@ defmodule SampleApp.StaticPagesController do
 end
 ```
 
-##Create view & template
-ビューとテンプレートの作成を行っていきます。  
+## Create view & template
+Webサイトにレンダリングされるビューとテンプレートの作成を行っていきます。  
+実際に人が見る画面の部分ですね。  
 
-####ファイル: web/views/static_pages_view.ex
+まずは、ビューから作成していきましょう。  
+ビューで実装した関数は、テンプレートで利用することができます。  
+
+今回は、特に何もすることがないのでビューを作成するだけになります。  
+
+#### File: web/views/static_pages_view.ex
 
 ```elixir
 defmodule SampleApp.StaticPagesView do
@@ -159,18 +191,25 @@ defmodule SampleApp.StaticPagesView do
 end
 ```
 
-####ディレクトリ: web/templates/static_pages
-static_pagesと言う名称でディレクトリを作成して下さい。  
+#### Note:
+ビューはレンダリングをする際、必ず必要になります。  
+テンプレートに対応したビューがない場合、レンダリングできませんので注意して下さい。  
+
+#### Directory: web/templates/static_pages
+"static_pages"と言う名称でディレクトリを作成して下さい。  
 
 間違えないように注意して下さい。  
 テンプレートのディレクトリ名はコントローラの先頭名と合わせる必要があります。  
 
-Phoenix-Frameworkでは、デフォルトでEExテンプレートが使えます。  
-Ruby on Railsにおけるerbのようなものと思っておけば大丈夫です。  
+Phoenix-Frameworkでは、デフォルトでEExというテンプレートが使えます。  
+(どちらかと言うと、Elixirに実装されている機能になりますが...)  
+Ruby on Railsで使えるERBのようなものと思っておけば大丈夫です。  
 
-実際に非常に似ています。  
+実際に非常によく似ています。  
 
-####ファイル: web/templates/static_pages/home.html.eex
+テンプレートを作成を作成していきましょう。  
+
+#### File: web/templates/static_pages/home.html.eex
 
 ```html
 <div class="jumbotron">
@@ -178,7 +217,7 @@ Ruby on Railsにおけるerbのようなものと思っておけば大丈夫です。
 </div>
 ```
 
-####ファイル: web/templates/static_pages/help.html.eex
+#### File: web/templates/static_pages/help.html.eex
 
 ```html
 <div class="jumbotron">
@@ -186,8 +225,12 @@ Ruby on Railsにおけるerbのようなものと思っておけば大丈夫です。
 </div>
 ```
 
-##Let's run!
+EExの機能は、次のページ追加で使っていきます。  
+
+## Let's run!
 サーバを起動して作成したページを見てみましょう。  
+
+#### Example:
 
 ```cmd
 >mix phoenix.server
@@ -195,19 +238,20 @@ Ruby on Railsにおけるerbのようなものと思っておけば大丈夫です。
 
 以下のアドレスへアクセスして下さい。  
 
-####アクセス: http://localhost:4000/home
-####アクセス: http://localhost:4000/help
+#### URL: http://localhost:4000/home
+#### URL: http://localhost:4000/help
 
 手動でファイルやディレクトリの追加をしていくのは、中々面倒ですよね。  
 しかし、これが基本の手順になります。是非、覚えておいて下さい。  
 
-続いて、新しくページを追加する手順をやっていきましょう。  
+続いて、Aboutページを追加してみましょう。  
 
-##Add about page
+## Add about page
 Aboutページを追加します。  
 
-####ファイル: web/router.ex
-ルーティングを追加します。  
+先の手順に倣い、ルーティングから追加します。  
+
+#### File: web/router.ex
 
 ```elixir
 scope "/", SampleApp do
@@ -218,16 +262,23 @@ scope "/", SampleApp do
 end
 ```
 
-####ファイル: web/controllers/static_pages_controller.ex
-アクション用の関数を追加します。  
+先ほどコントローラは用意していますので、aboutアクション関数を追加するだけになります。  
+
+#### File: web/controllers/static_pages_controller.ex
 
 ```elixir
-def about(conn, _params) do
-  render conn, "about.html"
+defmodule SampleApp.StaticPagesController do
+  ...
+
+  def about(conn, _params) do
+    render conn, "about.html"
+  end
 end
 ```
 
-####ファイル: web/templates/static_pages/about.html.eex
+ビューも用意済みなので、aboutテンプレートを追加するだけになります。  
+
+#### File: web/templates/static_pages/about.html.eex
 
 ```html
 <div class="jumbotron">
@@ -237,29 +288,34 @@ end
 
 サーバを起動して作成したページを見てみましょう。  
 
+##### Example:
+
 ```cmd
 >mix phoenix.server
 ```
 
 以下のアドレスへアクセスして下さい。  
 
-####アクセス: http://localhost:4000/about
+#### URL: http://localhost:4000/about
 
-##Little dynamic
-少しだけ動的に動くようにしてみましょう。  
+## Little dynamic
+少しだけ動的に動くページに改造してみましょう。  
 
-以下の部分が、ある一言を除き同じです。  
+作成した3つのテンプレートで以下の部分が、ある一言を除き同じですね。  
 
 ```html
 <h2>Welcome to Static Pages Home!</h2>
+
 <h2>Welcome to Static Pages Help!</h2>
+
 <h2>Welcome to Static Pages About!</h2>
 ```
 
-この異なる部分を動的に指定してみましょう。  
+この異なる部分を動的に指定できるようにしていきましょう。  
 
-####ファイル: web/controllers/static_pages_controller.ex
-以下のようにアクション用の関数を変更して下さい。  
+StaticPagesコントローラの各アクション関数を以下のように変更して下さい。  
+
+#### File: web/controllers/static_pages_controller.ex
 
 ```elixir
 def home(conn, _params) do
@@ -279,22 +335,14 @@ def about(conn, _params) do
 end
 ```
 
-これは、レンダリングするテンプレートへ値を送っています。  
+レンダリングするテンプレートへ変数を送っています。  
 
-- message ・・・ テンプレートでの名称
+- message ・・・ テンプレート内での名称 (変数名)
 - "About" ・・・ 値
 
-次は、この値をテンプレートで使うように変更します。  
+次は、この変数をテンプレートで使うように変更します。  
 
-####ファイル: web/templates/static_pages/home.html.eex
-
-```html
-<div class="jumbotron">
-  <h2>Welcome to Static Pages <%= @message %>!</h2>
-</div>
-```
-
-####ファイル: web/templates/static_pages/help.html.eex
+#### File: web/templates/static_pages/home.html.eex
 
 ```html
 <div class="jumbotron">
@@ -302,7 +350,7 @@ end
 </div>
 ```
 
-####ファイル: web/templates/static_pages/about.html.eex
+#### File: web/templates/static_pages/help.html.eex
 
 ```html
 <div class="jumbotron">
@@ -310,16 +358,29 @@ end
 </div>
 ```
 
-以下のように記述すると、コントローラ側から送った値を参照できます。  
+#### File: web/templates/static_pages/about.html.eex
 
 ```html
-<%= @~ %>
+<div class="jumbotron">
+  <h2>Welcome to Static Pages <%= @message %>!</h2>
+</div>
 ```
+
+テンプレート内では以下のように記述すると、  
+コントローラやビュー側から送った値を参照できます。  
+
+```html
+<%= @name %>
+```
+
+もう少し踏み込んでみます。  
+上記の記述はElixirコードの埋め込みを行っています。  
+変数以外にもif記述、for記述や関数の実行などが行えます。  
 
 今回はここまでとなります。  
 これで、ページを追加していく方法は分かりましたね。  
 
-##Before the end
+## Before the end
 ソースコードをマージします。  
 
 ```cmd
@@ -329,5 +390,11 @@ end
 >git merge static_pages
 ```
 
-#Bibliography
+#Speaking to oneself
+Phoenix-Frameworkで新しくページを追加する方法を学びました。  
+何を追加すればいいか分かれば、難しくはありませんね。  
+
+次の章では、Phoenix-Frameworkのレイアウトについて学んで行きます。  
+
+# Bibliography
 [Ruby on Rails Tutorial](http://railstutorial.jp/chapters/static-pages?version=4.0#top)  

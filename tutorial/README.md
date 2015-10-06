@@ -5,7 +5,7 @@ Ruby on Rails TutorialのサンプルアプリケーションをPhoenix-Frameworkで作成する。
 
 #Dev-Environment
 OS: Windows8.1  
-Erlang: Eshell V6.4, OTP-Version 18.1  
+Erlang: Eshell V7.1, OTP-Version 18.1  
 Elixir: v1.1.1  
 Node.js： v0.12.4  
 Phoenix Framework: v1.0.3  
