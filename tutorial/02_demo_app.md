@@ -360,7 +360,7 @@ changeset/2‚ÌŠÖ”‚ª‚ ‚è‚Ü‚·‚ËB
 def changeset(model, params \\ :empty) do
   model
   |> cast(params, @required_fields, @optional_fields)
-  |> validate_length(:content, min: 140) # Additional lines
+  |> validate_length(:content, max: 140) # Additional lines
 end
 ```
 
