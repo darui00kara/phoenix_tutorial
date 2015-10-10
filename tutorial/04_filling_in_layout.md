@@ -37,8 +37,7 @@ Bootstrapをダウンロードし、解凍しておいて下さい。
 カスタムCSSとBootstrapの導入を行います。  
 
 Bootstrapの配置から行います。  
-
-解凍すると以下のようなディレクトリ構成になっていると思います。  
+Bootstrapを解凍すると以下のようなディレクトリ構成になっていると思います。  
 
 #### Example:
 
@@ -65,17 +64,32 @@ Bootstrap
    |-npm.js  
 ```
 
-全ては使いません。  
 配置するファイルと配置先ディレクトリは以下のとおりです。  
+fontsディレクトリは存在しませんので作成して下さい。
 
-- css/bootstrap.css --> priv/static/css/bootstrap.css
-- css/bootstrap.css.map --> priv/static/css/bootstrap.css.map
-- fonts/glyphicons-halflings-regular.eot --> priv/static/glyphicons-halflings-regular.eot
-- fonts/glyphicons-halflings-regular.svg --> priv/static/glyphicons-halflings-regular.svg
-- fonts/glyphicons-halflings-regular.ttf --> priv/static/glyphicons-halflings-regular.ttf
-- fonts/glyphicons-halflings-regular.woff --> priv/static/glyphicons-halflings-regular.woff
-- fonts/glyphicons-halflings-regular.woff2 --> priv/static/glyphicons-halflings-regular.woff2
-- js/bootstrap.js --> priv/static/js/bootstrap.js
+#### Example:
+
+```txt
+sample_app
+|
+priv
+  |
+  static  
+    |
+    |-css  
+    |  |-bootstrap.css  
+    |  |-bootstrap.css.map  
+    |  
+    |-fonts  
+    |  |-glyphicons-halflings-regular.eot  
+    |  |-glyphicons-halflings-regular.svg  
+    |  |-glyphicons-halflings-regular.ttf  
+    |  |-glyphicons-halflings-regular.woff  
+    |  |-glyphicons-halflings-regular.woff2  
+    |  
+    |-js  
+       |-bootstrap.js  
+```
 
 これで配置完了です。  
 
@@ -85,7 +99,7 @@ Bootstrap
 #### File: priv/static/css/custom.css
 
 ```css
-@import "boostrap.css";
+@import "bootstrap.css";
 
 /* universal */
 html {
