@@ -26,7 +26,7 @@ Modeling users
 |> User  
 |> Verify  
 |> Add password colum  
-|> Encrypted password
+|> Encrypted password  
 |> Additional verification  
 |> Before the end  
 
@@ -109,7 +109,7 @@ Generated sample_app app
 マイグレーションファイルの確認と編集を行います。  
 マイグレーションファイルを開き、インデックスの作成を追加します。  
 
-####　File: priv/repo/[timestamp]_create_user.exs
+#### File: priv/repo/[timestamp]_create_user.exs
 
 ```elixir
 defmodule SampleApp.Repo.Migrations.CreateUser do
