@@ -1,11 +1,11 @@
-#Goal
+# Goal
 ユーザのサインアップ機能を実装する。  
 
-#Wait a minute
-ようやっとWebサイト作成らしい内容がやってきました。  
-ユーザのサインアップ機能(ユーザ登録)を実装していきます。  
+# Wait a minute
+ようやっと、Webサイトの作成らしい内容がやってきました。  
+ユーザのサインアップ(ユーザ登録)機能を実装していきます。  
 
-#Index
+# Index
 Sign up  
 |> Preparation  
 |> Show user  
@@ -15,22 +15,25 @@ Sign up
 |> Extra  
 |> Before the end  
 
-##Preparation
+## Preparation
 作業前にブランチを切ります。  
+
+#### Example:
 
 ```cmd
 >cd path/to/sample_app
 >git checkout -b sign_up
 ```
 
-##Show user
-最初にユーザを表示する部分を作成します。  
-ユーザが表示できないと、サインアップしたユーザの確認ができませんね。  
+## Show user
+サインアップを実装する前に、ユーザを表示するプロフィールページを実装します。  
+ユーザを見ることができるページがないと、サインアップしたユーザの確認ができませんから。  
 
-ルーティングを追加します。  
+ユーザのルーティングを追加します。  
+追加するルーティングは、RESTfulなルーティングを追加してくれるresources記述を使います。  
+デモアプリ以来の登場ですね。  
 
-####ファイル: web/router.ex
-resources記述を使い、RESTfulなルーティングを追加します。  
+#### File: web/router.ex
 
 ```elixir
 scope "/", SampleApp do
@@ -39,7 +42,10 @@ scope "/", SampleApp do
 end
 ```
 
-ルーティングを確認してみましょう。  
+デモアプリを作成した時と違い、何やらオプションが付いています。  
+オプションの説明をする前に、追加されたルーティングを確認してみましょう。  
+
+#### Example:
 
 ```cmd
 >mix phoenix.routes
@@ -53,14 +59,19 @@ user_path  PATCH   /user/:id            SampleApp.UserController :update
 user_path  DELETE  /user/:id            SampleApp.UserController :delete
 ```
 
-さて、前に追加したことがあるresources記述と少し違いますね。  
-"except: [:new]"と言うオプションが付いています。  
+追加されたルーティングに何かが足りないと思いませんか？  
+そう！newアクションが追加されていません！！  
 
-これは、特定のルーティングを追加しないオプションになります。  
-今回の場合で言えば、newアクションは除外すると言うことになりますね。  
+これはバグですか？いいえ違います！  
+これが先ほどのオプションの効果です。  
 
-newアクションだけ除外している理由は、  
-前回のmodeling_usersで以下のルーティングを追加しているからです。  
+今回、記述しているexceptオプションは、特定のルーティングを追加しないオプションです。  
+今回の場合で言えば、newアクションは除外すると言うことになります。  
+
+newアクションだけ除外している理由ですが、  
+前回のModeling usersで以下のルーティングを追加しているからです。  
+
+##### Example:
 
 ```cmd
 get "/signup", UserController, :new
@@ -70,32 +81,40 @@ user_path  GET     /signup              SampleApp.UserController :new
 ```
 
 逆に言えば、特定のアクションのみ追加するオプションもあります。  
-その内出てきますので、今は除外するオプションを覚えて下さい。  
+チュートリアルを進めるうちに出てきますが、今は除外するオプションを覚えて下さい。  
 
-####Note:
+#### Note:
+
+```txt
 Phoniex-Frameworkのresourcesで追加されるアクションは、  
 new、index、edit、show、crate、update、deleteになります。  
 
 この中のアクションであれば、オプションで指定できます。  
+```
 
 Userコントローラへshowアクションの関数を追加します。  
-
-####ファイル: web/controllers/user_controller.ex
 以下のアクション関数を追加して下さい。  
 
+#### File: web/controllers/user_controller.ex
+
 ```elixir
-def show(conn, %{"id" => id}) do
-  user = Repo.get(SampleApp.User, id)
-  render(conn, "show.html", user: user)
+defmodule SampleApp.UserController do
+  ...
+
+  def show(conn, %{"id" => id}) do
+    user = Repo.get(SampleApp.User, id)
+    render(conn, "show.html", user: user)
+  end
 end
 ```
 
-ユーザidからユーザを取得してテンプレートへ渡しているだけですね。  
+ユーザのIDからDBを検索し、取得しています。  
+その後、取得したデータをテンプレートへ渡しています。  
 
 showテンプレート作成します。  
+ユーザ名とEmailを表示するだけの簡素なテンプレートです。  
 
-####ファイル: web/templates/user/show.html.eex
-ユーザ名とEmailを表示するだけの簡素なテンプレートを作成します。  
+#### File: web/templates/user/show.html.eex
 
 ```html
 <div class="jumbotron">
@@ -108,7 +127,11 @@ showテンプレート作成します。
 今のままだと、ユーザが一人もいません。  
 
 仮データとしてユーザをiex上から作成します。  
-(ここで行っている方法がそのままサインアップ機能の実装になります。)  
+
+ここで行う処理はサインアップを手動で行っているのと同一です。  
+実際にサインアップ機能を実装する時は、下記の処理を行います。  
+
+#### Example:
 
 ```cmd
 >iex -S mix
@@ -145,29 +168,46 @@ iex> SampleApp.Repo.insert(changeset)
 ...
 ```
 
-作成した画面でユーザの情報が表示されているか確認してみましょう。  
+showページへアクセスしてユーザの情報が表示されているか確認してみましょう。  
 
-##Gravatar image
-このままでは、画面が少し寂しいですね。  
-画像を出しましょう！  
+## Gravatar image
+このままでは、showページが少し寂しいですね。  
 
-ユーザのプロフィール画像としてGravatarを利用します。  
+少し横道に外れますが、プロフィール画像を出してshowページに飾りを追加しましょう！  
+
+ユーザのプロフィール画像としては、Gravatar(サービス)を利用します。  
 Gravatarを扱うためのモジュールを作成します。  
 
-Gravatar: [http://gravatar.com/](http://gravatar.com/)
+#### Gravatarの画像を表示したい場合、予めGravatarへの登録が必要になります。
+#### Gravatar: [http://gravatar.com/](http://gravatar.com/)
 
-Gravatarは、md5で暗号化されたemailをidとして取得します。  
-また、md5では大文字小文字が区別されるので、暗号化される前にemailの小文字化(downcase)が必要です。  
+登録をしなくても、デフォルトの画像が表示されますので必須ではありません。  
+
+Gravatarは、md5で暗号化されたEmailをIDとして取得します。  
+また、md5では大文字小文字が区別されるので、暗号化される前にEmailの小文字化(downcase)が必要です。  
 
 まずは、上記の機能を実装しましょう。  
 
-####ファイル: lib/gravatar.ex
-Gravatarモジュールを作成し、  
-md5に暗号化するemail_crypt_md5/1関数と  
-emailを小文字化するemail_downcase/1関数を作成します。  
+Gravatarモジュールを作成し、モジュールへ4つの関数を追加します  
+
+- Gravatarから画像を取得するget_gravatar_url/2関数
+- EmailをIDに変換するemail_to_gravator_id/1関数
+- md5に暗号化するemail_crypt_md5/1関数
+- Emailを小文字化するemail_downcase/1関数。
+
+#### File: lib/gravatar.ex
 
 ```elixir
 defmodule SampleApp.Gravatar do
+  def get_gravatar_url(email, size) do
+    gravatar_id = email_to_gravator_id(email)
+    "https://secure.gravatar.com/avatar/#{gravatar_id}?s=#{size}"
+  end
+
+  defp email_to_gravator_id(email) do
+    email |> email_downcase |> email_crypt_md5
+  end
+  
   defp email_crypt_md5(email) do
     :erlang.md5(email)
     |> :erlang.bitstring_to_list
@@ -182,46 +222,29 @@ defmodule SampleApp.Gravatar do
 end
 ```
 
-####ファイル: lib/gravatar.ex
-emailをidに変換するemail_to_gravator_id/1関数と  
-Gravatarから画像を取得するget_gravatar_url/2関数を作成します。  
+実際に使う際には、ビューから使います。  
+今のところ利用するのはユーザだけですので、Userビューへ関数を作成します。  
 
-```elixir
-defmodule SampleApp.Gravatar do
+Gravatarを取得するget_gravatar_url/1関数を追加します。  
 
-  def get_gravatar_url(email, size) do
-    gravatar_id = email_to_gravator_id(email)
-    "https://secure.gravatar.com/avatar/#{gravatar_id}?s=#{size}"
-  end
-
-  defp email_to_gravator_id(email) do
-    email |> email_downcase |> email_crypt_md5
-  end
-
-  ...
-end
-```
-
-実際に使う際には、Viewモジュールから使います。  
-今のところ利用するのはUserだけですので、UserViewへ関数を作成します。  
-
-####ファイル: web/views/user_view.ex
-gravatarを取得するget_gravatar_url/1関数を追加します。
+#### File: web/views/user_view.ex
 
 ```elixir
 defmodule SampleApp.UserView do
-  use SampleApp.Web, :view
+  ...
 
-  def get_gravatar_url(%SampleApp.User{email: email}) do
-    SampleApp.Gravatar.get_gravatar_url(email, 50)
+  alias SampleApp.User
+  alias SampleApp.Gravatar
+
+  def get_gravatar_url(%User{email: email}) do
+    Gravatar.get_gravatar_url(email, 50)
   end
 end
 ```
 
-showテンプレートを変更します。  
+showテンプレートでGravatarを表示するように変更します。  
 
-####ファイル: web/templates/user/show.html.eex
-gravatarを使うように変更しています。
+#### File: web/templates/user/show.html.eex
 
 ```html
 <h1>
@@ -232,10 +255,10 @@ gravatarを使うように変更しています。
 
 Gravatarを表示するための、CSSを追加します。  
 
-####ファイル: priv/static/css/custom.css
-gravatar用のCSSを追加します。
+#### File: priv/static/css/custom.css
 
 ```css
+/* gravatar */
 .gravatar {
   float: left;
   margin-right: 10px;
@@ -244,14 +267,12 @@ gravatar用のCSSを追加します。
 
 実行してGravatar画像を確認してみましょう。  
 
-##Sidebar
-Gravatar画像とユーザ名が画面の真ん中に出ていますね。  
-しかし、左右どちらかに寄せて表示をしたいです。  
+## Sidebar
+サイドバーを実装して、ユーザのプロフィールを左寄せに表示させます。  
 
-サイドバーを実装して、左寄せに表示させます。  
-
-####ファイル: web/templates/user/show.html.eex
 showテンプレートを以下のように変更します。  
+
+#### File: web/templates/user/show.html.eex
 
 ```html
 <div class="row">
@@ -266,8 +287,9 @@ showテンプレートを以下のように変更します。
 </div>
 ```
 
-####ファイル: priv/static/css/custom.css
 サイドバー用のCSSを追加します。  
+
+#### File: priv/static/css/custom.css
 
 ```css
 /* sidebar */
@@ -296,9 +318,11 @@ aside section h1 {
 }
 ```
 
-##User sign-up
-とうとうやってきました。サインアップ機能の実装をします。  
+## User sign-up
+とうとうやってきました。  
+サインアップ機能の実装をします。  
 
+最初にユーザが入力する部分について考えましょう。  
 DBへ作成しているusersテーブルには現在、以下のカラムがありますね。  
 
 - name
@@ -307,27 +331,27 @@ DBへ作成しているusersテーブルには現在、以下のカラムがあ�
 - password_digest
 
 この内、password_digestはpasswordが暗号化された内容が入るだけですから、  
-入力項目は上記の上3つ(name、email、password)となります。  
+入力項目は、name、email、passwordの3つとなります。  
 
 サインアップするためのフォームを作成します。  
-
-####ファイル: web/templates/user/new.html.eex
 新しくテンプレートを作成し、以下のように編集して下さい。  
+
+#### File: web/templates/user/new.html.eex
 
 ```html
 <%= form_for @changeset, user_path(@conn, :create), fn f -> %>
   <div class="form-group">
-    <label>Name</label>
+    <%= label f, :name, "Name", class: "control-label" %>
     <%= text_input f, :name, class: "form-control" %>
   </div>
 
   <div class="form-group">
-    <label>Email</label>
+    <%= label f, :email, "Email", class: "control-label" %>
     <%= email_input f, :email, class: "form-control" %>
   </div>
 
   <div class="form-group">
-    <label>Password</label>
+    <%= label f, :password, "Password", class: "control-label" %>
     <%= password_input f, :password, class: "form-control" %>
   </div>
 
@@ -337,8 +361,9 @@ DBへ作成しているusersテーブルには現在、以下のカラムがあ�
 <% end %>
 ```
 
-####ファイル: web/controllers/user_controller.ex
 Userコントローラのnewアクションを修正します。  
+
+#### File: web/controllers/user_controller.ex
 
 ```elixir
 defmodule SampleApp.UserController do
@@ -352,8 +377,10 @@ defmodule SampleApp.UserController do
 end
 ```
 
-####ファイル: web/models/user.ex
-空のUserのChangesetを取得する関数を追加します。  
+検証有のchageset/2を使うと必須項目を入力しないとエラーメッセージが入ってしまいます。  
+なので、空のCangesetを取得する関数を追加します。  
+
+#### File: web/models/user.ex
 
 ```elixir
 defmodule SampleApp.User do
@@ -362,8 +389,6 @@ defmodule SampleApp.User do
   def new do
     %SampleApp.User{} |> cast(:empty, @required_fields, @optional_fields)
   end
-
-  ...
 end
 ```
 
@@ -372,52 +397,63 @@ end
 
 サインアップ処理を実行する、createアクションを作成します。  
 
-####ファイル: web/controllers/user_controller.ex
 最初の実装は以下のようになります。  
 
-```elixir
-def create(conn, %{"user" => user_params}) do
-  changeset = SampleApp.User.changeset(%SampleApp.User{}, user_params)
-  Repo.insert(changeset)
-
-  conn
-  |> put_flash(:info, "User registration is success!!")
-  |> redirect(to: static_pages_path(conn, :home))
-end
-```
-
-さて、上記のプログラムには問題があります。何が足りないのでしょうか？  
-
-そう、検証の結果に問題がないか確認をしていませんね。  
-実際このままでは、不正な値があっても止まることなくDBへデータが挿入されてしまいます。  
-
-検証に問題がある時の処理を追加しましょう。  
-
-####ファイル: web/controllers/user_controller.ex
-検証の結果によって、処理を分岐するようにしました。  
+#### File: web/controllers/user_controller.ex
 
 ```elixir
-def create(conn, %{"user" => user_params}) do
-  changeset = SampleApp.User.changeset(%SampleApp.User{}, user_params)
+defmodule SampleApp.UserController do
+  ...
 
-  if changeset.valid? do
+  def create(conn, %{"user" => user_params}) do
+    changeset = SampleApp.User.changeset(%SampleApp.User{}, user_params)
     Repo.insert(changeset)
 
     conn
     |> put_flash(:info, "User registration is success!!")
     |> redirect(to: static_pages_path(conn, :home))
-  else
-    render(conn, "new.html", changeset: changeset)
   end
 end
 ```
 
-さて、最後にもう一つだけ仕事をしましょう。  
-現在のままだとサインアップに失敗した時、再びサインアップ画面が出てくるだけで何が悪いのか分かりません。  
+単純に入力された値をDBへ挿入しています。  
+しかし、上記の実装には問題があります。何が足りないのでしょうか？  
 
-どの値に問題があったのか、エラーメッセージを表示します。  
+そう、検証の結果に問題がないか確認をしていませんね。  
+このままでは不正な値があっても止まることなく、DBへデータが挿入されてしまいます。  
 
-####ファイル: web/templates/user/new.html.eex
+検証に問題がある時の処理を追加しましょう。  
+検証の結果によって、処理を分岐するようにします。  
+
+#### File: web/controllers/user_controller.ex
+
+```elixir
+defmodule SampleApp.UserController do
+  ...
+
+  def create(conn, %{"user" => user_params}) do
+    changeset = SampleApp.User.changeset(%SampleApp.User{}, user_params)
+
+    if changeset.valid? do
+      Repo.insert(changeset)
+
+      conn
+      |> put_flash(:info, "User registration is success!!")
+      |> redirect(to: static_pages_path(conn, :home))
+    else
+      render(conn, "new.html", changeset: changeset)
+    end
+  end
+end
+```
+
+さて、プログラム側では検証の結果により分岐はできました。  
+ですが、今のままだとサインアップに失敗した時、  
+再びサインアップ画面が出てくるだけで何が悪いのか分かりません。  
+
+どの値(検証)に問題があったのか、newテンプレートでエラーメッセージの表示を行うようにします。  
+
+#### File: web/templates/user/new.html.eex
 
 ```html
 <h1>Sign up</h1>
@@ -433,30 +469,50 @@ end
     </div>
   <% end %>
   
-  <div class="form-group">
-    <label>Name</label>
-    <%= text_input f, :name, class: "form-control" %>
-  </div>
-
-  <div class="form-group">
-    <label>Email</label>
-    <%= email_input f, :email, class: "form-control" %>
-  </div>
-
-  <div class="form-group">
-    <label>Password</label>
-    <%= password_input f, :password, class: "form-control" %>
-  </div>
-
-  <div class="form-group">
-    <%= submit "Sign-up!", class: "btn btn-primary" %>
-  </div>
+  ...
 <% end %>
 ```
 
+DBへの挿入処理で問題が起こった場合はどうなるでしょうか？  
+おそらく、実行時エラーとして落ちますね。  
+エラーページの設定がされていれば、500番台のエラーが表示されるでしょう。  
+
+挿入処理の結果を取得して処理の流れを分岐させます。  
+
+#### File: web/controllers/user_controller.ex
+
+```elixir
+defmodule SampleApp.UserController do
+  ...
+
+  def create(conn, %{"user" => user_params}) do
+    changeset = SampleApp.User.changeset(%SampleApp.User{}, user_params)
+
+    if changeset.valid? do
+      case Repo.insert(changeset) do
+        {:ok, _} ->
+          conn
+          |> put_flash(:info, "User registration successfully!!")
+          |> redirect(to: static_pages_path(conn, :home))
+        {:error, result} ->
+          render(conn, "new.html", changeset: result)
+      end
+    else
+      render(conn, "new.html", changeset: changeset)
+    end
+  end
+end
+```
+
+Ecto.Repo.insert/2の戻り値ですが、  
+成功時は、メッセージとして:okと挿入したモデルのデータが返ってきます。  
+また失敗時は、メッセージとして:errorとChangesetの値が返ってきます。  
+
 これで完璧です！  
 
-####Note:
+#### Note:
+
+```txt
 form_for/4について...  
 これは、Phoenix.HTMLライブラリにある機能です。  
 
@@ -473,12 +529,14 @@ UserのChangesetをマッピングして、入力されたデータをパラメ�
 
 フォーム部分を自分でガリガリ書かなくても、上手く抽象化されていますね。  
 素晴らしい！！  
+```
 
-##Extra
-デバッグ表示を追加してみようと思います。  
+## Extra
+せっかくなので、デバッグ表示を追加してみようと思います。  
 
-####ファイル: web/web.ex
 インポートする関数を追加しています。(action_name/1、controller_module/1)  
+
+#### File: web/web.ex
 
 ```elixir
 def view do
@@ -494,8 +552,9 @@ def view do
 end
 ```
 
-####ファイル: web/templates/layout/app.html.eex
 レイアウトテンプレートへデバッグを表示するテンプレートを追加します。  
+
+#### File: web/templates/layout/app.html.eex
 
 ```html
 <!DOCTYPE html>
@@ -509,13 +568,16 @@ end
       <%= render "debug.html", conn: @conn %>
     </div>
 
-    ...
+    <script src="<%= static_path(@conn, "/js/app.js") %>"></script>
+    <script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+    <script src="<%= static_path(@conn, "/js/bootstrap.js") %>"></script>
   </body>
 </html>
 ```
 
-####ファイル: web/views/layout_view.ex
-実行したアクション名とコントローラ名を取得する関数を追加しています。  
+Layoutビューへ、実行したアクション名とコントローラ名を取得する関数を追加しています。  
+
+#### File: web/views/layout_view.ex
 
 ```txt
 defmodule SampleApp.LayoutView do
@@ -526,8 +588,9 @@ defmodule SampleApp.LayoutView do
 end
 ```
 
-####ファイル: web/templates/layout/debug.html.eex
 デバッグ内容を出力する新しいテンプレートを作成します。  
+
+#### File: web/templates/layout/debug.html.eex
 
 ```html
 <div class="debug_dump">
@@ -536,8 +599,9 @@ end
 </div>
 ```
 
-####ファイル: priv/static/css/custom.css
 デバッグを出力するためのCSSを作成します。  
+
+#### File: priv/static/css/custom.css
 
 ```css
 /* miscellaneous */
@@ -560,7 +624,7 @@ end
 }
 ```
 
-##Before the end
+## Before the end
 ソースコードをマージします。  
 
 ```cmd
@@ -570,23 +634,16 @@ end
 >git merge sign_up
 ```
 
-#Speaking to oneself
+# Speaking to oneself
 ユーザのサインアップが行えるようになりました。  
-
-しかし、セキュアな登録と言うわけではありません。  
-セキュリティ的には、非常に甘いと言える状態でしょう。  
-
-このTutorialでは、そこまでやりませんが、  
-正式なWebサイトを運営もしくは作成するのであれば、  
-必要になりますので、必要なのだと言う意識だけ持っていて下さい。  
 
 次の章では、サインインとサインアウトを扱います。  
 認証と言われる処理を行います。  
 
-このTutorialでは、昨今よく使われる認証は行いません。  
+このTutorialでは、昨今よく使われるOAuthは行いません。  
 認証と言われる処理自体を学ぶため、シンプルな認証を行います。  
 
-#Bibliography
+# Bibliography
 [Ruby on Rails Tutorial](http://railstutorial.jp/chapters/sign-up?version=4.0#top)  
 [Gravatar - Image Requests](https://ja.gravatar.com/site/implement/images/)  
 [Gist - 10nin / Crypto.ex](https://gist.github.com/10nin/5713366)  

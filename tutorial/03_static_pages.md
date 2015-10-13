@@ -145,9 +145,12 @@ user_path  DELETE  /users/:id       DemoApp.UserController.delete/2
 大丈夫です。チュートリアルを終える頃には、好きなルーティングを作れるようになっていることでしょう。  
 
 #### Note:
+
+```txt
 Phoenix-Frameworkの大部分は、Elixirの機能であるマクロで作られています。  
 ルーティングの機能もマクロで実装されています。  
 チュートリアルでは触れませんが、興味があればマクロもといメタプログラミングに触ってみると面白いと思います。  
+```
 
 ## Create Controller
 次は、コントローラの作成を行っていきます。  
@@ -192,11 +195,14 @@ end
 ```
 
 #### Note:
+
+```txt
 ビューはレンダリングをする際、必ず必要になります。  
 テンプレートに対応したビューがない場合、レンダリングできませんので注意して下さい。  
+```
 
-#### Directory: web/templates/static_pages
 "static_pages"と言う名称でディレクトリを作成して下さい。  
+#### Directory: web/templates/static_pages
 
 間違えないように注意して下さい。  
 テンプレートのディレクトリ名はコントローラの先頭名と合わせる必要があります。  
@@ -207,7 +213,7 @@ Ruby on Railsで使えるERBのようなものと思っておけば大丈夫です。
 
 実際に非常によく似ています。  
 
-テンプレートを作成を作成していきましょう。  
+homeとhelpのテンプレートを作成を作成していきましょう。  
 
 #### File: web/templates/static_pages/home.html.eex
 
@@ -365,6 +371,20 @@ end
   <h2>Welcome to Static Pages <%= @message %>!</h2>
 </div>
 ```
+
+各ページの表示が変わらないことを確認します。
+
+##### Example:
+
+```cmd
+>mix phoenix.server
+```
+
+以下のアドレスへアクセスして下さい。  
+
+#### URL: http://localhost:4000/home
+#### URL: http://localhost:4000/help
+#### URL: http://localhost:4000/about
 
 テンプレート内では以下のように記述すると、  
 コントローラやビュー側から送った値を参照できます。  

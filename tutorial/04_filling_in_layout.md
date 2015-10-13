@@ -19,8 +19,6 @@ Filling in layout
 |> Before the end  
 
 ## Preparation
-毎度の準備です。  
-
 ブランチを切ります。  
 
 #### Example:
@@ -30,8 +28,8 @@ Filling in layout
 >git checkout -b filling_in_layout
 ```
 
-Bootstrapをダウンロードし、解凍しておいて下さい。  
-ダウンロード: [Bootstrap - Download](http://getbootstrap.com/getting-started/#download)  
+#### Bootstrapをダウンロードし、解凍しておいて下さい。  
+#### Download: [Bootstrap - Download](http://getbootstrap.com/getting-started/#download)  
 
 ## Custom CSS and Bootstrap
 カスタムCSSとBootstrapの導入を行います。  
@@ -94,7 +92,7 @@ priv
 これで配置完了です。  
 
 続いて、カスタムCSSを作成します。  
-(少し長いです)  
+(少し長いです。)  
 
 #### File: priv/static/css/custom.css
 
@@ -153,7 +151,7 @@ p {
 }
 ```
 
-読み込むのはこの次に行います。  
+ファイルの読み込みは、この次に行います。  
 
 ## Layout template
 デフォルトのレイアウトをカスタマイズします。  
@@ -166,7 +164,7 @@ Phoenix-Frameworkのレイアウトについてです。
 
 つまり、レイアウトテンプレートを変更すれば全テンプレートのレイアウトが変更されるわけですね。  
 
-レイアウトのファイルは以下になります。  
+レイアウトを扱っているファイルは以下になります。  
 
 - web/templates/layout/app.html.eex
 - web/views/layout_view.ex
@@ -477,7 +475,7 @@ Ruby on Railsのパーシャルみたいなものです。
 <%= render "footer.html", conn: @conn %>
 ```
 
-それでは、各テンプレートを作成していきましょう！  
+それでは、IE9未満対応、ヘッダー、フッターの各テンプレートを作成していきましょう！  
 
 まずは、IE9未満に対応するためのテンプレートを作成します。  
 
@@ -581,6 +579,18 @@ footer ul li {
 }
 ```
 
+レイアウトの変化を確認しましょう。  
+
+#### Example:
+
+```cmd
+>mix phoenix.server
+```
+
+以下のアドレスへアクセスしてみましょう。  
+
+#### URL: http://localhost:4000/home
+
 ## You want to add a contact page
 ページ追加の復習を兼ねて、contactページの追加を行います。  
 
@@ -636,10 +646,22 @@ contactページの内容は、お好きなように連絡先を作って下さ�
 </footer>
 ```
 
-## Modify home template
-homeテンプレートへユーザ登録をするための仮リンクの追加を行います。  
+contactページの確認とフッターへcontactリンクが追加されているか確認します。  
 
-ユーザ登録時のための、ちょっとした仕込みです。  
+#### Example:
+
+```cmd
+>mix phoenix.server
+```
+
+以下のアドレスへアクセスしてみましょう。  
+
+#### URL: http://localhost:4000/contact
+
+## Modify home template
+homeテンプレートへサインアップをするための仮リンクの追加を行います。  
+
+サインアップを実装する時のための、ちょっとした仕込みです。  
 
 #### File: web/templates/static_pages/home.html.eex
 
@@ -666,6 +688,18 @@ def home(conn, _params) do
   render conn, "home.html"
 end
 ```
+
+homeページにサインアップのボタンが追加されているか確認します。
+
+#### Example:
+
+```cmd
+>mix phoenix.server
+```
+
+以下のアドレスへアクセスしてみましょう。  
+
+#### URL: http://localhost:4000/home
 
 ## Before the end
 ソースコードをマージします。  
