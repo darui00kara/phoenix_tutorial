@@ -31,13 +31,15 @@ Sign-in and Sign-out
 ```
 
 ## Create SessionController
+サインインしている状態、していない状態を保存しておくために、  
 セッションを扱うためのコントローラを作成します。  
 
 セッションの使い方の説明は、後に行います。  
 まずはルーティングを追加していきます。  
 
-#### ファイル: web/router.ex
 セッション用のルーティングを追加します。  
+
+#### File: web/router.ex
 
 ```elixir
 scope "/", SampleApp do
@@ -48,7 +50,15 @@ scope "/", SampleApp do
 end
 ```
 
+追加したルーティングは、それぞれ以下のようになっています。  
+
+- new (/signin): サインインするための情報を入力するフォーム画面
+- create (/session): サインインの認証を行い、セッションに情報を格納するアクション
+- delete (/signout): サインアウトを行うアクション
+
 追加されたルーティングを確認しましょう。  
+
+#### Example:
 
 ```cmd
 >mix phoenix.routes
@@ -59,9 +69,9 @@ session_path  DELETE  /signout        SampleApp.SessionController.delete/2
 ```
 
 コントローラを作成します。  
-
-#### ファイル: web/controllers/session_controller.ex
 Sessionコントローラを以下の通り、作成します。  
+
+#### File: web/controllers/session_controller.ex
 
 ```elixir
 defmodule SampleApp.SessionController do
@@ -83,7 +93,7 @@ end
 
 続いて、ビューと仮のテンプレートも作成します。  
 
-#### ファイル: web/views/session_view.ex
+#### File: web/views/session_view.ex
 
 ```elixir
 defmodule SampleApp.SessionView do
@@ -91,7 +101,15 @@ defmodule SampleApp.SessionView do
 end
 ```
 
-#### ファイル: web/templates/session/signin_form.html.eex
+Sessionのテンプレートを格納するディレクトリを作成します。  
+sessionと言うディレクトリを作成して下さい。  
+
+#### Directory: web/templates/session
+
+サインインに必要な情報を入力するテンプレートを作成します。  
+入力フォームの部分はまだ作成しません。  
+
+#### File: web/templates/session/signin_form.html.eex
 
 ```html
 <div class="jumbotron">
@@ -99,12 +117,12 @@ end
 </div>
 ```
 
-このSessionコントローラにセッションやサインイン / サインアウトの処理を追加していきます。  
+Sessionコントローラにセッションやサインイン / サインアウトの処理を追加していきます。  
 
 ## Authentication
 サインインとは切っても切り離せない認証を作成していきます。  
 
-ここで作成する認証処理は、他のライブラリなどを利用しません。  
+ここで作成する認証処理は、ライブラリなどを利用しません。  
 
 実際はライブラリなどを使って、安全性の高い認証を行うべきでしょうが、  
 ここでは、DBのパスワードの値と入力されたパスワードが一致するか否かを  
@@ -114,18 +132,23 @@ end
 
 まず作成しなければいけないのは、EmailでDBからデータ取得する部分です。  
 
-#### ファイル: web/models/user.ex
-Emailから取得する関数を作成します。  
+UserモデルへEmailからユーザ情報の取得を行う関数を作成します。  
+
+#### File: web/models/user.ex
 
 ```elixir
-def find_user_from_email(email) do
-  SampleApp.Repo.get_by(SampleApp.User, email: email)
+defmodule SampleApp.User do
+  ...
+
+  def find_user_from_email(email) do
+    SampleApp.Repo.get_by(SampleApp.User, email: email)
+  end
 end
 ```
 
 認証を扱うモジュールを作成します。  
 
-#### ファイル: lib/authentication.ex
+#### File: lib/authentication.ex
 
 ```elixir
 defmodule SampleApp.Authentication do
@@ -142,7 +165,7 @@ end
 ## Sign-in
 サインインを扱うモジュールも作成してしまいましょう。  
 
-#### ファイル: lib/sign_in.ex
+#### File: lib/sign_in.ex
 
 ```elixir
 defmodule SampleApp.Signin do
@@ -161,35 +184,42 @@ end
 先ほど、作成した認証のモジュールを使用しています。  
 認証に成功すればサインインができます。  
 
-Sessionコントローラのcreateアクションにサインインの処理を作成しましょう。  
+Sessionコントローラのcreateアクションを以下のようにサインイン処理を行うように変更しましょう。  
 
-#### ファイル: web/controllers/session_controller.ex
+#### File: web/controllers/session_controller.ex
 
 ```elixir
-def create(conn, %{"signin_params" => %{"email" => email, "password" => password}}) do
-  case sign_in(email, password) do
-    {:ok, user} ->
-      conn
-      |> put_flash(:info, "User sign-in is success!!")
-      |> redirect(to: static_pages_path(conn, :home))
-    :error ->
-      conn
-      |> put_flash(:error, "User sign-in is failed!! email or password is incorrect.")
-      |> redirect(to: session_path(conn, :new))
+defmodule SampleApp.SessionController do
+  ...
+
+  def create(conn, %{"signin_params" => %{"email" => email, "password" => password}}) do
+    case sign_in(email, password) do
+      {:ok, user} ->
+        conn
+        |> put_flash(:info, "User sign-in is success!!")
+        |> redirect(to: static_pages_path(conn, :home))
+      :error ->
+        conn
+        |> put_flash(:error, "User sign-in is failed!! email or password is incorrect.")
+        |> redirect(to: session_path(conn, :new))
+    end
   end
+
+  ...
 end
 ```
 
 ## Sign-in Form
 サインインを行うための入力フォームを作成します。  
 
-#### ファイル: web/templates/session/signin_form.html.eex
 サインインのフォームは以下のようになります。  
+
+#### File: web/templates/session/signin_form.html.eex
 
 ```html
 <h1>Sign in!!</h1>
 
-<%= form_for @conn, session_path(@conn, :create), [name: :signin_params], fn f -> %>
+<%= form_for @conn, session_path(@conn, :create), [as: :signin_params], fn f -> %>
   <%= if f.errors != [] do %>
     <div class="alert alert-danger">
       <p>Oops, something went wrong! Please check the errors below:</p>
@@ -221,11 +251,12 @@ end
 そう、サインアップの入力フォームと似ていますね。  
 
 フォームを使う時は、このような形になることが多いと思います。  
+是非、覚えておいて下さい。  
 
 ## Sign-in link
 レイアウトヘッダにあるサインインのリンクを修正します。  
 
-#### ファイル: web/templates/layout/header.html.eex
+#### File: web/templates/layout/header.html.eex
 
 ```html
 <header class="navbar navbar-inverse">
@@ -248,8 +279,9 @@ end
 Phoenix-Frameworkでは、特に設定を行わなくてもセッションを使うことができます。  
 しかし、どこで設定しているか知るために、セッションの設定をしているソースコードを見てみます。  
 
-#### ファイル: config/config.exs
 各クッキーに署名するために、secret_key_baseの値を利用しています。  
+
+#### File: config/config.exs
 
 ```elixir
 config :sample_app, SampleApp.Endpoint,
@@ -261,8 +293,9 @@ config :sample_app, SampleApp.Endpoint,
            adapter: Phoenix.PubSub.PG2]
 ```
 
-#### ファイル: lib/sample_app/endpoint.ex
 Endpointでデフォルトのセッションを設定しています。  
+
+#### File: lib/sample_app/endpoint.ex
 
 ```elixir
 defmodule SampleApp.Endpoint do
@@ -299,7 +332,7 @@ defmodule SampleApp.PageController do
 end
 ```
 
-#### Note:
+セッションへ値を出し入れする関数。
 
 - put_session/2: セッションへ値を格納する。
 - get_session/2: セッションの値を取り出す。
@@ -307,41 +340,58 @@ end
 ## Use session
 Sessionコントローラへセッションの処理を追加します。  
 
-#### ファイル: web/controllers/session_controller.ex
-サインインモジュールのインポートを追加します。  
+先ほど作成した、サインインモジュールのインポートを追加します。  
+また、セッションに値を格納するための処理を追加します。  
+
+#### File: web/controllers/session_controller.ex
 
 ```elixir
-import SampleApp.Signin
-```
+defmodule SampleApp.SessionController do
+  use SampleApp.Web, :controller
 
-セッションに値を格納するための処理を追加します。  
+  import SampleApp.Signin
 
-```elixir
-def create(conn, %{"signin_params" => %{"email" => email, "password" => password}}) do
-  case sign_in(email, password) do
-    {:ok, user} ->
-      conn
-      |> put_flash(:info, "User sign-in is success!!")
-      |> put_session(:user_id, user.id)
-      |> redirect(to: static_pages_path(conn, :home))
-    :error ->
-      conn
-      |> put_flash(:error, "User sign-in is failed!! email or password is incorrect.")
-      |> redirect(to: session_path(conn, :new))
+  ...
+
+  def create(conn, %{"signin_params" => %{"email" => email, "password" => password}}) do
+    case sign_in(email, password) do
+      {:ok, user} ->
+        conn
+        |> put_flash(:info, "User sign-in is success!!")
+        |> put_session(:user_id, user.id)
+        |> redirect(to: static_pages_path(conn, :home))
+      :error ->
+        conn
+        |> put_flash(:error, "User sign-in is failed!! email or password is incorrect.")
+        |> redirect(to: session_path(conn, :new))
+    end
   end
+
+  ...
 end
 ```
 
-追加は一行だけですが、これでセッションに値を格納しています。  
+追加はput_session/2の一行だけですが、これでセッションに値を格納できます。  
 ユーザを識別するためのIDを格納しています。  
+
+user_idと言うキー名で、ユーザIDを格納しています。
 
 ## Continuation of Sign-in state
 今のままではサインイン後、別のページに移動するとサインインした状態が継続されません。  
 サインインを継続させるために状態維持の機能を実装します。  
 
 どうやって実現するかですが、自作のプラグを作成して各コントローラで実行するようにします。  
+プラグを指定しておけば、そのコントローラでアクションが動作する前に動作してくれます。  
+また、特定のアクションにのみプラグが動作するような設定もできます。  
 
-#### ファイル: lib/plugs/check_authentication.ex
+まずは、プラグのファイルを格納するためのディレクトリを作成しましょう。  
+plugsと言う名前でディレクトリを作成して下さい。  
+
+#### Directory: lib/plugs
+
+認証されているかを確認するためのプラグ(モジュール)を作成します。  
+
+#### File: lib/plugs/check_authentication.ex
 
 ```elixir
 defmodule SampleApp.Plugs.CheckAuthentication do
@@ -370,25 +420,42 @@ end
 ```
 
 セッションからユーザIDを取得し、IDが存在すればConnのassignにユーザデータを格納しています。  
-このassignに値が存在するか否かでサインインの状態を判断します。  
+このユーザIDがセッションに存在するか否かでサインインの状態を判断しています。  
 
 また後にやりますが、現在のサインインしているユーザを取得する際にも利用します。  
 
-各コントローラに今回使っているCheckAuthenticationを追加して下さい。  
-例としてSessionコントローラにプラグを追加します。  
+このプラグは全コントローラで利用を考えているプラグになります。
+なので、web.exのcontroller/0関数へプラグを追加します。
 
-#### ファイル: web/controllers/session_controller.ex
+#### File: web/web.ex
 
 ```elixir
-defmodule SampleApp.SessionController do
-  use SampleApp.Web, :controller
+def controller do
+  quote do
+    ...
 
-  import SampleApp.Signin
-
-  plug SampleApp.Plugs.CheckAuthentication
-
-  ...
+    plug SampleApp.Plugs.CheckAuthentication
+  end
 end
+```
+
+これで全てのコントローラで作成したプラグが動作します。
+
+#### Note:
+
+```txt
+セッションに格納しているデータですが、
+ここではユーザIDを生のまま格納しています。
+
+分かりやすくするために生のまま格納していますが、
+本来であれば暗号化された別の値を格納すべきです。
+
+ユーザID(ただの番号)を格納していることが分かってしまえば、
+Cookieの値を改ざんして、別のユーザでログインしているように成りすますことができてしまいます。
+
+公開するWebサイトを運営するのであれば、
+セッションに格納する値は別の暗号化されて値を格納するようにしましょう。
+(公開して後悔しないために...)
 ```
 
 ## Current user
@@ -396,9 +463,10 @@ end
 
 ビューをサポートするためのヘルパーモジュールを作成します。  
 
-####ファイル: lib/helpers/view_helper.ex
 先ほど、Connのassignに値を格納していたと思う。  
 その値をここで取り出して利用する。  
+
+#### File: lib/helpers/view_helper.ex
 
 ```elixir
 defmodule SampleApp.Helpers.ViewHelper do
@@ -408,22 +476,24 @@ defmodule SampleApp.Helpers.ViewHelper do
 end
 ```
 
-####ファイル: web/web.ex
-上記のヘルパーモジュールへimportを追加します。  
+上記のヘルパーモジュールを全てのビューで利用できるように、  
+web.exのview/0関数へimportを追加します。  
+
+#### File: web/web.ex
 
 ```elixir
 def view do
   quote do
     ...
 
-    # My view helper
     import SampleApp.Helpers.ViewHelper
   end
 end
 ```
 
-####ファイル: web/templates/layout/debug.html.eex
 デバッグ用のテンプレートへユーザ名とIDの表示を追加する。  
+
+#### File: web/templates/layout/debug.html.eex
 
 ```elixir
 <div class="debug_dump">
@@ -457,7 +527,7 @@ end
 また、少し動的な表示を行えるように、bootstrapのドロップダウンを使います。  
 それでは実装しましょう！  
 
-#### ファイル: web/templates/layout/header.html.eex
+#### File: web/templates/layout/header.html.eex
 
 ```html
 <header class="navbar navbar-inverse">
@@ -476,10 +546,10 @@ end
             </a>
             <!-- Dropdown List -->
             <ul class="dropdown-menu" aria-labelledby="account">
-              <li><%= link "Profile", to: user_path(@conn, :show, current_user(@conn)) %><li>
-              <li><%= link "Help", to: static_pages_path(@conn, :help) %></li>
+              <li><%= button "Profile", to: user_path(@conn, :show, current_user(@conn)), method: :get, class: "header-button" %><li>
+              <li><%= button "Help", to: static_pages_path(@conn, :help), method: :get, class: "header-button" %></li>
               <li class="divider"></li>
-              <li><%= link "Sign-out", to: session_path(@conn, :delete) %></li>
+              <li><%= button "Sign-out", to: session_path(@conn, :delete), method: :delete, class: "header-button" %></li>
             </ul>
           </li>
         <% else %>
@@ -492,47 +562,90 @@ end
 </header>
 ```
 
+#### File: priv/static/css/custom.css
+
+```css
+/* header-button */
+.header-button {
+  display: inline-block;
+  margin-left: 20px;
+  border: solid 2px #fff;
+  /*border-radius: 3px;*/
+  background: rgba(255,255,255,0.2);
+  color: #1e90ff;
+  text-decoration: none;
+  font-weight: bold;
+  font-family: Helvetica, Arial, sans-serif;
+}
+.header-button:hover{
+  color: #;
+  background: #f0ffff;
+}
+```
+
+#### Cution:
+
+このヘッダーテンプレートですが、後日修正を行う可能性があります。
+
+v1.0.3にて、linkタグでdeleteメソッドを指定すると動作をしない現象を確認。
+v1.0.0では動作を確認しているので、比較や検証を行ったが原因は不明。
+
+そのため、急きょbuttonタグを利用してCSSで調整して表示している。
+お手数をお掛けしますが、ご理解お願い致します。
+
 ## Sign-out
 ようやっとサインイン機能と対になる、サインアウト機能を実装します。  
 サインインほど、難しい処理はしません。  
 
-#### ファイル: web/controllers/session_controller.ex
+Sessionコントローラのdeleteアクションを以下のように変更します。
+
+#### File: web/controllers/session_controller.ex
 
 ```elixir
-def delete(conn, _params) do
-  conn
-  |> put_flash(:info, "Sign-out now! See you again!!")
-  |> delete_session(:user_id)
-  |> redirect(to: static_pages_path(conn, :home))
+defmodule SampleApp.SessionController do
+  ...
+
+  def delete(conn, _params) do
+    conn
+    |> put_flash(:info, "Sign-out now! See you again!!")
+    |> delete_session(:user_id)
+    |> redirect(to: static_pages_path(conn, :home))
+  end
 end
 ```
 
 サインアウトの旨を知らせるメッセージの表示。  
 それと、セッションの削除を行っています。  
 
+サインアウトを行うまで、サインインの状態は維持されます。  
+
 ## After registration, sign-in
 サインアップ後、サインイン処理を行うようにサインアップ時の処理を修正します。  
 
 Userコントローラのcreateアクションを以下のように修正して下さい。  
 
-#### ファイル: web/controllers/user_controller.ex
+#### File: web/controllers/user_controller.ex
 
 ```elixir
-def create(conn, %{"user" => user_params}) do
-  changeset = SampleApp.User.changeset(%SampleApp.User{}, user_params)
+defmodule SampleApp.UserController do
+  ...
 
-  if changeset.valid? do
-    case Repo.insert(changeset) do
-      {:ok, user} ->
-        conn
-        |> put_flash(:info, "User registration successfully!!")
-        |> put_session(:user_id, user.id)
-        |> redirect(to: static_pages_path(conn, :home))
-      {:error, changeset} ->
-        render(conn, "new.html", changeset: changeset)
+  def create(conn, %{"user" => user_params}) do
+    changeset = SampleApp.User.changeset(%SampleApp.User{}, user_params)
+
+    if changeset.valid? do
+      case Repo.insert(changeset) do
+        {:ok, result_user} ->
+          conn
+          |> put_flash(:info, "User registration successfully!!")
+          |> put_session(:user_id, result_user.id)
+          |> redirect(to: static_pages_path(conn, :home))
+        {:error, result} ->
+          render(conn, "new.html", changeset: result)
+      end
+    else
+      render(conn, "new.html", changeset: changeset)
     end
-  else
-    render(conn, "new.html", changeset: changeset)
   end
 end
 ```
@@ -540,8 +653,13 @@ end
 Repo.insert/2の戻り値は、{:ok, model}か{:error, changeset}です。  
 なので、データの挿入が成功時はサインインの処理を行い、失敗時は再度入力を促すようにしています。  
 
+サインアップでユーザ登録を行えば、  
+成功後にセッションへ値を格納し、サインイン状態になります。  
+
 ## Before the end
 ソースコードをマージします。  
+
+#### Example:
 
 ```cmd
 >git add .
@@ -550,17 +668,17 @@ Repo.insert/2の戻り値は、{:ok, model}か{:error, changeset}です。
 >git merge sign_in_out
 ```
 
-#Speaking to oneself
+# Speaking to oneself
 お疲れ様でした。これで第八章は終わりです。
 サインイン、サインアウトの実装はどうでしたか？  
-結構、色々なことをやったので少し苦労したかもしれません。  
+色々なことをやったので少し苦労したかもしれません。  
 
-次の第九章は、このチュートリアルにおける最初の山場です。  
+次の章は、このチュートリアルにおける最初の山場です。  
 ページネーションや認可、残りのユーザの処理を実装します。  
 
 大変でしょうけど、Webサイトには必須の内容なので一緒に頑張りましょう！！  
 
-#Bibliography
+# Bibliography
 [Ruby on Rails Tutorial](http://railstutorial.jp/chapters/sign-in-sign-out?version=4.0#top)  
 [Ecto.Query](http://hexdocs.pm/ecto/Ecto.Query.html)  
 [Elixir - case, cond and if](http://elixir-lang.org/getting-started/case-cond-and-if.html)  
