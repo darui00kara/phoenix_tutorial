@@ -1,7 +1,7 @@
-#Goal
+# Goal
 デモアプリを作成する。  
 
-#Wait a minute
+# Wait a minute
 最初の事始めとして、デモアプリの作成を行います。  
 
 作成するデモアプリは、  
@@ -15,7 +15,7 @@ Phoenix-Frameworkを体験してみる程度の心構えで結構です。
 
 Phoenix-Frameworkを使ってみることに集中しましょう！！  
 
-#Index
+# Index
 Demo Application  
 |> Preparation  
 |> Data model  
@@ -23,7 +23,7 @@ Demo Application
 |> Create microposts resource  
 |> Associate with has_many  
 
-##Preparation
+## Preparation
 早く不死鳥と遊びたいとは思いますが・・・少し水を差します。  
 
 Phoenixを動かす前にプロジェクトが必要ですね。  
@@ -34,11 +34,15 @@ Phoenix-Frameworkのインストールで
 
 以下のコマンドで作成することができます。  
 
+#### Example:
+
 ```cmd
 >mix phoenix.new project_name
 ```
 
 では、実際に作成してみましょう。  
+
+#### Example:
 
 ```cmd
 >cd path/to/workspace
@@ -50,23 +54,25 @@ demo_appが作成されていますね。
 
 次は、サーバを起動してみましょう。  
 
+#### Example:
+
 ```cmd
 >cd demo_app
 >mix ecto.create
 >mix phoenix.server
 ```
 
-####Description:
+#### Description:
 Ctrl+Cでサーバを終了できます。  
 
 以下のアドレスへアクセスして下さい。  
 
-####アドレス: http://localhost:4000
+#### URL: http://localhost:4000
 Phoenixのページが表示されましたね。  
 
 ようこそ！Phoenix-Frameworkへ！！  
 
-##Data model
+## Data model
 早くプログラムをしたいですね！  
 しかし、プログラムに取り掛かる前にやることがあります。  
 
@@ -98,13 +104,15 @@ Phoenixのページが表示されましたね。
 詳しいことは、別の章にて説明する機会があります。  
 それまで、期待を膨らませて待っていて下さい。  
 
-##Create users resource
+## Create users resource
 いよいよ、コードを作成していきます！  
 
 Phoenix-Frameworkには、幾つかコマンド(カスタムタスク)があります。  
 確認してみましょう。  
 
 プロジェクトのディレクトリで以下のように実行して下さい。  
+
+#### Example:
 
 ```cmd
 >mix help | grep phoenix
@@ -123,6 +131,8 @@ mix phoenix.server      # Starts applications and their servers
 
 今回使うのは、以下のコマンドです。  
 
+#### Example:
+
 ```cmd
 mix phoenix.gen.html    # Generates controller, model and views for an HTML-based resource
 ```
@@ -132,6 +142,8 @@ mix phoenix.gen.html    # Generates controller, model and views for an HTML-base
 
 まずは、ユーザから作成していきます。  
 プロジェクトのディレクトリで以下のように実行して下さい。  
+
+#### Example:
 
 ```cmd
 >mix phoenix.gen.html User users name:string email:string
@@ -163,9 +175,9 @@ and then update your repository by running migrations:
 ルーティングの追加とマイグレーションの実行です。  
 
 まずはルーティングの追加から実施します。  
-
-####ファイル: web/router.ex
 コメントにAdditional linesと書いてある行を追加して下さい。  
+
+#### File: web/router.ex
 
 ```elixir
 scope "/", DemoApp do
@@ -177,6 +189,8 @@ end
 ```
 
 ルーティングが追加されたか確認してみましょう。  
+
+#### Example:
 
 ```cmd
 >mix phoenix.routes
@@ -191,9 +205,12 @@ user_path  PATCH   /users/:id       DemoApp.UserController.update/2
 user_path  DELETE  /users/:id       DemoApp.UserController.delete/2
 ```
 
-####Description:
+#### Note:
+
+```txt
 resourcesを使ってルーティングを作成すると、  
 RESTfulなルーティングを作成してくれます。  
+```
 
 次は、マイグレーションを実行します。  
 マイグレーションに使うコマンドは、また別のものになります。  
@@ -203,6 +220,8 @@ DBとの接続を楽にしてくれる素晴らしいライブラリです。
 (RailsにおけるActive Recordのような存在です)  
 
 Ectoのコマンドを見てみます。  
+
+#### Example:
 
 ```cmd
 >mix help | grep ecto
@@ -215,6 +234,8 @@ mix ecto.rollback       # Rollback migrations from a repo
 ```
 
 以下のコマンドを使ってマイグレーションを実行します。  
+
+#### Example:
 
 ```cmd
 >mix ecto.migrate
@@ -230,13 +251,15 @@ mix ecto.rollback       # Rollback migrations from a repo
 まだ、何もプログラムしていない？  
 大丈夫です！先ほどの操作で既にユーザの画面が出来上がっています！！  
 
+#### Example:
+
 ```cmd
 >mix phoenix.server
 ```
 
 以下のアドレスにアクセスして下さい。  
 
-####アドレス: http://localhost:4000/users
+#### URL: http://localhost:4000/users
 
 ユーザの一覧ページが表示されましたね。  
 
@@ -246,32 +269,42 @@ mix ecto.rollback       # Rollback migrations from a repo
 各画面における、URLの例は以下のようになります。  
 
 - index
-例) http://localhost:4000/users  
+Example) http://localhost:4000/users  
 ユーザ一覧を表示するページ。  
 
 - new
-例) http://localhost:4000/users/new  
-新規のユーザ登録を行うページ。  
+Example) http://localhost:4000/users/new  
+新規のユーザ登録を入力するページ。  
+
+- create
+Example) http://localhost:4000/users (Method: post)  
+新規のユーザ登録を行う。
 
 - show
-例) http://localhost:4000/users/1  
+Example) http://localhost:4000/users/1  
 ユーザ個別のプロファイルを表示するページ。  
 (URL中の数値1はid属性)  
 
 - edit
-例) http://localhost:4000/users/1/edit  
-ユーザ情報の更新を行うページ。  
+Example) http://localhost:4000/users/1/edit  
+ユーザ情報の更新を入力するページ。  
 
-####Description:
-create、update、deleteはメソッドが異なるので割愛します。  
+- update
+Example) http://localhost:4000//user/1 (Method: put or patch)
+ユーザ情報の更新を行う。
 
-##Create microposts resource
+- delete
+Example) http://localhost:4000//user/1 (Method: delete)
+
+## Create microposts resource
 続いて、マイクロポストリソースを作成します。  
 
 ユーザリソースを作成した時と手順は、  
 ほぼ同一なので必要な部分のみ記述します。  
 
 まずは、自動生成コマンドを使って一通りのものを生成します。  
+
+#### Example:
 
 ```cmd
 >mix phoenix.gen.html Micropost microposts content:string user_id:integer
@@ -298,9 +331,9 @@ and then update your repository by running migrations:
 ```
 
 ルーティングの追加をします。  
-
-####ファイル: web/router.ex
 コメントにAdditional linesと書いてある行を追加して下さい。  
+
+#### File: web/router.ex
 
 ```elixir
 scope "/", DemoApp do
@@ -317,6 +350,8 @@ end
 他のルーティングも表示されます。  
 下記の結果では、マイクロポストのみ表示しています。  
 
+#### Example:
+
 ```cmd
 >mix phoenix.routes
 ...
@@ -332,6 +367,8 @@ micropost_path  DELETE  /microposts/:id       DemoApp.MicropostController.delete
 
 マイグレーションを実行します。  
 
+#### Example:
+
 ```cmd
 >mix ecto.migrate
 [info] == Running DemoApp.Repo.Migrations.CreateMicropost.change/0 forward
@@ -341,20 +378,22 @@ micropost_path  DELETE  /microposts/:id       DemoApp.MicropostController.delete
 
 サーバを起動して、マイクロポストのページを確認にいきます。  
 
+#### Example:
+
 ```cmd
 >mix phoenix.server
 ```
 
-####アドレス: http://localhost:4000/microposts
-
+#### URL: http://localhost:4000/microposts
 
 折角だから、俺はプログラミングをするぜ！！  
 そろそろプログラムをしたいので、少しだけソースコードを追加します。  
 
-####ファイル: web/models/micropost.ex
-changeset/2の関数がありますね。  
+Micropostモデルにchangeset/2関数がありますね。  
 内容を以下のように編集して下さい。  
 (Additional linesの部分)  
+
+#### File: web/models/micropost.ex
 
 ```elixir
 def changeset(model, params \\ :empty) do
@@ -370,13 +409,14 @@ end
 試しにマイクロポストの作成 / 更新の画面から140文字以上を入力してみて下さい。  
 画面にエラーを表示してくれるはずです。  
 
-##Associate with has_many
+## Associate with has_many
 もう少しソースコードをいじってみましょう！  
 
 ユーザとマイクロポストに関連付けを行ってみます。  
 
-####ファイル: web/models/user.ex
-schemaの部分を以下のように編集して下さい。  
+Userモデルのschemaを以下のように編集して下さい。  
+
+#### File: web/models/user.ex
 
 ```elixir
 schema "users" do
@@ -388,8 +428,9 @@ schema "users" do
 end
 ```
 
-####ファイル: web/models/micropost.ex
-schemaの部分を以下のように編集して下さい。  
+Micropostモデルのschemaを以下のように編集して下さい。  
+
+#### File: web/models/micropost.ex
 
 ```elixir
 schema "microposts" do
@@ -406,7 +447,7 @@ end
 1対多、多対多の関係性は後の章で出てきます。  
 なので詳しい説明をここではしません。  
 
-#Speaking to oneself
+# Speaking to oneself
 お疲れ様でした。今回はここまでになります。  
 
 Phoenix-Frameworkの事始めとしてはどうでしたでしょうか？  
@@ -422,7 +463,7 @@ Railsを使ったことがある方々は、
 
 最後までお付き合い頂ければ幸いです。  
 
-#Bibliography
+# Bibliography
 [Ruby on Rails Tutorial](http://railstutorial.jp/chapters/a-demo-app?version=4.0#top)  
 [Phoenix Framework - Guides - Mix Tasks](http://www.phoenixframework.org/v0.13.1/docs/mix-tasks)  
 [Phoenix Framework - Guides - Ecto Models](http://www.phoenixframework.org/v0.13.1/docs/ecto-models)  

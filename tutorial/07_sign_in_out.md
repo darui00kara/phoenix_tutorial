@@ -1,11 +1,11 @@
-#Goal
+# Goal
 サインイン、サインアウト機能を実装する。  
 
-#Wait a minute
-本章では、セッションを使いサインイン、サインアウト機能を実装していきます。  
-また、シンプルな認証(Authentication)についてもやっていきます。  
+# Wait a minute
+セッションを使いサインイン、サインアウト機能を実装していきます。  
+また、シンプルな認証(Authentication)についても実装してみましょう。  
 
-#Index
+# Index
 Sign-in and Sign-out  
 |> Preparation  
 |> Create SessionController  

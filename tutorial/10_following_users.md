@@ -13,7 +13,7 @@
 Following users  
 |> Preparation  
 |> Relationship data model  
-|> User and Relationship of association
+|> User and Relationship of association  
 |> Validation  
 |> Utility Methods  
 |> Following / Followers User List  
