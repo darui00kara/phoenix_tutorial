@@ -7,20 +7,20 @@
 
 # Index
 Sign-in and Sign-out  
-|> Preparation  
-|> Create SessionController  
-|> Authentication  
-|> Sign-in  
-|> Sign-in Form  
-|> Sign-in link  
-|> How do session?  
-|> Use session  
-|> Continuation of Sign-in state  
-|> Current user  
-|> Change links and layout  
-|> Sign-out  
-|> After registration, sign-in  
-|> Before the end  
+|> [Preparation](http://daruiapprentice.blogspot.jp/2015/07/sign-in-sign-out.html#preparation)  
+|> [Create SessionController](http://daruiapprentice.blogspot.jp/2015/07/sign-in-sign-out.html#create-sessioncontroller)  
+|> [Authentication](http://daruiapprentice.blogspot.jp/2015/07/sign-in-sign-out.html#authentication)  
+|> [Sign-in](http://daruiapprentice.blogspot.jp/2015/07/sign-in-sign-out.html#sign-in)  
+|> [Sign-in Form](http://daruiapprentice.blogspot.jp/2015/07/sign-in-sign-out.html#sign-in-form)  
+|> [Sign-in link](http://daruiapprentice.blogspot.jp/2015/07/sign-in-sign-out.html#sign-in-link)  
+|> [How do session?](http://daruiapprentice.blogspot.jp/2015/07/sign-in-sign-out.html#how-do-session-)  
+|> [Use session](http://daruiapprentice.blogspot.jp/2015/07/sign-in-sign-out.html#use-session)  
+|> [Continuation of Sign-in state](http://daruiapprentice.blogspot.jp/2015/07/sign-in-sign-out.html#continuation-of-sign-in-state)  
+|> [Current user](http://daruiapprentice.blogspot.jp/2015/07/sign-in-sign-out.html#current-user)  
+|> [Change links and layout](http://daruiapprentice.blogspot.jp/2015/07/sign-in-sign-out.html#change-links-and-layout)  
+|> [Sign-out](http://daruiapprentice.blogspot.jp/2015/07/sign-in-sign-out.html#sign-out)  
+|> [After registration, sign-in](http://daruiapprentice.blogspot.jp/2015/07/sign-in-sign-out.html#after-registration-sign-in)  
+|> [Before the end](http://daruiapprentice.blogspot.jp/2015/07/sign-in-sign-out.html#before-the-end)  
 
 ## Preparation
 作業前にブランチを切ります。  
