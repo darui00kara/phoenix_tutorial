@@ -31,13 +31,15 @@ Updating users
 ## Preparation
 作業前にブランチを切ります。  
 
+#### Example:
+
 ```cmd
 >cd path/to/sample_app
 >git checkout -b updating_users
 ```
 
 ライブラリを利用する準備をします。  
-ライブラリ: [Github - drewolson/scrivener](https://github.com/drewolson/scrivener)  
+#### Github: [drewolson/scrivener](https://github.com/drewolson/scrivener)  
 
 このライブラリはページネーションの機能を提供してくれるライブラリです。  
 Ectoのクエリをページ分割でき、そのためのpaginate関数を提供してくれます。  
@@ -46,23 +48,24 @@ Ectoのクエリをページ分割でき、そのためのpaginate関数を提�
 大事なのは、Phoenixと上手く動作してくれる点ですね。  
 今のところページネーションを扱うライブラリは、これ一択ではないでしょうか？  
 
-#### ファイル: mix.exs
+同作者による、ビューの機能を提供してくれるライブラリもありますが、  
+せっかくなのでビューの部分は自分で作っていきます。  
+
+利用するための準備に移ります。  
 依存関係に、scrivenerを追加します。  
+
+#### File: mix.exs
 
 ```elixir
 defp deps do
-  [{:phoenix, "~> 1.0.0"},
-   {:phoenix_ecto, "~> 1.1"},
-   {:postgrex, ">= 0.0.0"},
-   {:phoenix_html, "~> 2.1"},
-   {:phoenix_live_reload, "~> 1.0", only: :dev},
-   {:cowboy, "~> 1.0"},
-   {:safetybox, "~> 0.1"},
+  [...
    {:scrivener, "~> 1.0.0"}]
 end
 ```
 
 依存関係の解消します。  
+
+#### Example:
 
 ```cmd
 >mix deps.get
@@ -70,7 +73,7 @@ end
 
 ライブラリを利用するには、Repoにてuseします。  
 
-#### ファイル: lib/pagination_sample/repo.ex
+#### File: lib/pagination_sample/repo.ex
 
 ```elixir
 defmodule SampleApp.Repo do
@@ -87,26 +90,31 @@ end
 
 Userコントローラへeditアクションを追加します。  
 
-#### ファイル: web/controllers/user_controller.ex
+#### File: web/controllers/user_controller.ex
 
 ```elixir
-def edit(conn, %{"id" => id}) do
-  user = Repo.get(SampleApp.User, id)
-  user = Map.put(user, :password, SampleApp.Encryption.decrypt(user.password_digest))
-  changeset = SampleApp.User.changeset(user)
+defmodule SampleApp.UserController do
+  ...
 
-  render(conn, "edit.html", user: user, changeset: changeset)
+  def edit(conn, %{"id" => id}) do
+    user = Repo.get(SampleApp.User, id)
+    user = Map.put(user, :password, SampleApp.Encryption.decrypt(user.password_digest))
+    changeset = SampleApp.User.changeset(user)
+
+    render(conn, "edit.html", user: user, changeset: changeset)
+  end
 end
 ```
 
 DBに格納されているパスワードの値(password_digest)は暗号化されています。  
-なので、復号化してあげないと意味不明な文字の羅列が表示されてしまいます。  
-(パスワードの可視化はしていませんが...)  
+パスワードの可視化はしていませんが、復号化してあげないと意味不明な文字の羅列が表示されてしまいます。  
 
 ## Create edit form template
 更新データを入力するためのテンプレート作成しましょう。  
 
-#### ファイル: web/templates/user/edit.html.eex
+編集の入力フォームは以下のようになります。
+
+#### File: web/templates/user/edit.html.eex
 
 ```html
 <%= form_for @changeset, user_path(@conn, :update, @user), fn f -> %>
@@ -151,7 +159,9 @@ DBに格納されているパスワードの値(password_digest)は暗号化さ�
 ## Settings link
 更新ページへのリンクを作成します。  
 
-#### ファイル: web/templates/user/show.html.eex
+showテンプレートへ更新のリンクを追加します。  
+
+#### File: web/templates/user/show.html.eex
 
 ```html
 <div class="row">
@@ -172,40 +182,45 @@ DBに格納されているパスワードの値(password_digest)は暗号化さ�
 ## Update action
 入力した内容で更新をするための、UpdateアクションをUserコントローラへ追加します。  
 
-#### ファイル: web/controllers/user_controller.ex
+#### File: web/controllers/user_controller.ex
 
 ```elixir
-def update(conn, %{"id" => id, "user" => user_params}) do
-  user = Repo.get(SampleApp.User, id)
-  changeset = SampleApp.User.changeset(user, user_params)
+defmodule SampleApp.UserController do
+  ...
 
-  if changeset.valid? do
-    case Repo.update(changeset) do
-      {:ok, user} ->
-        conn
-        |> put_flash(:info, "User updated successfully!!")
-        |> redirect(to: user_path(conn, :show, id))
-      {:error, changeset} ->
-        render(conn, "edit.html", user: id, changeset: changeset)
+  def update(conn, %{"id" => id, "user" => user_params}) do
+    user = Repo.get(SampleApp.User, id)
+    changeset = SampleApp.User.changeset(user, user_params)
+
+    if changeset.valid? do
+      case Repo.update(changeset) do
+        {:ok, _} ->
+          conn
+          |> put_flash(:info, "User updated successfully!!")
+          |> redirect(to: user_path(conn, :show, user.id))
+        {:error, result} ->
+          render(conn, "edit.html", user: user.id, changeset: result)
+      end
+    else
+      render(conn, "edit.html", user: user.id, changeset: changeset)
     end
-  else
-    render(conn, "edit.html", user: id, changeset: changeset)
   end
 end
 ```
 
-password_digestの値を設定するために、before_insertコールバックで処理をしましたね。  
-それと同じことをするために、更新時のコールバックであるbefore_updateを定義してあげましょう。  
+内容的には、ほぼcreateアクションの動作と変わりません。  
+
+ならば、before_insertコールバックのように更新時も、  
+password_digestの値を設定するために同じことをする必要がありますね。  
+
+それと同じことをするために、更新時のコールバックであるbefore_updateを定義します。  
 そうしなければ更新すると、パスワードが消えてしまいます。  
 
-#### ファイル: web/models/user.ex
+#### File: web/models/user.ex
 
 ```elixir
 defmodule SampleApp.User do
-  use SampleApp.Web, :model
-  use Ecto.Model.Callbacks
-
-  import Ecto.Query
+  ...
 
   before_insert :set_password_digest
   before_update :set_password_digest
@@ -214,10 +229,16 @@ defmodule SampleApp.User do
 end
 ```
 
+コールバックは別ですが、  
+同じ関数を利用できるのでbefore_insertと同じ関数を指定しています。  
+
 ## Sharing user form template
 共通で利用できるテンプレート作成しましょう。  
 
-#### ファイル: web/templates/user/user_form.html.eex
+newテンプレートとeditテンプレートの内容がほぼ同一です。  
+なので、差異点を引数に取りフォームの部分を共通で使えるようにします。  
+
+#### File: web/templates/user/form.html.eex
 
 ```html
 <%= form_for @changeset, @action, fn f -> %>
@@ -231,24 +252,24 @@ end
       </ul>
     </div>
   <% end %>
-
+  
   <div class="form-group">
-    <label>Name</label>
+    <%= label f, :name, "Name", class: "control-label" %>
     <%= text_input f, :name, class: "form-control" %>
   </div>
 
   <div class="form-group">
-    <label>Email</label>
+    <%= label f, :email, "Email", class: "control-label" %>
     <%= email_input f, :email, class: "form-control" %>
   </div>
 
   <div class="form-group">
-    <label>Password</label>
+    <%= label f, :password, "Password", class: "control-label" %>
     <%= password_input f, :password, class: "form-control" %>
   </div>
 
   <div class="form-group">
-    <%= submit "Submit!", class: "btn btn-primary" %>
+    <%= submit "Submit", class: "btn btn-primary" %>
   </div>
 <% end %>
 ```
@@ -260,23 +281,23 @@ end
 ```html
 <h1>Sign up</h1>
 
-<%= render "user_form.html", changeset: @changeset,
+<%= render "form.html", changeset: @changeset,
                         action: user_path(@conn, :create) %>
 ```
 
 #### ファイル: web/templates/user/edit.html.eex
 
 ```html
-<h2>Edit UserProfile</h2>
+<h2>Edit Profile</h2>
 
-<%= render "user_form.html", changeset: @changeset,
+<%= render "form.html", changeset: @changeset,
                         action: user_path(@conn, :update, @user) %>
 ```
 
 二つのテンプレートが大分すっきりしましたね。  
 
 共通で利用したい、別で定義したい部分だけを切り出して、  
-別のテンプレートを作成するのは、よくある手法ですね。  
+別のテンプレートを作成するのは、よくある手法です。  
 
 ## The difference of authentication and authorization
 認可処理を実装します。  
@@ -296,7 +317,7 @@ end
 edit、updateアクションを実行できるのはどういったユーザであるかを考えれば出てきますね。  
 
 - サインインしている状態であること
-- サインインしたユーザは"自分"だけ更新できる
+- ユーザは"自分"だけ更新できる
 
 この二つの認可を実装します。  
 
@@ -304,14 +325,14 @@ edit、updateアクションを実行できるのはどういったユーザで�
 まずは、サインインしているか否かの認可を実装します。  
 
 このアプリケーションにおけるサインインしている状態とは、どういう状態でしょうか？  
-前に答えを作成しています。  
+我々は、既に答えを知っています。  
 
 セッションを管理した時、サインインしていれば値を格納していましたね。  
 このアプリケーションでは、assignに値が格納されていればサインインしていると判断します。  
 
-自作のプラグを作成します。  
+サインインユーザであることを確認するためのモジュールプラグを作成します。  
 
-#### ファイル: lib/plugs/signed_in_user.ex
+#### File: lib/plugs/signed_in_user.ex
 
 ```elixir
 defmodule SampleApp.Plugs.SignedInUser do
@@ -339,7 +360,7 @@ end
 サインインをしていなければ、  
 サインインを促すメッセージの表示とサインインページへのリダイレクトを行います。  
 
-#### ファイル: web/controllers/user_controller.ex
+#### File: web/controllers/user_controller.ex
 
 ```elixir
 defmodule SampleApp.UserController do
@@ -356,10 +377,11 @@ end
 サインインしていなければ表示できなくなってしまいます。  
 
 ユーザの作成ページがサインインしていなければ表示されないとは、何の冗談なのでしょうか？  
+(プラグはアクションを指定しなければ、全てのアクションで動作します。)  
 
 特定のアクションでのみ動作するように修正します。  
 
-#### ファイル: web/controllers/user_controller.ex
+#### File: web/controllers/user_controller.ex
 
 ```elixir
 defmodule SampleApp.UserController do
@@ -372,23 +394,22 @@ defmodule SampleApp.UserController do
 end
 ```
 
-ガードを使って動作させたいアクションを指定することができます。  
+Guard句を使って動作させたいアクションを指定することができます。  
 
 ## Correct user?
 次は、サインインしたユーザが"自分"だけ更新できるようにします。  
 所謂、アクセス制御と言われるものですね。  
 
-簡単に言うなら、Aと言うユーザがBと言うユーザのプロファイルを更新できたらおかしいですよね。  
+Aと言うユーザがBと言うユーザのプロファイルを更新できたらおかしいですよね。  
 
-今回は自作のプラグではなく、機能プラグと言うものを使ってみます。  
+今回はモジュールプラグではなく、機能プラグと言うものを使ってみます。  
 
-#### ファイル: web/controllers/user_controller.ex
+#### File: web/controllers/user_controller.ex
 
 ```elixir
 defmodule SampleApp.UserController do
   use SampleApp.Web, :controller
 
-  plug SampleApp.Plugs.CheckAuthentication
   plug SampleApp.Plugs.SignedInUser when action in [:show, :edit, :update]
   plug :correct_user? when action in [:edit, :update]
 
@@ -413,43 +434,23 @@ defmodule SampleApp.UserController do
 end
 ```
 
-プラグは関数でも利用できます。  
-今までやってきたモジュールのプラグをモジュールプラグ、今回のプラグは機能(関数)プラグと呼ばれています。  
-
 内容は、単純な実装をしています。  
 ユーザIDからDBデータを取得し、サインインしているユーザの構造体同士を比較しています。  
 
+前の章でプラグを作成した時には、プラグの種類について説明していませんでした。  
+プラグは関数でも定義できます。  
+前の章で作成したモジュールのプラグをモジュールプラグ、今回のプラグは機能(関数)プラグと呼ばれています。  
+
+複数のコントローラを跨いで利用したい場合は、モジュールプラグを利用した方が良いです。  
+また、単一のコントローラでしか利用しないのであれば、機能プラグを利用しましょう。  
+必要に応じて使い分けてあげましょう。  
+
 #### Note:
-構造体の比較。  
 
-ユーザA:  
+```txt
+同じユーザをの構造体を比較してみる。  
 
-```iex
-iex> user_a = SampleApp.Repo.get(User, 1)
-[debug] SELECT u0."id", u0."name", u0."email", u0."password_digest", u0."inserted_at", u0."updated_at" FROM "users" AS u0 WHERE (u0."id" = $1) [1] OK query=1.0ms
-%SampleApp.User{__meta__: %Ecto.Schema.Metadata{source: "users",
-  state: :loaded}, email: "huge@huge.com", id: 1,
- inserted_at: #Ecto.DateTime<2015-07-22T07:07:17Z>, name: "huge", password: nil,
- password_digest: "bDA1bThpSk5IUmlCUEFEekx6U0w2Zz09LS1HT1NxUGY2TVRKenFrSjlrWVNmejhBPT0=--5334DAFFB7EAF18D4C85CDCBC4DBC6778BD5F370",
- updated_at: #Ecto.DateTime<2015-07-22T07:59:15Z>}
-```
-
-ユーザB:  
-
-```iex
-iex> user_b = SampleApp.Repo.get(User, 1)
-[debug] SELECT u0."id", u0."name", u0."email", u0."password_digest", u0."inserted_at", u0."updated_at" FROM "users" AS u0 WHERE (u0."id" = $1) [1] OK query=1.0ms
-%SampleApp.User{__meta__: %Ecto.Schema.Metadata{source: "users",
-  state: :loaded}, email: "huge@huge.com", id: 1,
- inserted_at: #Ecto.DateTime<2015-07-22T07:07:17Z>, name: "huge", password: nil,
- password_digest: "bDA1bThpSk5IUmlCUEFEekx6U0w2Zz09LS1HT1NxUGY2TVRKenFrSjlrWVNmejhBPT0=--5334DAFFB7EAF18D4C85CDCBC4DBC6778BD5F370",
- updated_at: #Ecto.DateTime<2015-07-22T07:59:15Z>}
-```
-
-ユーザ同士を比較。  
-
-```iex
-iex> user_a == user_b
+iex> SampleApp.Repo.get(User, 1) == SampleApp.Repo.get(User, 1)
 true
 ```
 
@@ -458,31 +459,36 @@ true
 
 Userコントローラへindexアクションを追加します。  
 
-#### ファイル: web/controllers/user_controller.ex
+#### File: web/controllers/user_controller.ex
 
 ```elixir
-def index(conn, _params) do
-  users = Repo.all(User)
-  render(conn, "index.html", users: users)
+defmodule SampleApp.UserController do
+  ...
+
+  def index(conn, _params) do
+    users = Repo.all(User)
+    render(conn, "index.html", users: users)
+  end
 end
 ```
 
 indexアクションをSampleApp.Plugs.SignedInUserプラグへ追加します。  
 
-#### ファイル: web/controllers/user_controller.ex
+#### File: web/controllers/user_controller.ex
 
 ```elixir
 defmodule SampleApp.UserController do
-  use SampleApp.Web, :controller
+  ...
 
-  plug SampleApp.Plugs.CheckAuthentication
   plug SampleApp.Plugs.SignedInUser when action in [:index, :show, :edit, :update]
-  plug :correct_user? when action in [:edit, :update]
+
+  ...
+end
 ```
 
-indexのテンプレートを作成します。  
+indexテンプレートを作成します。  
 
-#### ファイル: web/templates/user/index.html.eex
+#### File: web/templates/user/index.html.eex
 
 ```html
 <h1>All users</h1>
@@ -496,7 +502,7 @@ indexのテンプレートを作成します。
 <% end %>
 ```
 
-ユーザ単体の部分を別のテンプレートに作成します。  
+ユーザ単体の表示を別のテンプレートで作成します。  
 
 #### ファイル: web/templates/user/user.html.eex
 
@@ -509,11 +515,11 @@ indexのテンプレートを作成します。
 
 空リストか判定する関数をUserビューへ追加します。  
 
-#### ファイル: web/views/user_view.ex
+#### File: web/views/user_view.ex
 
 ```elixir
 defmodule SampleApp.UserView do
-  use SampleApp.Web, :view
+  ...
 
   def is_empty_list?(list) when is_list(list) do
     list == []
@@ -523,7 +529,7 @@ end
 
 ユーザ表示用のCSSを追加します。  
 
-#### ファイル: priv/static/css/custom.css
+#### File: priv/static/css/custom.css
 
 ```css
 /* Users index */
@@ -571,10 +577,8 @@ end
             <!-- Dropdown List -->
             <ul class="dropdown-menu" aria-labelledby="account">
               <li><%= link "All Users", to: user_path(@conn, :index) %><li>
-              <li><%= link "Profile", to: user_path(@conn, :show, current_user(@conn)) %><li>
-              <li><%= link "Help", to: static_pages_path(@conn, :help) %></li>
-              <li class="divider"></li>
-              <li><%= link "Sign-out", to: session_path(@conn, :delete) %></li>
+
+              ...
             </ul>
           </li>
         <% else %>
@@ -595,15 +599,10 @@ end
 
 まずは、Userモデルにページネーションの情報を取得するための関数を作成します。  
 
-#### ファイル: web/models/user.ex
+#### File: web/models/user.ex
 
 ```elixir
 defmodule SampleApp.User do
-  use SampleApp.Web, :model
-  use Ecto.Model.Callbacks
-
-  import Ecto.Query
-
   ...
 
   def paginate(select_page) do
@@ -612,12 +611,13 @@ defmodule SampleApp.User do
       select_page)
   end
 end
+
 ```
 
-使っているモジュールはまだ存在していませんので、  
+利用しているヘルパーはまだ存在していませんので、  
 ページネーションを補助するモジュールを作成します。  
 
-#### ファイル: lib/helpers/pagination_helper.ex
+#### File: lib/helpers/pagination_helper.ex
 
 ```elixir
 defmodule SampleApp.Helpers.PaginationHelper do
@@ -632,25 +632,29 @@ end
 ページサイズは、1つのページに表示する最大表示件数のことです。  
 任意の値に変更して構いません。  
 
-先ほど、Userモデルに作成したpaginate/1を使うように修正します。  
+先ほど、Userモデルに作成したpaginate/1関数を使うように修正します。  
 
-#### ファイル: web/controllers/user_controller.ex
+#### File: web/controllers/user_controller.ex
 
 ```elixir
-def index(conn, params) do
-  select_page = params["select_page"]
-  page = SampleApp.User.paginate(select_page)
+defmodule SampleApp.UserController do
+  ...
 
-  if page do
-    render(conn, "index.html",
-           users: page.entries,
-           current_page: page.page_number,
-           total_pages: page.total_pages,
-           page_list: Range.new(1, page.total_pages))
-  else
-    conn
-    |> put_flash(:error, "Invalid page number!!")
-    |> render("index.html", users: [])
+  def index(conn, params) do
+    select_page = params["select_page"]
+    page = SampleApp.User.paginate(select_page)
+
+    if page do
+      render(conn, "index.html",
+             users: page.entries,
+             current_page: page.page_number,
+             total_pages: page.total_pages,
+             page_list: Range.new(1, page.total_pages))
+    else
+      conn
+      |> put_flash(:error, "Invalid page number!!")
+      |> render("index.html", users: [])
+    end
   end
 end
 ```
@@ -666,7 +670,7 @@ select_pageをパラメータから取得していますが、
 ページネーション用のビューを作成します。  
 このビューには、ページリンクを作成するための関数を実装します。  
 
-#### ファイル: web/views/pagination_view.ex
+#### File: web/views/pagination_view.ex
 
 ```elixir
 defmodule SampleApp.PaginationView do
@@ -686,9 +690,14 @@ defmodule SampleApp.PaginationView do
 end
 ```
 
-ページ番号のリンクを表示するテンプレートを作成します。  
+ページネーションのテンプレートを格納するディレクトリを作成します。
+paginationと言う名称で作成して下さい。
 
-#### ファイル: web/templates/pagination/pagination.html.eex
+#### Directory: web/templates/pagination
+
+ページのリンクを表示するテンプレートを作成します。  
+
+#### File: web/templates/pagination/pagination.html.eex
 
 ```html
 <nav>
@@ -733,11 +742,11 @@ end
 また、一つ前と次が存在しない場合は、リンクを作成しないようにif記述で分岐させています。  
 
 "page link"を作成する部分は、for記述で繰り返しで処理を行っています。  
-また、選択ページのデザインを変更するために、現在ページとそれ以外で処理を分岐させています。  
+また、選択中のページ番号はデザインを変更するために、現在ページとそれ以外で処理を分岐させています。  
 
 ユーザ一覧にページネーションの表示を追加します。  
 
-#### ファイル: web/templates/user/index.html.eex
+#### File: web/templates/user/index.html.eex
 
 ```html
 <h1>All users</h1>
@@ -770,13 +779,12 @@ end
 
 その対応を行います。  
 
-#### ファイル: lib/helpers/pagination_helper.ex
+#### File: lib/helpers/pagination_helper.ex
 
 ```elixir
 defmodule SampleApp.Helpers.PaginationHelper do
-  
   @first_page "1"
-  @page_size "2"
+  @page_size "10"
 
   defp is_nil_or_empty?(select_page) do
     is_nil(select_page) || select_page == ""
@@ -800,11 +808,13 @@ defmodule SampleApp.Helpers.PaginationHelper do
 end
 ```
 
+それぞれ追加した関数は以下の機能を実装しています。
+
 - is_nil_or_empty?/1: ページ番号が存在しているか判定します
 - is_valid_value?/1: プラスの半角数字の繰り返しか判定します
 - is_able_to_paginate?/1: 上記、二つを組み合わせています
 
-不正な値を送った場合、最初のページを返すようにpaginate/2を修正しています。  
+また不正な値を送った場合、最初のページを返すようにpaginate/2を修正しています。  
 
 ## Delete user
 ユーザを削除できるようにします。  
@@ -818,13 +828,12 @@ DBからデータそのものを削除します。
 Userコントローラへdeleteアクションを追加します。  
 また当然ですが、サインインしていることと、自分自身しか削除できないようにします。  
 
-#### ファイル: web/controllers/user_controller.ex
+#### File: web/controllers/user_controller.ex
 
 ```elixir
 defmodule SampleApp.UserController do
   use SampleApp.Web, :controller
 
-  plug SampleApp.Plugs.CheckAuthentication
   plug SampleApp.Plugs.SignedInUser when action in [:index, :show, :edit, :update, :delete]
   plug :correct_user? when action in [:edit, :update, :delete]
 
@@ -832,33 +841,32 @@ defmodule SampleApp.UserController do
 
   def delete(conn, %{"id" => id}) do
     user = Repo.get(SampleApp.User, id)
-    from(m in SampleApp.Micropost, where: m.user_id == ^user.id) |> Repo.delete_all
     Repo.delete(user)
 
     conn
     |> put_flash(:info, "User deleted successfully.")
+    |> delete_session(:user_id)
     |> redirect(to: static_pages_path(conn, :home))
   end
+
+  ...
 end
 ```
 
 ## Delete link
-削除のリンクをプロファイルページに表示します。  
+削除リンクをプロファイルページに表示します。  
 
-#### ファイル: web/templates/user/show.html.eex
+#### File: web/templates/user/show.html.eex
 
 ```html
 <div class="row">
   <aside class="span4">
-    <section>
-      <h1>
-        <img src="<%= get_gravatar_url(@user) %>" class="gravatar">
-        <%= @user.name %>
-      </h1>
-    </section>
+
+    ...
+
     <section>
       <%= link "Edit", to: user_path(@conn, :edit, @user), class: "btn btn-default btn-xs" %>
-      <%= link "Delete", to: user_path(@conn, :delete, @user), method: :delete, class: "btn btn-danger btn-xs" %>
+      <%= button "Delete", to: user_path(@conn, :delete, @user), method: :delete, class: "btn btn-danger btn-xs" %>
     </section>
   </aside>
 </div>
@@ -866,6 +874,8 @@ end
 
 ## Before the end
 ソースコードをマージします。  
+
+#### Example:
 
 ```cmd
 >git add .
@@ -875,8 +885,9 @@ end
 ```
 
 # Speaking to oneself
-少々、量が多かったと思いますが、  
-更新、一覧、削除はWebページにおける一般的な処理ですね。  
+機能を3つも実装しました。  
+
+大変長かったと思いますが、一旦休憩を取りましょう。
 
 # Bibliography
 [Ruby on Rails Tutorial](http://railstutorial.jp/chapters/updating-showing-and-deleting-users?version=4.0#top)  

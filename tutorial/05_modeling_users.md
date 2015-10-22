@@ -42,7 +42,7 @@ Modeling users
 
 ライブラリの準備をします。  
 利用するライブラリは以下のものになります。  
-Github: [safetybox](https://github.com/aforward/safetybox)  
+#### Github: [safetybox](https://github.com/aforward/safetybox)  
 
 #### File: mix.exs
 
