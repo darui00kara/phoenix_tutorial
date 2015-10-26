@@ -17,18 +17,18 @@ defmodule SampleApp.Router do
     pipe_through :browser # Use the default browser stack
 
     get "/", PageController, :index
-    get "/signup", UserController, :new
     get "/home", StaticPagesController, :home
     get "/help", StaticPagesController, :help
     get "/about", StaticPagesController, :about
     get "/contact", StaticPagesController, :contact
+    get "/signup", UserController, :new
     resources "/user", UserController, except: [:new]
-    get "user/:id/following", UserController, :following
-    get "user/:id/followers", UserController, :followers
     get "/signin", SessionController, :new
     post "/session", SessionController, :create
-    get "/signout", SessionController, :delete
+    delete "/signout", SessionController, :delete
     resources "/post", MicropostController, only: [:create, :delete]
+    get "user/:id/following", UserController, :following
+    get "user/:id/followers", UserController, :followers
     resources "/relationship", RelationshipController, only: [:create, :delete]
   end
 

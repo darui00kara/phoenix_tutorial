@@ -18,7 +18,7 @@
               <li><%= link "Profile", to: user_path(@conn, :show, current_user(@conn)) %><li>
               <li><%= link "Help", to: static_pages_path(@conn, :help) %></li>
               <li class="divider"></li>
-              <li><%= link "Sign-out", to: session_path(@conn, :delete) %></li>
+              <li class="dropdown-delete-li"><%= link "Sign-out", to: session_path(@conn, :delete), method: :delete, class: "dropdown-delete-link" %></li>
             </ul>
           </li>
         <% else %>

@@ -1,8 +1,6 @@
 defmodule SampleApp.Relationship do
   use SampleApp.Web, :model
 
-  import Ecto.Query
-
   schema "relationships" do
     belongs_to :followed_user, SampleApp.User, foreign_key: :follower_id
     belongs_to :follower, SampleApp.User, foreign_key: :followed_id
@@ -16,17 +14,16 @@ defmodule SampleApp.Relationship do
   @doc """
   Creates a changeset based on the `model` and `params`.
 
-  If `params` are nil, an invalid changeset is returned
+  If no params are provided, an invalid changeset is returned
   with no validation performed.
   """
   def changeset(model, params \\ :empty) do
     model
     |> cast(params, @required_fields, @optional_fields)
-    |> validate_presence(:followed_user)
-    |> validate_presence(:follower)
+    |> validate_presence(:follower_id)
+    |> validate_presence(:followed_id)
   end
 
-  # Insert a user to follow
   def follow!(signed_id, follow_user_id) do
     changeset = SampleApp.Relationship.changeset(
       %SampleApp.Relationship{}, %{follower_id: signed_id, followed_id: follow_user_id})
@@ -36,7 +33,6 @@ defmodule SampleApp.Relationship do
     end
   end
 
-  # follow_user_id is follow user?
   def following?(signed_id, follow_user_id) do
     relationship = SampleApp.Repo.all(
       from(r in SampleApp.Relationship,
@@ -45,7 +41,6 @@ defmodule SampleApp.Relationship do
     !Enum.empty?(relationship)
   end
 
-  # Delete a user to follow
   def unfollow!(signed_id, follow_user_id) do
     [relationship] = SampleApp.Repo.all(
       from(r in SampleApp.Relationship,

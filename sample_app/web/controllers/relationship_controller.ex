@@ -1,7 +1,6 @@
 defmodule SampleApp.RelationshipController do
   use SampleApp.Web, :controller
 
-  plug SampleApp.Plugs.CheckAuthentication
   plug SampleApp.Plugs.SignedInUser
 
   def create(conn, params) do

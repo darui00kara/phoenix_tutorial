@@ -9,7 +9,7 @@ use Mix.Config
 config :sample_app, SampleApp.Endpoint,
   url: [host: "localhost"],
   root: Path.dirname(__DIR__),
-  secret_key_base: "EP4lyUvKrgGDXxDXEYw6bWmr/lgp4/wxjO9Lkp2ZO3+uQlBPtZku2QAByv0zNUTS",
+  secret_key_base: "j3Jp8JiWsXL+2Nc7df2DwHuYJzWQtjBjTmdypQ39rWEEA4TBEfVcvNNFHdQMH0a/",
   render_errors: [accepts: ~w(html json)],
   pubsub: [name: SampleApp.PubSub,
            adapter: Phoenix.PubSub.PG2]
@@ -22,3 +22,8 @@ config :logger, :console,
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{Mix.env}.exs"
+
+# Configure phoenix generators
+config :phoenix, :generators,
+  migration: true,
+  binary_id: false

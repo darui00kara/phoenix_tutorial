@@ -2,6 +2,3 @@
   <img src="<%= get_gravatar_url(@user) %>" class="gravatar">
 </a>
 <h1><%= @user.name %></h1>
-<span>
-  <%= link "view profile", to: user_path(@conn, :show, @user), class: "btn btn-default btn-xs" %>
-</span>

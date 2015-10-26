@@ -1,7 +1,6 @@
 defmodule SampleApp.UserController do
   use SampleApp.Web, :controller
 
-  plug SampleApp.Plugs.CheckAuthentication
   plug SampleApp.Plugs.SignedInUser when action in [:index, :show, :edit, :update, :delete, :following, :followers]
   plug :correct_user? when action in [:edit, :update, :delete]
 
@@ -26,31 +25,12 @@ defmodule SampleApp.UserController do
     render(conn, "new.html", changeset: SampleApp.User.new)
   end
 
-  def create(conn, %{"user" => user_params}) do
-    changeset = SampleApp.User.changeset(%SampleApp.User{}, user_params)
-
-    if changeset.valid? do
-      case Repo.insert(changeset) do
-        {:ok, user} ->
-          conn
-          |> put_flash(:info, "User registration successfully!!")
-          |> put_session(:user_id, user.id)
-          |> redirect(to: static_pages_path(conn, :home))
-        {:error, changeset} ->
-          render(conn, "new.html", changeset: changeset)
-      end
-    else
-      render(conn, "new.html", changeset: changeset)
-    end
-  end
-
-  def show(conn, params) do
+  def show(conn, %{"id" => id} = params) do
     select_page = params["select_page"]
-    id = params["id"]
 
     user = Repo.get(SampleApp.User, id) |> Repo.preload(:relationships) |> Repo.preload(:reverse_relationships)
     page = SampleApp.Micropost.paginate(
-      user.id, select_page, list_map_to_value_list(user.followed_users, :followed_id))
+             user.id, select_page, list_map_to_value_list(user.followed_users, :followed_id))
     changeset = SampleApp.Micropost.new(user.id)
 
     if page do
@@ -68,6 +48,24 @@ defmodule SampleApp.UserController do
     end
   end
 
+  def create(conn, %{"user" => user_params}) do
+    changeset = SampleApp.User.changeset(%SampleApp.User{}, user_params)
+
+    if changeset.valid? do
+      case Repo.insert(changeset) do
+        {:ok, result_user} ->
+          conn
+          |> put_flash(:info, "User registration successfully!!")
+          |> put_session(:user_id, result_user.id)
+          |> redirect(to: static_pages_path(conn, :home))
+        {:error, result} ->
+          render(conn, "new.html", changeset: result)
+      end
+    else
+      render(conn, "new.html", changeset: changeset)
+    end
+  end
+
   def edit(conn, %{"id" => id}) do
     user = Repo.get(SampleApp.User, id)
     user = Map.put(user, :password, SampleApp.Encryption.decrypt(user.password_digest))
@@ -82,15 +80,15 @@ defmodule SampleApp.UserController do
 
     if changeset.valid? do
       case Repo.update(changeset) do
-        {:ok, user} ->
+        {:ok, _} ->
           conn
           |> put_flash(:info, "User updated successfully!!")
-          |> redirect(to: user_path(conn, :show, id))
-        {:error, changeset} ->
-          render(conn, "edit.html", user: id, changeset: changeset)
+          |> redirect(to: user_path(conn, :show, user.id))
+        {:error, result} ->
+          render(conn, "edit.html", user: user.id, changeset: result)
       end
     else
-      render(conn, "edit.html", user: id, changeset: changeset)
+      render(conn, "edit.html", user: user.id, changeset: changeset)
     end
   end
 
@@ -101,6 +99,7 @@ defmodule SampleApp.UserController do
 
     conn
     |> put_flash(:info, "User deleted successfully.")
+    |> delete_session(:user_id)
     |> redirect(to: static_pages_path(conn, :home))
   end
 
@@ -110,15 +109,17 @@ defmodule SampleApp.UserController do
 
     user = Repo.get(SampleApp.User, id) |> Repo.preload(:relationships) |> Repo.preload(:reverse_relationships)
     page = SampleApp.User.show_follow_paginate(
-      select_page, list_map_to_value_list(user.followed_users, :followed_id))
+             select_page, list_map_to_value_list(user.followed_users, :followed_id))
 
     if page do
+      page_list = if page.total_pages == 0, do: Range.new(1, 1), else: Range.new(1, page.total_pages)
+
       render(conn, "following.html",
              user: user,
              users: page.entries,
              current_page: page.page_number,
              total_pages: page.total_pages,
-             page_list: Range.new(1, page.total_pages))
+             page_list: page_list)
     else
       conn
       |> put_flash(:error, "Invalid page number!!")
@@ -132,24 +133,22 @@ defmodule SampleApp.UserController do
 
     user = Repo.get(SampleApp.User, id) |> Repo.preload(:relationships) |> Repo.preload(:reverse_relationships)
     page = SampleApp.User.show_follow_paginate(
-      select_page, list_map_to_value_list(user.followers, :follower_id))
+             select_page, list_map_to_value_list(user.followers, :follower_id))
 
     if page do
+      page_list = if page.total_pages == 0, do: Range.new(1, 1), else: Range.new(1, page.total_pages)
+
       render(conn, "followers.html",
              user: user,
              users: page.entries,
              current_page: page.page_number,
              total_pages: page.total_pages,
-             page_list: Range.new(1, page.total_pages))
+             page_list: page_list)
     else
       conn
       |> put_flash(:error, "Invalid page number!!")
       |> render("followers.html", user: user, users: [])
     end
-  end
-
-  defp list_map_to_value_list(repo_result, key) do
-    for map <- repo_result do Map.get(map, key) end
   end
 
   defp correct_user?(conn, _) do
@@ -167,5 +166,9 @@ defmodule SampleApp.UserController do
 
   defp current_user?(conn, user) do
     conn.assigns[:current_user] == user
+  end
+
+  defp list_map_to_value_list(repo_result, key) do
+    for map <- repo_result do Map.get(map, key) end
   end
 end

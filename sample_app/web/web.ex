@@ -20,7 +20,10 @@ defmodule SampleApp.Web do
     quote do
       use Ecto.Model
 
-      # My validate helper
+      import Ecto.Changeset
+      import Ecto.Query, only: [from: 1, from: 2]
+
+      # Import my validate helper
       import SampleApp.Helpers.ValidateHelper
     end
   end
@@ -34,6 +37,8 @@ defmodule SampleApp.Web do
       import Ecto.Query, only: [from: 1, from: 2]
 
       import SampleApp.Router.Helpers
+
+      plug SampleApp.Plugs.CheckAuthentication
     end
   end
 
@@ -50,7 +55,6 @@ defmodule SampleApp.Web do
 
       import SampleApp.Router.Helpers
 
-      # My view helper
       import SampleApp.Helpers.ViewHelper
     end
   end
@@ -68,7 +72,6 @@ defmodule SampleApp.Web do
       alias SampleApp.Repo
       import Ecto.Model
       import Ecto.Query, only: [from: 1, from: 2]
-
     end
   end
 

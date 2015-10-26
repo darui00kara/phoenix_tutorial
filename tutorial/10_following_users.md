@@ -25,6 +25,8 @@ Following users
 ## Preparation
 作業前にブランチを切ります。  
 
+#### Example:
+
 ```cmd
 >cd path/to/sample_app
 >git checkout -b following_users
@@ -54,7 +56,7 @@ Following users
 
 マイグレーションファイルを編集します。  
 
-#### ファイル: priv/repo/[timestamp]_create_relationship.exs
+#### File: priv/repo/[timestamp]_create_relationship.exs
 
 ```elixir
 defmodule SampleApp.Repo.Migrations.CreateRelationship do
@@ -90,7 +92,7 @@ end
 
 ## User and Relationship of association
 UserモデルとRelationshipモデルの多対多の関連付けを行います。  
-この項目は、理解が中々難しいので冗長になっても説明を多めにします。  
+この項目は、中々ややこしいので多少冗長になっても説明を多めにします。  
 大目に見て下さい(笑)  
 
 構築したい関連は以下のような形になります。  
@@ -103,7 +105,7 @@ UserモデルとRelationshipモデルの多対多の関連付けを行います�
 +----+       +------------+       +----+
 ```
 
-テーブルとしてみるとこのような形にしたいわけです。  
+テーブルの例として形にしてみると、このような形にしたいわけです。  
 
 ```txt
 users table
@@ -132,19 +134,14 @@ user1とuser2が相互フォローしている状態になります。
 
 Userモデルのスキーマへ以下を追加する。  
 
-#### ファイル: web/models/user.ex
+#### File: web/models/user.ex
 
 ```elixir
 defmodule SampleApp.User do
   ...
 
   schema "users" do
-    field :name, :string
-    field :email, :string
-    field :password_digest, :string
-    field :password, :string, virtual: true
-
-    has_many :microposts, SampleApp.Micropost
+    ...
 
     has_many :followed_users, SampleApp.Relationship, foreign_key: :follower_id
     has_many :relationships, through: [:followed_users, :followed_user]
@@ -169,7 +166,7 @@ end
 では、3つ目のモデルであるRelationshipモデルでの関連付けをしましょう。  
 マイクロポストの関連付けを作成した時と同じですね。  
 
-#### ファイル: web/models/relationship.ex
+#### File: web/models/relationship.ex
 
 ```elixir
 defmodule SampleApp.Relationship do
@@ -177,6 +174,7 @@ defmodule SampleApp.Relationship do
 
   schema "relationships" do
     belongs_to :followed_user, SampleApp.User, foreign_key: :follower_id
+    field :followed_id, :integer
 
     timestamps
   end
@@ -187,22 +185,14 @@ end
 
 続いて、自分をフォローしているフォロワーを表現する関連付けを行います。  
 
-#### ファイル: web/models/user.ex
+#### File: web/models/user.ex
 
 ```elixir
 defmodule SampleApp.User do
   ...
 
   schema "users" do
-    field :name, :string
-    field :email, :string
-    field :password_digest, :string
-    field :password, :string, virtual: true
-
-    has_many :microposts, SampleApp.Micropost
-
-    has_many :followed_users, SampleApp.Relationship, foreign_key: :follower_id
-    has_many :relationships, through: [:followed_users, :followed_user]
+    ...
 
     has_many :followers, SampleApp.Relationship, foreign_key: :followed_id
     has_many :reverse_relationships, through: [:followers, :follower]
@@ -216,14 +206,14 @@ end
 
 Relationshipモデルにも関連を追加して下さい。  
 
-#### ファイル: web/models/relationship.ex
+#### File: web/models/relationship.ex
 
 ```elixir
 defmodule SampleApp.Relationship do
   ...
 
   schema "relationships" do
-    belongs_to :followed_user, SampleApp.User, foreign_key: :follower_id
+    ...
     belongs_to :follower, SampleApp.User, foreign_key: :followed_id
 
     timestamps
@@ -234,29 +224,21 @@ end
 ```
 
 面白いのは、外部キーを変えているだけだと言うことです。  
+内部でテーブルを反転させて利用しています。そのため、少しややこしいと思います。  
+
+しかし、わざわざ反転したテーブルを用意することなく、  
 これだけで、フォローとフォロワーへの関連付けが実現できています。  
 
-テーブルが反転しているので、少し理解し辛いと思いますが、  
-このようにrelationshipsテーブルを反転させるような利用ができています。  
+このようにすれば、テーブルを反転させた利用ができます。  
 
 ## Validation
 Relationshipモデルへ検証を追加します。  
 
-#### ファイル: web/models/relationship.ex
+#### File: web/models/relationship.ex
 
 ```elixir
 defmodule SampleApp.Relationship do
   ...
-
-  schema "relationships" do
-    belongs_to :followed_user, SampleApp.User, foreign_key: :follower_id
-    belongs_to :follower, SampleApp.User, foreign_key: :followed_id
-
-    timestamps
-  end
-
-  @required_fields ~w(follower_id followed_id)
-  @optional_fields ~w()
 
   def changeset(model, params \\ :empty) do
     model
@@ -272,55 +254,54 @@ end
 ## Utility Methods
 フォローしたり、フォローを解除を補助するための関数を用意します。  
 
-#### ファイル: web/models/relationship.ex
+以下の3つの関数を追加します。
 
-フォローするための関数です。  
+- フォローするための関数
+- フォローしているか確認するための関数
+- フォローを解除するための関数
+
+#### File: web/models/relationship.ex
 
 ```elixir
-def follow!(signed_id, follow_user_id) do
-  changeset = SampleApp.Relationship.changeset(
-    %SampleApp.Relationship{}, %{follower_id: signed_id, followed_id: follow_user_id})
+defmodule SampleApp.Relationship do
+  ...
 
-  if changeset.valid? do
-    SampleApp.Repo.insert!(changeset)
+  def follow!(signed_id, follow_user_id) do
+    changeset = SampleApp.Relationship.changeset(
+      %SampleApp.Relationship{}, %{follower_id: signed_id, followed_id: follow_user_id})
+
+    if changeset.valid? do
+      SampleApp.Repo.insert!(changeset)
+    end
   end
-end
-```
 
-フォローしているか確認するための関数です。  
+  def following?(signed_id, follow_user_id) do
+    relationship = SampleApp.Repo.all(
+      from(r in SampleApp.Relationship,
+        where: r.follower_id == ^signed_id and r.followed_id == ^follow_user_id, limit: 1))
 
-```elixir
-def following?(signed_id, follow_user_id) do
-  relationship = SampleApp.Repo.all(
-    from(r in SampleApp.Relationship,
-      where: r.follower_id == ^signed_id and r.followed_id == ^follow_user_id, limit: 1))
+    !Enum.empty?(relationship)
+  end
 
-  !Enum.empty?(relationship)
-end
-```
+  def unfollow!(signed_id, follow_user_id) do
+    [relationship] = SampleApp.Repo.all(
+      from(r in SampleApp.Relationship,
+        where: r.follower_id == ^signed_id and r.followed_id == ^follow_user_id, limit: 1))
 
-フォローを解除するための関数です。  
-
-```elixir
-def unfollow!(signed_id, follow_user_id) do
-  [relationship] = SampleApp.Repo.all(
-    from(r in SampleApp.Relationship,
-      where: r.follower_id == ^signed_id and r.followed_id == ^follow_user_id, limit: 1))
-
-  SampleApp.Repo.delete!(relationship)
+    SampleApp.Repo.delete!(relationship)
+  end
 end
 ```
 
 ## Following / Followers User List
 フォローしているユーザの一覧とフォロワーユーザの一覧を表示できるようにしましょう。  
 
-#### ファイル: web/router.ex
+#### File: web/router.ex
 
 ```elixir
 scope "/", SampleApp do
-  pipe_through :browser # Use the default browser stack
-
   ...
+
   get "user/:id/following", UserController, :following
   get "user/:id/followers", UserController, :followers
 end
@@ -328,20 +309,29 @@ end
 
 ユーザデータの取得時にpreloadを追加します。  
 
-#### ファイル: web/controllers/user_controller.ex
+#### File: web/controllers/user_controller.ex
 
 ```elixir
-def show(conn, params) do
-    ...
+defmodule SampleApp.UserController do
+  ...
+
+  def show(conn, %{"id" => id} = params) do
+    select_page = params["select_page"]
+
     user = Repo.get(SampleApp.User, id) |> Repo.preload(:relationships) |> Repo.preload(:reverse_relationships)
+    page = SampleApp.Micropost.paginate(user.id, select_page)
+    changeset = SampleApp.Micropost.new(user.id)
+
     ...
+  end
+
+  ...
 end
 ```
 
-フォロー数、フォロワー数を表示します。  
-また、一覧へのリンクとします。  
+フォロー数、フォロワー数を表示し、一覧へのリンクとします。  
 
-#### ファイル: web/templates/user/show.html.eex
+#### File: web/templates/user/show.html.eex
 
 ```html
 <h2>User profile</h2>
@@ -354,15 +344,8 @@ end
     <section>
       <%= render SampleApp.SharedView, "stats.html", conn: @conn, user: @user %>
     </section>
-    <%= if current_user?(@conn, @user) do %>
-      <section>
-        <%= link "Edit", to: user_path(@conn, :edit, @user), class: "btn btn-default btn-xs" %>
-        <%= link "Delete", to: user_path(@conn, :delete, @user), method: :delete, class: "btn btn-danger btn-xs" %>
-      </section>
-    <% end %>
-    <section>
-      <%= render "micropost_form.html", conn: @conn, changeset: @changeset, user: @user %>
-    </section>
+
+    ...
   </aside>
 
   ...
@@ -370,9 +353,9 @@ end
 </div>
 ```
 
-フォロー、フォロワー数の表示とリンクは別テンプレートへ分けます。  
+フォロー、フォロワー数の表示とリンクのテンプレートを作成します。  
 
-#### ファイル: web/templates/shared/stats.html.eex
+#### File: web/templates/shared/stats.html.eex
 
 ```html
 <div class="stats">
@@ -393,9 +376,10 @@ end
 
 CSSの追加を行います。  
 
-#### ファイル: priv/static/css/custom.css
+#### File: priv/static/css/custom.css
 
 ```elixir
+/* following and followers */
 .stats {
   overflow: auto;
 }
@@ -424,89 +408,96 @@ CSSの追加を行います。
 
 followingとfollowersのアクション関数を作成します。  
 
-#### ファイル: web/controllers/user_controller.ex
+以下、4つのことを行います。
 
-認可へアクションを追加します。  
+- 認可(プラグ)へのアクションの追加
+- フォロー一覧を表示するためのfollowingアクションの実装
+- フォロワー一覧を表示するためのfollowersアクションの実装
+- 取得したいユーザのIDをリストとして一覧にする関数の実装
+
+#### File: web/controllers/user_controller.ex
 
 ```elixir
-plug SampleApp.Plugs.SignedInUser when action in [:index, :show, :edit, :update, :delete, :following, :followers]
-```
+defmodule SampleApp.UserController do
+  use SampleApp.Web, :controller
 
-フォロー一覧を表示するため、followingアクションを実装します。  
+  plug SampleApp.Plugs.SignedInUser when action in [:index, :show, :edit, :update, :delete, :following, :followers]
 
-```elixir
-def following(conn, params) do
-  select_page = params["select_page"]
-  id = params["id"]
+  ...
 
-  user = Repo.get(SampleApp.User, id) |> Repo.preload(:relationships) |> Repo.preload(:reverse_relationships)
-  page = SampleApp.User.show_follow_paginate(
-    select_page, list_map_to_value_list(user.followed_users, :followed_id))
+  def following(conn, params) do
+    select_page = params["select_page"]
+    id = params["id"]
 
-  if page do
-    render(conn, "following.html",
-           user: user,
-           users: page.entries,
-           current_page: page.page_number,
-           total_pages: page.total_pages,
-           page_list: Range.new(1, page.total_pages))
-  else
-    conn
-    |> put_flash(:error, "Invalid page number!!")
-    |> render("following.html", user: user, users: [])
+    user = Repo.get(SampleApp.User, id) |> Repo.preload(:relationships) |> Repo.preload(:reverse_relationships)
+    page = SampleApp.User.show_follow_paginate(
+             select_page, list_map_to_value_list(user.followed_users, :followed_id))
+
+    if page do
+      page_list = if page.total_pages == 0, do: Range.new(1, 1), else: Range.new(1, page.total_pages)
+
+      render(conn, "following.html",
+             user: user,
+             users: page.entries,
+             current_page: page.page_number,
+             total_pages: page.total_pages,
+             page_list: page_list)
+    else
+      conn
+      |> put_flash(:error, "Invalid page number!!")
+      |> render("following.html", user: user, users: [])
+    end
   end
-end
-```
 
-フォロワー一覧を表示するため、followersアクションを実装します。  
+  def followers(conn, params) do
+    select_page = params["select_page"]
+    id = params["id"]
 
-```elixir
-def followers(conn, params) do
-  select_page = params["select_page"]
-  id = params["id"]
+    user = Repo.get(SampleApp.User, id) |> Repo.preload(:relationships) |> Repo.preload(:reverse_relationships)
+    page = SampleApp.User.show_follow_paginate(
+             select_page, list_map_to_value_list(user.followers, :follower_id))
 
-  user = Repo.get(SampleApp.User, id) |> Repo.preload(:relationships) |> Repo.preload(:reverse_relationships)
-  page = SampleApp.User.show_follow_paginate(
-    select_page, list_map_to_value_list(user.followers, :follower_id))
+    if page do
+      page_list = if page.total_pages == 0, do: Range.new(1, 1), else: Range.new(1, page.total_pages)
 
-  if page do
-    render(conn, "followers.html",
-           user: user,
-           users: page.entries,
-           current_page: page.page_number,
-           total_pages: page.total_pages,
-           page_list: Range.new(1, page.total_pages))
-  else
-    conn
-    |> put_flash(:error, "Invalid page number!!")
-    |> render("followers.html", user: user, users: [])
+      render(conn, "followers.html",
+             user: user,
+             users: page.entries,
+             current_page: page.page_number,
+             total_pages: page.total_pages,
+             page_list: page_list)
+    else
+      conn
+      |> put_flash(:error, "Invalid page number!!")
+      |> render("followers.html", user: user, users: [])
+    end
   end
-end
-```
 
-取得したいユーザのID一覧をリスト化しています。  
-
-```elixir
-defp list_map_to_value_list(repo_result, key) do
-  for map <- repo_result do Map.get(map, key) end
+  defp list_map_to_value_list(repo_result, key) do
+    for map <- repo_result do Map.get(map, key) end
+  end
 end
 ```
 
 フォロー、フォロワーのユーザ一覧をページネーションするための関数を追加します。  
 
-#### ファイル: web/models/user.ex
+#### File: web/models/user.ex
 
 ```elixir
-def show_follow_paginate(select_page, ids_list) do
-  SampleApp.Helpers.PaginationHelper.paginate(
-    from(u in SampleApp.User, where: u.id in ^ids_list, order_by: [asc: :name]),
-    select_page)
+defmodule SampleApp.User do
+  ...
+
+  def show_follow_paginate(select_page, ids_list) do
+    SampleApp.Helpers.PaginationHelper.paginate(
+      from(u in SampleApp.User, where: u.id in ^ids_list, order_by: [asc: :name]),
+      select_page)
+　　end
 end
 ```
 
 フォロー一覧を表示するためのテンプレートを作成します。  
 
-#### ファイル: web/templates/user/following.html.eex
+#### File: web/templates/user/following.html.eex
 
 ```html
 <h2>Followed users</h2>
@@ -521,7 +512,7 @@ end
 
 フォロワー一覧を表示するためのテンプレートを作成します。  
 
-#### ファイル: web/templates/user/followers.html.eex
+#### File: web/templates/user/followers.html.eex
 
 ```html
 <h2>Follower users</h2>
@@ -536,7 +527,7 @@ end
 
 フォロー、フォロワー一覧を表示するための共通テンプレートを作成します。  
 
-#### ファイル: web/templates/user/show_follow.html.eex
+#### File: web/templates/user/show_follow.html.eex
 
 ```html
 <div class="row">
@@ -580,7 +571,19 @@ end
 ## Follow / Unfollow Button
 フォローとアンフォローのボタンを表示させます。  
 
-#### ファイル: web/templates/user/show.html.eex
+#### File: web/router.ex
+
+```elixir
+scope "/", SampleApp do
+  ...
+
+  resources "/relationship", RelationshipController, only: [:create, :delete]
+end
+```
+
+Relationshipビューのformテンプレートを呼び出します。
+
+#### File: web/templates/user/show.html.eex
 
 ```html
 <h2>User profile</h2>
@@ -589,17 +592,21 @@ end
   ...
   
   <div class="col-md-8">
-    <%= render "follow_form.html", conn: @conn, user: @user %>
+    <%= render SampleApp.RelationshipView, "form.html", conn: @conn, user: @user %>
 
     ...
-    <% end %>
   </div>
 </div>
 ```
 
+リレーションシップのテンプレートを格納するためのディレクトリを作成します。  
+relationshipと言う名前で作成して下さい。  
+
+#### Directory: web/templates/relationship
+
 フォローボタンを表示するためのテンプレートを作成します。  
 
-#### ファイル: web/templates/user/follow_form.html.eex
+#### File: web/templates/relationship/form.html.eex
 
 ```html
 <%= unless current_user?(@conn, @user) do %>
@@ -620,13 +627,13 @@ end
 <% end %>
 ```
 
-Userビューへフォローしているか確認するための関数を追加します。  
+Relationshipビューを作成します。  
 
-#### ファイル: web/views/user_view.ex
+#### File: web/views/relationship_view.ex
 
 ```elixir
-defmodule SampleApp.UserView do
-  ...
+defmodule SampleApp.RelationshipView do
+  use SampleApp.Web, :view
 
   def following?(conn, follow_user_id) do
     SampleApp.Relationship.following?(conn.assigns[:current_user].id, follow_user_id)
@@ -634,47 +641,17 @@ defmodule SampleApp.UserView do
 end
 ```
 
-ビューを補助するモジュールにサインインしているユーザと表示しているユーザが、  
-同一か確認する関数を追加しています。  
-
-#### ファイル: lib/helpers/view_helper.ex
-
-```elixir
-defmodule SampleApp.Helpers.ViewHelper do
-  ...
-
-  def current_user?(conn, %SampleApp.User{id: id}) do
-    user = SampleApp.Repo.get(SampleApp.User, id)
-    conn.assigns[:current_user] == user
-  end
-end
-```
-
 ## Relationship Controller
 フォローする、フォロー解除を画面から行えるようにします。  
 
-ルーティングを追加します。  
-
-#### ファイル: web/router.ex
-
-```elixir
-scope "/", SampleApp do
-  pipe_through :browser # Use the default browser stack
-
-  ...
-  resources "/relationship", RelationshipController, only: [:create, :delete]
-end
-```
-
 Relationshipコントローラの作成をします。  
 
-#### ファイル: web/controllers/relationship_controller.ex
+#### File: web/controllers/relationship_controller.ex
 
 ```elixir
 defmodule SampleApp.RelationshipController do
   use SampleApp.Web, :controller
 
-  plug SampleApp.Plugs.CheckAuthentication
   plug SampleApp.Plugs.SignedInUser
 
   def create(conn, params) do
@@ -700,45 +677,52 @@ end
 
 Micropostモデルにページネーション関数を追加します。  
 
-#### ファイル: web/models/micropost.ex
+#### File: web/models/micropost.ex
 
 ```elixir
-def paginate(user_id, select_page, following_ids) do
-  SampleApp.Helpers.PaginationHelper.paginate(
-    from(m in SampleApp.Micropost,
-      where: m.user_id in ^following_ids or m.user_id == ^user_id,
-        order_by: [desc: m.inserted_at]),
-    select_page)
+defmodule SampleApp.Micropost do
+  ...
+
+  def paginate(user_id, select_page, following_ids) do
+    SampleApp.Helpers.PaginationHelper.paginate(
+      from(m in SampleApp.Micropost,
+        where: m.user_id in ^following_ids or m.user_id == ^user_id,
+          order_by: [desc: m.inserted_at]),
+      select_page)
+  end
 end
 ```
 
 Userコントローラのshowアクションで、
 Micropostモデルのページネーション関数を利用するように修正します。  
 
-#### ファイル: web/controllers/user_controller.ex
+#### File: web/controllers/user_controller.ex
 
 ```elixir
-def show(conn, params) do
-  select_page = params["select_page"]
-  id = params["id"]
+defmodule SampleApp.UserController do
+  ...
 
-  user = Repo.get(SampleApp.User, id) |> Repo.preload(:relationships) |> Repo.preload(:reverse_relationships)
-  page = SampleApp.Micropost.paginate(
-    user.id, select_page, list_map_to_value_list(user.followed_users, :followed_id))
-  changeset = SampleApp.Micropost.new(user.id)
+  def show(conn, %{"id" => id} = params) do
+    select_page = params["select_page"]
 
-  if page do
-    render(conn, "show.html",
-           user: user,
-           posts: page.entries,
-           current_page: page.page_number,
-           total_pages: page.total_pages,
-           page_list: Range.new(1, page.total_pages),
-           changeset: changeset)
-  else
-    conn
-    |> put_flash(:error, "Invalid page number!!")
-    |> render("show.html", user: user, posts: [])
+    user = Repo.get(SampleApp.User, id) |> Repo.preload(:relationships) |> Repo.preload(:reverse_relationships)
+    page = SampleApp.Micropost.paginate(
+             user.id, select_page, list_map_to_value_list(user.followed_users, :followed_id))
+    changeset = SampleApp.Micropost.new(user.id)
+
+    if page do
+      render(conn, "show.html",
+             user: user,
+             posts: page.entries,
+             current_page: page.page_number,
+             total_pages: page.total_pages,
+             page_list: Range.new(1, page.total_pages),
+             changeset: changeset)
+    else
+      conn
+      |> put_flash(:error, "Invalid page number!!")
+      |> render("show.html", user: user, posts: [])
+    end
   end
 end
 ```
@@ -747,6 +731,8 @@ end
 
 ## Before the end
 ソースコードをマージします。  
+
+#### Example:
 
 ```cmd
 >git add .
@@ -759,10 +745,14 @@ end
 祝！チュートリアル終了！！  
 ここまでお付き合い頂きありがとうございました。  
 
+本チュートリアルを通して何か得るものはあったでしょうか？  
+少しでも皆様の技量向上に貢献できたのであれば、これほど嬉しいことはありません！  
+
 喜びに水を差すようで申し訳ないのですが、  
 このチュートリアルでやった内容は全て基礎です。  
 
 なので、応用的を習得するために今後の努力を怠らないようにして下さい。  
+
 それでは、お疲れ様でした。m(\_ \_)m  
 
 # Bibliography

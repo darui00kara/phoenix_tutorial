@@ -1,8 +1,6 @@
 defmodule SampleApp.StaticPagesController do
   use SampleApp.Web, :controller
 
-  plug SampleApp.Plugs.CheckAuthentication
-
   def home(conn, _params) do
     render conn, "home.html"
   end

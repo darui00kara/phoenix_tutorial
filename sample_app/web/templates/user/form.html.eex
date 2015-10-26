@@ -9,23 +9,23 @@
       </ul>
     </div>
   <% end %>
-
+  
   <div class="form-group">
-    <label>Name</label>
+    <%= label f, :name, "Name", class: "control-label" %>
     <%= text_input f, :name, class: "form-control" %>
   </div>
 
   <div class="form-group">
-    <label>Email</label>
+    <%= label f, :email, "Email", class: "control-label" %>
     <%= email_input f, :email, class: "form-control" %>
   </div>
 
   <div class="form-group">
-    <label>Password</label>
+    <%= label f, :password, "Password", class: "control-label" %>
     <%= password_input f, :password, class: "form-control" %>
   </div>
 
   <div class="form-group">
-    <%= submit "Submit!", class: "btn btn-primary" %>
+    <%= submit "Submit", class: "btn btn-primary" %>
   </div>
 <% end %>

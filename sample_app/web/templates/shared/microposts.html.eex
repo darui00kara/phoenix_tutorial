@@ -5,8 +5,10 @@
     <span class="timestamp">
       Posted <%= post.inserted_at %> ago.
     </span>
-    <%= if @user.id == post.user_id do %>
-      <%= link "Delete", to: micropost_path(@conn, :delete, post), method: :delete, class: "btn btn-danger btn-xs" %>
+    <%= if current_user?(@conn, @user) do %>
+      <%= if @user.id == post.user_id do %>
+        <%= link "Delete", to: micropost_path(@conn, :delete, post), method: :delete, class: "btn btn-danger btn-xs" %>
+      <% end %>
     <% end %>
   <% end %>
   </li>

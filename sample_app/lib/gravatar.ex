@@ -1,5 +1,4 @@
 defmodule SampleApp.Gravatar do
-
   def get_gravatar_url(email, size) do
     gravatar_id = email_to_gravator_id(email)
     "https://secure.gravatar.com/avatar/#{gravatar_id}?s=#{size}"
@@ -8,7 +7,7 @@ defmodule SampleApp.Gravatar do
   defp email_to_gravator_id(email) do
     email |> email_downcase |> email_crypt_md5
   end
-
+  
   defp email_crypt_md5(email) do
     :erlang.md5(email)
     |> :erlang.bitstring_to_list

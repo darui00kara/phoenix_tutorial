@@ -9,13 +9,11 @@ config :sample_app, SampleApp.Endpoint,
 # Print only warnings and errors during test
 config :logger, level: :warn
 
-# Set a higher stacktrace during test
-config :phoenix, :stacktrace_depth, 20
-
 # Configure your database
 config :sample_app, SampleApp.Repo,
   adapter: Ecto.Adapters.Postgres,
   username: "postgres",
   password: "postgres",
   database: "sample_app_test",
+  hostname: "localhost",
   pool: Ecto.Adapters.SQL.Sandbox

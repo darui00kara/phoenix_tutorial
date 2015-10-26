@@ -616,6 +616,7 @@ end
 そのため、formテンプレートでもif記述を使って処理を分けています。  
 
 showテンプレートからマイクロポストのformテンプレートを呼び出します。  
+また編集と削除のリンクは、表示されているプロファイルページのユーザとサインインユーザが一致しなければ表示しないように変更します。  
 
 #### File: web/templates/user/show.html.eex
 
@@ -623,7 +624,15 @@ showテンプレートからマイクロポストのformテンプレートを呼
 <div class="row">
   <aside class="span4">
     ...
-
+    <%= if current_user?(@conn, @user) do %>
+      <section>
+        <%= link "Edit", to: user_path(@conn, :edit, @user), class: "btn btn-default btn-xs" %>
+        <%= button "Delete", to: user_path(@conn, :delete, @user),
+                           method: :delete,
+                           onclick: "return confirm(\"Are you sure?\");",
+                           class: "btn btn-danger btn-xs" %>
+      </section>
+    <% end %>
     <section>
       <%= render SampleApp.MicropostView, "form.html", conn: @conn, changeset: @changeset, user: @user %>
     </section>
@@ -779,8 +788,10 @@ end
     <span class="timestamp">
       Posted <%= post.inserted_at %> ago.
     </span>
-    <%= if @user.id == post.user_id do %>
-      <%= link "Delete", to: micropost_path(@conn, :delete, post), method: :delete, class: "btn btn-danger btn-xs" %>
+    <%= if current_user?(@conn, @user) do %>
+      <%= if @user.id == post.user_id do %>
+        <%= link "Delete", to: micropost_path(@conn, :delete, post), method: :delete, class: "btn btn-danger btn-xs" %>
+      <% end %>
     <% end %>
   <% end %>
   </li>
@@ -822,6 +833,8 @@ renderの第一引数で、そのビューを指定するだけです。
 
 ## Before the end
 ソースコードをマージします。  
+
+#### Example:
 
 ```cmd
 >git add .

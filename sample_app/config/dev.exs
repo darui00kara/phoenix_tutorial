@@ -38,4 +38,5 @@ config :sample_app, SampleApp.Repo,
   username: "postgres",
   password: "postgres",
   database: "sample_app_dev",
+  hostname: "localhost",
   pool_size: 10

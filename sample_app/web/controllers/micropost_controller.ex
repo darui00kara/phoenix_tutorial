@@ -1,7 +1,6 @@
 defmodule SampleApp.MicropostController do
   use SampleApp.Web, :controller
 
-  plug SampleApp.Plugs.CheckAuthentication
   plug SampleApp.Plugs.SignedInUser
   plug :scrub_params, "micropost" when action in [:create]
 

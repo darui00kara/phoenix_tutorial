@@ -3,8 +3,6 @@ defmodule SampleApp.SessionController do
 
   import SampleApp.Signin
 
-  plug SampleApp.Plugs.CheckAuthentication
-
   def new(conn, _params) do
     render conn, "signin_form.html"
   end

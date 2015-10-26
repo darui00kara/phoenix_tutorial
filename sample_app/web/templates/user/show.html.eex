@@ -1,5 +1,3 @@
-<h2>User profile</h2>
-
 <div class="row">
   <aside class="col-md-4">
     <section>
@@ -11,17 +9,20 @@
     <%= if current_user?(@conn, @user) do %>
       <section>
         <%= link "Edit", to: user_path(@conn, :edit, @user), class: "btn btn-default btn-xs" %>
-        <%= link "Delete", to: user_path(@conn, :delete, @user), method: :delete, class: "btn btn-danger btn-xs" %>
+        <%= button "Delete", to: user_path(@conn, :delete, @user),
+                           method: :delete,
+                           onclick: "return confirm(\"Are you sure?\");",
+                           class: "btn btn-danger btn-xs" %>
       </section>
     <% end %>
     <section>
-      <%= render "micropost_form.html", conn: @conn, changeset: @changeset, user: @user %>
+      <%= render SampleApp.MicropostView, "form.html", conn: @conn, changeset: @changeset, user: @user %>
     </section>
   </aside>
-  
-  <div class="col-md-8">
-    <%= render "follow_form.html", conn: @conn, user: @user %>
 
+  <div class="col-md-8">
+    <%= render SampleApp.RelationshipView, "form.html", conn: @conn, user: @user %>
+    
     <%= unless is_empty_list?(@posts) do %>
       <h3>Microposts</h3>
       <%= render SampleApp.SharedView, "microposts.html", conn: @conn, posts: @posts, user: @user %>

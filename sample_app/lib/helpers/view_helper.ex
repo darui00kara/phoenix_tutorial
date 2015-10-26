@@ -1,4 +1,7 @@
 defmodule SampleApp.Helpers.ViewHelper do
+  alias SampleApp.User
+  alias SampleApp.Gravatar
+
   def current_user(conn) do
     conn.assigns[:current_user]
   end
@@ -8,7 +11,7 @@ defmodule SampleApp.Helpers.ViewHelper do
     conn.assigns[:current_user] == user
   end
 
-  def get_gravatar_url(%SampleApp.User{email: email}) do
-    SampleApp.Gravatar.get_gravatar_url(email, 50)
+  def get_gravatar_url(%User{email: email}) do
+    Gravatar.get_gravatar_url(email, 50)
   end
 end
