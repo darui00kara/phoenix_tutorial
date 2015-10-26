@@ -110,9 +110,9 @@ DBに格納されているパスワードの値(password_digest)は暗号化さ�
 パスワードの可視化はしていませんが、復号化してあげないと意味不明な文字の羅列が表示されてしまいます。  
 
 ## Create edit form template
-更新データを入力するためのテンプレート作成しましょう。  
+更新データを入力するためのテンプレートを作成しましょう。  
 
-編集の入力フォームは以下のようになります。
+編集の入力フォームは以下のようになります。  
 
 #### File: web/templates/user/edit.html.eex
 
@@ -165,7 +165,7 @@ showテンプレートへ更新のリンクを追加します。
 
 ```html
 <div class="row">
-  <aside class="span4">
+  <aside class="col-md-4">
     <section>
       <h1>
         <img src="<%= get_gravatar_url(@user) %>" class="gravatar">
@@ -690,8 +690,8 @@ defmodule SampleApp.PaginationView do
 end
 ```
 
-ページネーションのテンプレートを格納するディレクトリを作成します。
-paginationと言う名称で作成して下さい。
+ページネーションのテンプレートを格納するディレクトリを作成します。  
+paginationと言う名称で作成して下さい。  
 
 #### Directory: web/templates/pagination
 
@@ -808,7 +808,7 @@ defmodule SampleApp.Helpers.PaginationHelper do
 end
 ```
 
-それぞれ追加した関数は以下の機能を実装しています。
+それぞれ追加した関数は以下の機能を実装しています。  
 
 - is_nil_or_empty?/1: ページ番号が存在しているか判定します
 - is_valid_value?/1: プラスの半角数字の繰り返しか判定します
@@ -860,13 +860,16 @@ end
 
 ```html
 <div class="row">
-  <aside class="span4">
+  <aside class="col-md-4">
 
     ...
 
     <section>
       <%= link "Edit", to: user_path(@conn, :edit, @user), class: "btn btn-default btn-xs" %>
-      <%= button "Delete", to: user_path(@conn, :delete, @user), method: :delete, class: "btn btn-danger btn-xs" %>
+      <%= button "Delete", to: user_path(@conn, :delete, @user),
+                           method: :delete,
+                           onclick: "return confirm(\"Are you sure?\");",
+                           class: "btn btn-danger btn-xs" %>
     </section>
   </aside>
 </div>
@@ -887,7 +890,7 @@ end
 # Speaking to oneself
 機能を3つも実装しました。  
 
-大変長かったと思いますが、一旦休憩を取りましょう。
+大変長かったと思います一旦休憩を取りましょう。  
 
 # Bibliography
 [Ruby on Rails Tutorial](http://railstutorial.jp/chapters/updating-showing-and-deleting-users?version=4.0#top)  

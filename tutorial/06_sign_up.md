@@ -276,7 +276,7 @@ showテンプレートを以下のように変更します。
 
 ```html
 <div class="row">
-  <aside class="span4">
+  <aside class="col-md-4">
     <section>
       <h1>
         <img src="<%= get_gravatar_url(@user) %>" class="gravatar">
