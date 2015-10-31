@@ -524,7 +524,9 @@ end
 <% end %>
 ```
 
-また、少し動的な表示を行えるように、bootstrapのドロップダウンを使います。  
+少し動的な表示を行ってみます。  
+bootstrapのドロップダウンを使います。  
+
 それでは実装しましょう！  
 
 #### File: web/templates/layout/header.html.eex
@@ -546,10 +548,10 @@ end
             </a>
             <!-- Dropdown List -->
             <ul class="dropdown-menu" aria-labelledby="account">
-              <li><%= button "Profile", to: user_path(@conn, :show, current_user(@conn)), method: :get, class: "header-button" %><li>
-              <li><%= button "Help", to: static_pages_path(@conn, :help), method: :get, class: "header-button" %></li>
+              <li><%= link "Profile", to: user_path(@conn, :show, current_user(@conn)) %><li>
+              <li><%= link "Help", to: static_pages_path(@conn, :help) %></li>
               <li class="divider"></li>
-              <li><%= button "Sign-out", to: session_path(@conn, :delete), method: :delete, class: "header-button" %></li>
+              <li class="dropdown-delete-li"><%= link "Sign-out", to: session_path(@conn, :delete), method: :delete, class: "dropdown-delete-link" %></li>
             </ul>
           </li>
         <% else %>
@@ -565,33 +567,44 @@ end
 #### File: priv/static/css/custom.css
 
 ```css
-/* header-button */
-.header-button {
-  display: inline-block;
+/* dropdown delete method link */
+.dropdown-delete-link {
+  color: #000000;
   margin-left: 20px;
-  border: solid 2px #fff;
-  /*border-radius: 3px;*/
-  background: rgba(255,255,255,0.2);
-  color: #1e90ff;
-  text-decoration: none;
-  font-weight: bold;
-  font-family: Helvetica, Arial, sans-serif;
 }
-.header-button:hover{
-  color: #;
-  background: #f0ffff;
+.dropdown-delete-li {
+  color: #000000;
+}
+.dropdown-delete-li:hover{
+  background-color: #f5f5f5;
 }
 ```
 
 #### Cution:
+Windowsで実施されている方へ。  
 
-このヘッダーテンプレートですが、後日修正を行う可能性があります。  
+linkタグのdeleteメソッドを動作させるには少し修正が必要です。  
 
-v1.0.3にて、linkタグでdeleteメソッドを指定すると動作をしない現象を確認。  
-v1.0.0では動作を確認しているので、比較や検証を行ったが原因は不明。  
+Linux、Macではこの問題は発生しません。  
+但し、ドロップダウンのデザインは崩れると思いますのでCSSは適応して下さい。  
 
-そのため、急きょbuttonタグを利用してCSSで調整して表示している。  
-お手数をお掛けしますが、ご理解お願い致します。  
+brunch-config.jsでapp.jsを読み込んでいるのですが、  
+Windowsだとパスの指定方法が少し異なるようです。  
+
+そのため、以下のように修正して下さい。  
+
+#### File: brunch-config.js
+
+```javascript
+modules: {
+  autoRequire: {
+    "js\\app.js": ["web/static/js/app"]
+  }
+},
+```
+
+この問題は2015/10/31に確認したのが最後です。  
+今後のアップグレードで修正されている可能性があります。  
 
 ## Sign-out
 ようやっとサインイン機能と対になる、サインアウト機能を実装します。  

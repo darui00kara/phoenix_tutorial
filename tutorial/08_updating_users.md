@@ -577,7 +577,6 @@ end
             <!-- Dropdown List -->
             <ul class="dropdown-menu" aria-labelledby="account">
               <li><%= link "All Users", to: user_path(@conn, :index) %><li>
-
               ...
             </ul>
           </li>
